@@ -19,12 +19,10 @@ const AppNavigator = () => {
   return (
     <>
       <SignedIn>
-        {/* <MainTabNavigator /> */}
-        <AuthNavigator />
+        <MainTabNavigator />
       </SignedIn>
       <SignedOut>
-        {/* <AuthNavigator /> */}
-        <MainTabNavigator />
+        <AuthNavigator />
       </SignedOut>
     </>
   );
