@@ -30,17 +30,18 @@ const handleOAuthSignIn = useCallback(async (provider) => {
 }, [])
 
   return (
-    <View style={{ padding: 20 }}>
+    <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20 }}>
       <TouchableOpacity
         style={{
           backgroundColor: '#ffffffff',
           padding: 12,
           borderRadius: 8,
-          marginBottom: 10,
+          display: 'flex',
+          flexDirection: 'row'
         }}
         onPress={() => handleOAuthSignIn('google')}
       >
-        <Text style={{ color: 'white', textAlign: 'center' }}>Login with Google <Ionicons name="logo-google" size={24} color="#DB4437" />;</Text>
+        <Ionicons name="logo-google" size={46} color="#e23929ff" />
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -48,10 +49,12 @@ const handleOAuthSignIn = useCallback(async (provider) => {
           backgroundColor: '#ffffffff',
           padding: 12,
           borderRadius: 8,
+          display: 'flex',
+          flexDirection: 'row'
         }}
         onPress={() => handleOAuthSignIn('facebook')}
       >
-        <Text style={{ color: 'white', textAlign: 'center' }}>Login with Facebook <Ionicons name="logo-facebook" size={24} color="#1977F3" />;</Text>
+        <Ionicons name="logo-facebook" size={46} color="#1977F3" />
       </TouchableOpacity>
     </View>
   )
