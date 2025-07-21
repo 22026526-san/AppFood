@@ -21,7 +21,6 @@ WebBrowser.maybeCompleteAuthSession();
 
 export default function Login() {
   const { signIn, setActive, isLoaded } = useSignIn()
-  const router = useRouter()
   const navigation = useNavigation()
 
   const [emailAddress, setEmailAddress] = React.useState('')
@@ -39,7 +38,6 @@ export default function Login() {
 
       if (signInAttempt.status === 'complete') {
         await setActive({ session: signInAttempt.createdSessionId })
-        router.push('/HomeScreen')
       } else {
         console.error(JSON.stringify(signInAttempt, null, 2))
       }
@@ -54,12 +52,12 @@ export default function Login() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView 
-        contentContainerStyle={{ flex: 1 }} 
+        contentContainerStyle={{ flexGrow: 1 }} 
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
     <View style={styles.container}>
-      <View style={{ flex: 0.4, backgroundColor: '#ffffff04', width: '100%', alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
+      <View style={{ minHeight:'30%', backgroundColor: '#ffffff04', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
         <Text style={{ color: '#efeae7ff', fontSize: 36, fontWeight: 'bold' }}>Log In</Text>
         <Text style={{ color: '#efeae7ff', fontSize: 16, marginTop: 10 }}>Please login to your existing account</Text>
       </View>
@@ -120,11 +118,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ff6a00d9',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   containerInput: {
-    flex: 0.6,
+    minHeight: '70%',
     backgroundColor: '#ffffffff',
     width: '100%',
     padding: 36,
