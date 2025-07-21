@@ -41,22 +41,58 @@ export default function SignUp() {
     }
   }
 
-  const onVerifyPress = async () => {
-    if (!isLoaded) return
+  // const onVerifyPress = async () => {
+  //   if (!isLoaded) return
 
-    try {
-      const signUpAttempt = await signUp.attemptEmailAddressVerification({
-        code: otp,
-      })
-      if (signUpAttempt.status === 'complete') {
-        await setActive({ session: signUpAttempt.createdSessionId })
-      } else {
-        console.error(JSON.stringify(signUpAttempt, null, 2))
-      }
-    } catch (err) {
-      console.error(JSON.stringify(err, null, 2))
+  //   try {
+  //     const signUpAttempt = await signUp.attemptEmailAddressVerification({
+  //       code: otp,
+  //     })
+  //     if (signUpAttempt.status === 'complete') {
+  //       await setActive({ session: signUpAttempt.createdSessionId })
+  //     } else {
+  //       console.error(JSON.stringify(signUpAttempt, null, 2))
+  //     }
+  //   } catch (err) {
+  //     console.error(JSON.stringify(err, null, 2))
+  //   }
+  // }
+
+  const onVerifyPress = async () => {
+  if (!isLoaded) return;
+
+  try {
+    const signUpAttempt = await signUp.attemptEmailAddressVerification({
+      code: otp,
+    });
+
+    if (signUpAttempt.status === 'complete') {
+      await setActive({ session: signUpAttempt.createdSessionId });
+
+      // Gửi thông tin user về backend
+      const res = await fetch("http://192.168.1.3:3000/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.username,
+          email: data.email,
+          phone: data.phone,
+          password: data.password
+        }),
+      });
+
+      const json = await res.json();
+      console.log("User saved to DB:", json);
+    } else {
+      console.error(JSON.stringify(signUpAttempt, null, 2));
     }
+  } catch (err) {
+    console.error(JSON.stringify(err, null, 2));
   }
+};
+
 
   // otp 
   const [otp, setOtp] = useState('');
