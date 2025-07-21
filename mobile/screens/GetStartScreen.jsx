@@ -10,12 +10,12 @@ const GetStartScreen = () => {
   return (
     <View style={{ flex: 1, alignItems: 'center', backgroundColor: '#ff6a00bd'}}>
       <View style={{ flex: 0.6, justifyContent: 'center', alignItems: 'center' ,marginTop: 50}}>
-        <Image style={{ width: '100%', aspectRatio: 2 / 8 }}
+        <Image style={{ width: '100%', aspectRatio: 2 / 5 }}
           resizeMode="contain"
-          source={require('../assets/fried-chicken.png')}/>
+          source={require('../assets/fast-food.png')}/>
       </View>
       <View style={{ flex: 0.4 , alignItems: 'center',marginTop :-68}}>
-        <Text style = {{color:'#efeae7ff', fontSize:36,fontWeight:'bold'}} >FAST FOOD<Ionicons name='restaurant' color={'#efeae7ff'} size={26}/></Text>
+        <Text style = {{color:'#efeae7ff', fontSize:36,fontWeight:'bold'}} >FAST<Ionicons name='restaurant' color={'#efeae7ff'} size={26}/>FOOD</Text>
         <View style={{ alignItems: 'center',marginTop: 8}}>
           <Text style = {{color:'#efeae7ff', fontSize:12}}>Get all your loved foods in one once place,</Text>
           <Text style = {{color:'#efeae7ff', fontSize:12}}>you yust flace the oror we do the rest</Text>
