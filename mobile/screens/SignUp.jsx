@@ -73,17 +73,18 @@ export default function SignUp() {
         </View>
         <View style={styles.containerInput}>
           <View style={styles.inputContainer}>
-              <TextInput
-                value={otp}
-                placeholder="Enter your verification code"
-          onChangeText={(otp) => setOtp(otp)} 
-          style={styles.input}
-              />
+            <TextInput
+              value={otp}
+              placeholder="Enter your verification code"
+              onChangeText={(otp) => setOtp(otp)}
+              style={styles.input}
+              keyboardType="numeric"
+            />
           </View>
           <View style={{ padding: 10, position: "relative" }}>
             <TouchableOpacity onPress={onVerifyPress} style={styles.buttonSubmit}>
-            <Text style={{ color: '#fffffffb', fontWeight: 'bold' }}>VERIFY</Text>
-          </TouchableOpacity>
+              <Text style={{ color: '#fffffffb', fontWeight: 'bold' }}>VERIFY</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </KeyboardAvoidingView>
