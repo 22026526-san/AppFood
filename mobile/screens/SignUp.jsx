@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, {  useState } from 'react'
 import { Text, TextInput, TouchableOpacity, View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
 import { useSignUp } from '@clerk/clerk-expo'
 import { Ionicons } from '@expo/vector-icons';
@@ -40,23 +40,6 @@ export default function SignUp() {
       console.error(JSON.stringify(err, null, 2))
     }
   }
-
-  // const onVerifyPress = async () => {
-  //   if (!isLoaded) return
-
-  //   try {
-  //     const signUpAttempt = await signUp.attemptEmailAddressVerification({
-  //       code: otp,
-  //     })
-  //     if (signUpAttempt.status === 'complete') {
-  //       await setActive({ session: signUpAttempt.createdSessionId })
-  //     } else {
-  //       console.error(JSON.stringify(signUpAttempt, null, 2))
-  //     }
-  //   } catch (err) {
-  //     console.error(JSON.stringify(err, null, 2))
-  //   }
-  // }
 
   const onVerifyPress = async () => {
   if (!isLoaded) return;
