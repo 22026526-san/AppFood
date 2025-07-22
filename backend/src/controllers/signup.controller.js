@@ -9,6 +9,17 @@ export const createUser = async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
+    const [existingUser] = await pool
+      .promise()
+      .query('SELECT * FROM users WHERE phone = ?', [phone]);
+
+    if (existingUser.length > 0) {
+      return res.status(409).json({
+        success: false,
+        message: 'Số điện thoại đã được sử dụng',
+      });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const [result] = await pool.promise().query(
@@ -18,7 +29,7 @@ export const createUser = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      user_id : result.insertId,
+      user_id: result.insertId,
     });
   } catch (error) {
     console.error('Error inserting user:', error);

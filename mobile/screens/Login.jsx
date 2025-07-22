@@ -63,7 +63,7 @@ export default function Login() {
       </View>
       <View style={styles.containerInput}>
         <View style={styles.inputContainer}>
-          <Text style={{ color: '#000000c2', fontSize: 16, marginBottom: 8 }}>EMAIL</Text>
+          <Text style={{ color: '#000000c2', fontSize: 16, marginBottom: 8 ,marginLeft:2}}>EMAIL</Text>
           <TextInput
             autoCapitalize="none"
             value={emailAddress}
@@ -73,7 +73,7 @@ export default function Login() {
           />
         </View>
         <View style={styles.inputContainer}>
-          <Text style={{ color: '#000000c2', fontSize: 16, marginBottom: 8 }}>PASSWORD</Text>
+          <Text style={{ color: '#000000c2', fontSize: 16, marginBottom: 8 ,marginLeft:2}}>PASSWORD</Text>
           <View style={{ position: "relative", display: 'flex', justifyContent: 'space-between' ,justifyContent: 'center' }}>
             <TextInput
               value={password}

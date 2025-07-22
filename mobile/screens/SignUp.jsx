@@ -1,5 +1,5 @@
-import React, {  useState } from 'react'
-import { Text, TextInput, TouchableOpacity, View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
+import React, { useState } from 'react'
+import { Text, TextInput, TouchableOpacity, View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native'
 import { useSignUp } from '@clerk/clerk-expo'
 import { Ionicons } from '@expo/vector-icons';
 
@@ -14,6 +14,10 @@ export default function SignUp() {
   });
   const [pendingVerification, setPendingVerification] = React.useState(false)
   const [showPassword, setShowPassword] = React.useState(false)
+  const [formError, setFormError] = useState({})
+
+
+
   const handleChangeData = (field, value) => {
     setData((prev) => ({
       ...prev,
@@ -21,10 +25,41 @@ export default function SignUp() {
     }));
   };
 
+  // Hàm xử lý data
+  const validateData = () => {
+    const error = {};
+
+    // Kiểm tra định dạng email
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!data.email || !emailPattern.test(data.email)) {
+      error.email = 'Email không đúng định dạng';
+    }
+
+    // Kiểm tra độ dài số điện thoại
+    if (!data.phone || data.phone.length !== 10) {
+      error.phone = 'Số điện thoại phải có 10 ký tự';
+    }
+
+    // Kiểm tra mật khẩu
+    const password = data.password || '';
+    const passwordPattern = /^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*\d).+$/;
+
+    if (!passwordPattern.test(password)) {
+      error.password = 'Mật khẩu phải gồm in hoa, ký tự đặc biệt và số';
+    }
+    setFormError(error)
+
+    return Object.keys(error).length === 0;
+  };
 
   const onSignUpPress = async () => {
     if (!isLoaded) return
 
+    const isValid = validateData();
+    if (!isValid) {
+
+      return;
+    }
     try {
       await signUp.create({
         emailAddress: data.email,
@@ -36,45 +71,55 @@ export default function SignUp() {
 
       setPendingVerification(true)
     } catch (err) {
-
-      console.error(JSON.stringify(err, null, 2))
+      const errorCode = err.errors?.[0]?.code;
+      if (errorCode === 'form_identifier_exists') {
+        Alert.alert('Email này đã được đăng ký.');
+      } else {
+        Alert.alert('Đăng ký thất bại. Vui lòng thử lại.');
+      }
+      // console.error(JSON.stringify(err, null, 2))
     }
   }
 
   const onVerifyPress = async () => {
-  if (!isLoaded) return;
+    if (!isLoaded) return;
 
-  try {
-    const signUpAttempt = await signUp.attemptEmailAddressVerification({
-      code: otp,
-    });
-
-    if (signUpAttempt.status === 'complete') {
-      await setActive({ session: signUpAttempt.createdSessionId });
-
-      // Gửi thông tin user về backend
-      const res = await fetch("http://192.168.1.3:3000/api/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: data.username,
-          email: data.email,
-          phone: data.phone,
-          password: data.password
-        }),
+    try {
+      const signUpAttempt = await signUp.attemptEmailAddressVerification({
+        code: otp,
       });
 
-      const json = await res.json();
-      console.log("User saved to DB:", json);
-    } else {
-      console.error(JSON.stringify(signUpAttempt, null, 2));
+      if (signUpAttempt.status === 'complete') {
+        
+        // Gửi thông tin user về backend
+        const res = await fetch("http://192.168.1.3:3000/api/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: data.username,
+            email: data.email,
+            phone: data.phone,
+            password: data.password
+          }),
+        });
+
+        const json = await res.json();
+        if (!json.success) {
+          Alert.alert(json.message);
+          return;
+        }
+
+        await setActive({ session: signUpAttempt.createdSessionId });
+        console.log(json);
+      } else {
+        console.error(JSON.stringify(signUpAttempt, null, 2));
+      }
+    } catch (err) {
+      console.error(JSON.stringify(err, null, 2));
     }
-  } catch (err) {
-    console.error(JSON.stringify(err, null, 2));
-  }
-};
+  };
 
 
   // otp 
@@ -128,7 +173,7 @@ export default function SignUp() {
           </View>
           <View style={styles.containerInput}>
             <View style={styles.inputContainer}>
-              <Text style={{ color: '#000000c2', fontSize: 16, marginBottom: 8 }}>USERNAME</Text>
+              <Text style={{ color: '#000000c2', fontSize: 16, marginBottom: 8 ,marginLeft:2}}>USERNAME</Text>
               <TextInput
                 autoCapitalize="none"
                 value={data.username}
@@ -138,7 +183,7 @@ export default function SignUp() {
               />
             </View>
             <View style={styles.inputContainer} >
-              <Text style={{ color: '#000000c2', fontSize: 16, marginBottom: 8 }}>PHONE</Text>
+              <Text style={{ color: '#000000c2', fontSize: 16, marginBottom: 8 ,marginLeft:2}}>PHONE</Text>
               <TextInput
                 autoCapitalize="none"
                 value={data.phone}
@@ -146,9 +191,12 @@ export default function SignUp() {
                 onChangeText={(text) => handleChangeData('phone', text)}
                 style={styles.input}
               />
+              {formError.phone && (
+                <Text style={{ color: 'red', marginLeft: 2,marginTop:2 }}>{formError.phone}</Text>
+              )}
             </View>
             <View style={styles.inputContainer}>
-              <Text style={{ color: '#000000c2', fontSize: 16, marginBottom: 8 }}>EMAIL</Text>
+              <Text style={{ color: '#000000c2', fontSize: 16, marginBottom: 8 ,marginLeft:2}}>EMAIL</Text>
               <TextInput
                 autoCapitalize="none"
                 value={data.email}
@@ -156,9 +204,12 @@ export default function SignUp() {
                 onChangeText={(text) => handleChangeData('email', text)}
                 style={styles.input}
               />
+              {formError.email && (
+                <Text style={{ color: 'red',marginLeft: 2,marginTop:2}}>{formError.email}</Text>
+              )}
             </View>
             <View style={styles.inputContainer}>
-              <Text style={{ color: '#000000c2', fontSize: 16, marginBottom: 8 }}>PASSWORD</Text>
+              <Text style={{ color: '#000000c2', fontSize: 16, marginBottom: 8,marginLeft:2 }}>PASSWORD</Text>
               <View style={{ position: "relative", display: 'flex', justifyContent: 'space-between', justifyContent: 'center' }}>
                 <TextInput
                   value={data.password}
@@ -171,6 +222,9 @@ export default function SignUp() {
                   <Ionicons name={showPassword ? "eye-outline" : "eye-off-outline"} size={24} style={{ color: '#0000008e' }} />
                 </TouchableOpacity>
               </View>
+              {formError.password && (
+                <Text style={{ color: 'red',marginLeft: 2,marginTop:2}}>{formError.password}</Text>
+              )}
             </View>
             <View style={{ padding: 10, position: "relative" }}>
               <TouchableOpacity onPress={onSignUpPress} style={styles.buttonSubmit}>
