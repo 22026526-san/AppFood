@@ -2,11 +2,12 @@ import pool from '../configs/database.js';
 import bcrypt from 'bcrypt';
 
 export const createUser = async (req, res) => {
+  console.log('CREATE USER CALLED');
   try {
     const { name, email, phone, password } = req.body;
 
     if (!name || !email || !phone || !password) {
-      return res.status(400).json({ error: 'Missing required fields' });
+      return res.status(400).json({ error: 'Missing required fiel' });
     }
 
     const [existingUser] = await pool
@@ -37,3 +38,37 @@ export const createUser = async (req, res) => {
   }
 };
 
+export const signUpGG_FB = async (req, res) => {
+  console.log('SIGNUP OAUTH CALLED');
+  try {
+    const { name, phone } = req.body;
+
+    if (!name || !phone) {
+      return res.status(400).json({ error: 'Missing required field' });
+    }
+
+    const [existingUser] = await pool
+      .promise()
+      .query('SELECT * FROM users WHERE phone = ?', [phone]);
+
+    if (existingUser.length > 0) {
+      return res.status(409).json({
+        success: false,
+        message: 'Số điện thoại đã được sử dụng',
+      });
+    }
+
+    const [result] = await pool.promise().query(
+      'INSERT INTO users (user_name, phone ) VALUES (?, ?)',
+      [name, phone]
+    );
+
+    res.status(201).json({
+      success: true,
+      user_id: result.insertId,
+    });
+  } catch (error) {
+    console.error('Error inserting user:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}

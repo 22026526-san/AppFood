@@ -6,7 +6,7 @@ import signupRoutes from './routes/signup.route.js';
 
 app.use(cors());
 app.use(express.json());
-app.use('/api/signup', signupRoutes);
+app.use('/api', signupRoutes);
 
 app.get("/api/appfood", (req, res) => {
   res.status(200).json({

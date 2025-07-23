@@ -92,7 +92,7 @@ export default function SignUp() {
       if (signUpAttempt.status === 'complete') {
         
         // Gửi thông tin user về backend
-        const res = await fetch("http://192.168.1.3:3000/api/signup", {
+        const res = await fetch("http://192.168.1.4:3000/api/signup", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

@@ -1,36 +1,44 @@
-import React,{ useCallback } from 'react' 
-import { Text, TouchableOpacity, View } from 'react-native'
+import React, { useCallback } from 'react'
+import { TouchableOpacity, View } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useSSO } from '@clerk/clerk-expo'
+import { useNavigation } from '@react-navigation/native'
 import * as AuthSession from 'expo-auth-session'
 
 export default function SocialLoginButton() {
 
-const { startSSOFlow } = useSSO()
+  const { startSSOFlow } = useSSO()
+  const navigation = useNavigation()
 
-const handleOAuthSignIn = useCallback(async (provider) => {
-  try {
-    const redirectUrl = AuthSession.makeRedirectUri({
-      native: 'my-app://',
-    })
+  const handleOAuthSignIn = useCallback(async (provider) => {
+    try {
+      const redirectUrl = AuthSession.makeRedirectUri({
+        native: 'my-app://',
+      })
 
-    const { createdSessionId, setActive, signIn, signUp } = await startSSOFlow({
-      strategy: `oauth_${provider}`,
-      redirectUrl,
-    })
+      const { createdSessionId, setActive, signIn, signUp } = await startSSOFlow({
+        strategy: `oauth_${provider}`,
+        redirectUrl,
+      })
 
-    if (createdSessionId) {
-      setActive({ session: createdSessionId })
-    } else {
-      console.log('SSO signIn or signUp object:', signIn || signUp)
+      if (createdSessionId) {
+        if (signUp.createdSessionId) {
+        navigation.navigate('CompleteProfile', {
+          createdSessionId
+        });
+        return; 
+      }
+        setActive({ session: createdSessionId })
+      } else {
+        console.log('SSO signIn or signUp object:', signIn || signUp)
+      }
+    } catch (err) {
+      console.error('OAuth sign-in error:', JSON.stringify(err, null, 2))
     }
-  } catch (err) {
-    console.error('OAuth sign-in error:', JSON.stringify(err, null, 2))
-  }
-}, [])
+  }, [])
 
   return (
-    <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20 }}>
+    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20 }}>
       <TouchableOpacity
         style={{
           backgroundColor: '#ffffffff',
