@@ -111,3 +111,25 @@ export const signup_update = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 }
+
+export const UpdatePass = async (req, res) => {
+
+  try {
+    const { email, pass } = req.body;
+
+    if (!email || !pass) {
+      return res.status(400).json({ error: 'Missing required field' });
+    }
+
+    const hashedPassword = await bcrypt.hash(pass, 10);
+
+    await pool
+      .promise()
+      .query(`UPDATE users SET password = ? WHERE email = ?`, [hashedPassword, email]);
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Error inserting user:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Alert, StyleSheet, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
 import { useSignIn } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
+import {API_URL} from '@env'
 
 
 export default function ForgotPasswordScreen({ navigation }) {
@@ -38,7 +39,7 @@ export default function ForgotPasswordScreen({ navigation }) {
       if (result.status === 'needs_new_password') {
         setStep(3);
       } else {
-        Alert.alert('Lỗi', 'Không thể tiếp tục. Hãy thử lại.');
+        Alert.alert('Lỗi', 'Hãy thử lại.');
       }
     } catch (err) {
       console.error(err);
@@ -49,16 +50,34 @@ export default function ForgotPasswordScreen({ navigation }) {
 
   const resetPassword = async () => {
     try {
+
+      const res = await fetch(`${API_URL}/update_password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          pass: newPassword
+        }),
+      });
+
+      const json = await res.json();
+      console.log(json)
+      if (!json.success) {
+        Alert.alert(json.message);
+        return;
+      }
+
       await signIn.resetPassword({
         password: newPassword,
       });
-
 
       await setActive({ session: signIn.createdSessionId });
 
     } catch (err) {
       console.error(err);
-      Alert.alert('Không thể đổi mật khẩu');
+      Alert.alert('Mật khẩu không an toàn');
     }
   };
 
