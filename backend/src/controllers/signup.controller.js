@@ -27,7 +27,7 @@ export const createUser = async (req, res) => {
 };
 
 export const signUpGG_FB = async (req, res) => {
-  
+
   try {
     const { name, phone } = req.body;
 
@@ -62,7 +62,7 @@ export const signUpGG_FB = async (req, res) => {
 }
 
 export const sign_check_user = async (req, res) => {
- 
+
   try {
     const { phone } = req.body;
 
@@ -80,6 +80,28 @@ export const sign_check_user = async (req, res) => {
         message: 'Số điện thoại đã được sử dụng',
       });
     }
+
+    res.status(201).json({
+      success: true,
+    });
+  } catch (error) {
+    console.error('Error inserting user:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+export const signup_update = async (req, res) => {
+
+  try {
+    const { flerkId, id } = req.body;
+
+    if (!flerkId) {
+      return res.status(400).json({ error: 'Missing required field' });
+    }
+
+    const [update] = await pool
+      .promise()
+      .query('UPDATE users SET clerk_id = ? WHERE user_id = ?', [flerkId, id]);
 
     res.status(201).json({
       success: true,

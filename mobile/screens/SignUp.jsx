@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState , useContext } from 'react'
 import { Text, TextInput, TouchableOpacity, View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native'
 import { useSignUp } from '@clerk/clerk-expo'
 import { Ionicons } from '@expo/vector-icons';
 import { API_URL } from '@env';
+import { UserContext } from '../services/UserContextAPI';
 
 export default function SignUp() {
   const { isLoaded, signUp, setActive } = useSignUp()
@@ -16,6 +17,7 @@ export default function SignUp() {
   const [pendingVerification, setPendingVerification] = React.useState(false)
   const [showPassword, setShowPassword] = React.useState(false)
   const [formError, setFormError] = useState({})
+  const {setIsSignUp, setUser} = useContext(UserContext)
 
 
 
@@ -132,6 +134,11 @@ export default function SignUp() {
         }
 
         await setActive({ session: signUpAttempt.createdSessionId });
+
+        //set Context
+        setUser(json.user_id);
+        setIsSignUp(true);
+
 
       } else {
         console.error(JSON.stringify(signUpAttempt, null, 2));

@@ -1,8 +1,9 @@
 import { View, Text, TextInput, Alert, StyleSheet, KeyboardAvoidingView, Platform, TouchableOpacity,ScrollView } from 'react-native'
-import React  from 'react'
+import React , {useContext } from 'react'
 import { useRoute } from '@react-navigation/native';
 import { useSignUp } from '@clerk/clerk-expo'
 import {API_URL} from '@env'
+import { UserContext } from '../services/UserContextAPI';
 
 const CompleteProfileScreen = () => {
     const [name, setName] = React.useState('')
@@ -10,6 +11,7 @@ const CompleteProfileScreen = () => {
     const { setActive } = useSignUp()
     const route = useRoute();
     const { createdSessionId } = route.params;
+    const {setIsSignUp, setUser} = useContext(UserContext)
     
 
     const handleSubmit = async () => {
@@ -33,6 +35,11 @@ const CompleteProfileScreen = () => {
                 return;
             }
             await setActive({ session: createdSessionId });
+
+            //set Context
+            setUser(json.user_id);
+            setIsSignUp(true);
+
         } catch (error) {
             console.error('Error completing profile:', error);
             Alert.alert('Đã xảy ra lỗi khi hoàn tất hồ sơ');
