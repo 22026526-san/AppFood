@@ -62,6 +62,25 @@ export default function SignUp() {
       return;
     }
     try {
+      //check user 
+      const res = await fetch(`${API_URL}/signup_check`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          phone: data.phone,
+        }),
+      });
+
+      const json = await res.json();
+
+      if (!json.success) {
+        Alert.alert(json.message);
+        return;
+      }
+
+      //send otp
       await signUp.create({
         emailAddress: data.email,
         password: data.password,
@@ -106,14 +125,14 @@ export default function SignUp() {
         });
 
         const json = await res.json();
-        console.log(json)
+
         if (!json.success) {
           Alert.alert(json.message);
           return;
         }
 
         await setActive({ session: signUpAttempt.createdSessionId });
-        console.log(json);
+
       } else {
         console.error(JSON.stringify(signUpAttempt, null, 2));
       }
@@ -174,7 +193,7 @@ export default function SignUp() {
           </View>
           <View style={styles.containerInput}>
             <View style={styles.inputContainer}>
-              <Text style={{ color: '#000000c2', fontSize: 16, marginBottom: 8 ,marginLeft:2}}>USERNAME</Text>
+              <Text style={{ color: '#000000c2', fontSize: 16, marginBottom: 8, marginLeft: 2 }}>USERNAME</Text>
               <TextInput
                 autoCapitalize="none"
                 value={data.username}
@@ -184,7 +203,7 @@ export default function SignUp() {
               />
             </View>
             <View style={styles.inputContainer} >
-              <Text style={{ color: '#000000c2', fontSize: 16, marginBottom: 8 ,marginLeft:2}}>PHONE</Text>
+              <Text style={{ color: '#000000c2', fontSize: 16, marginBottom: 8, marginLeft: 2 }}>PHONE</Text>
               <TextInput
                 autoCapitalize="none"
                 value={data.phone}
@@ -193,11 +212,11 @@ export default function SignUp() {
                 style={styles.input}
               />
               {formError.phone && (
-                <Text style={{ color: 'red', marginLeft: 2,marginTop:2 }}>{formError.phone}</Text>
+                <Text style={{ color: 'red', marginLeft: 2, marginTop: 2 }}>{formError.phone}</Text>
               )}
             </View>
             <View style={styles.inputContainer}>
-              <Text style={{ color: '#000000c2', fontSize: 16, marginBottom: 8 ,marginLeft:2}}>EMAIL</Text>
+              <Text style={{ color: '#000000c2', fontSize: 16, marginBottom: 8, marginLeft: 2 }}>EMAIL</Text>
               <TextInput
                 autoCapitalize="none"
                 value={data.email}
@@ -206,11 +225,11 @@ export default function SignUp() {
                 style={styles.input}
               />
               {formError.email && (
-                <Text style={{ color: 'red',marginLeft: 2,marginTop:2}}>{formError.email}</Text>
+                <Text style={{ color: 'red', marginLeft: 2, marginTop: 2 }}>{formError.email}</Text>
               )}
             </View>
             <View style={styles.inputContainer}>
-              <Text style={{ color: '#000000c2', fontSize: 16, marginBottom: 8,marginLeft:2 }}>PASSWORD</Text>
+              <Text style={{ color: '#000000c2', fontSize: 16, marginBottom: 8, marginLeft: 2 }}>PASSWORD</Text>
               <View style={{ position: "relative", display: 'flex', justifyContent: 'space-between', justifyContent: 'center' }}>
                 <TextInput
                   value={data.password}
@@ -224,7 +243,7 @@ export default function SignUp() {
                 </TouchableOpacity>
               </View>
               {formError.password && (
-                <Text style={{ color: 'red',marginLeft: 2,marginTop:2}}>{formError.password}</Text>
+                <Text style={{ color: 'red', marginLeft: 2, marginTop: 2 }}>{formError.password}</Text>
               )}
             </View>
             <View style={{ padding: 10, position: "relative" }}>
