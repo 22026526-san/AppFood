@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Text, TextInput, TouchableOpacity, View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native'
 import { useSignUp } from '@clerk/clerk-expo'
 import { Ionicons } from '@expo/vector-icons';
+import { API_URL } from '@env';
 
 export default function SignUp() {
   const { isLoaded, signUp, setActive } = useSignUp()
@@ -77,7 +78,7 @@ export default function SignUp() {
       } else {
         Alert.alert('Đăng ký thất bại. Vui lòng thử lại.');
       }
-      // console.error(JSON.stringify(err, null, 2))
+      console.error(JSON.stringify(err, null, 2))
     }
   }
 
@@ -90,9 +91,8 @@ export default function SignUp() {
       });
 
       if (signUpAttempt.status === 'complete') {
-        
         // Gửi thông tin user về backend
-        const res = await fetch("http://192.168.1.4:3000/api/signup", {
+        const res = await fetch(`${API_URL}/signup`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -106,6 +106,7 @@ export default function SignUp() {
         });
 
         const json = await res.json();
+        console.log(json)
         if (!json.success) {
           Alert.alert(json.message);
           return;

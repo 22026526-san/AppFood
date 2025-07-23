@@ -2,7 +2,7 @@ import { View, Text, TextInput, Alert, StyleSheet, KeyboardAvoidingView, Platfor
 import React  from 'react'
 import { useRoute } from '@react-navigation/native';
 import { useSignUp } from '@clerk/clerk-expo'
-import { useState } from 'react'
+import {API_URL} from '@env'
 
 const CompleteProfileScreen = () => {
     const [name, setName] = React.useState('')
@@ -16,7 +16,7 @@ const CompleteProfileScreen = () => {
 
         try {
             
-            const res = await fetch("http://192.168.1.4:3000/api/signup_oath", {
+            const res = await fetch(`${API_URL}/signup_oath`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
