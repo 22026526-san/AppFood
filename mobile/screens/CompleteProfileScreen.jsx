@@ -1,8 +1,8 @@
-import { View, Text, TextInput, Alert, StyleSheet, KeyboardAvoidingView, Platform, TouchableOpacity,ScrollView } from 'react-native'
-import React , {useContext } from 'react'
+import { View, Text, TextInput, Alert, StyleSheet, KeyboardAvoidingView, Platform, TouchableOpacity, ScrollView } from 'react-native'
+import React, { useContext } from 'react'
 import { useRoute } from '@react-navigation/native';
 import { useSignUp } from '@clerk/clerk-expo'
-import {API_URL} from '@env'
+import { API_URL } from '@env'
 import { UserContext } from '../services/UserContextAPI';
 
 const CompleteProfileScreen = () => {
@@ -11,21 +11,21 @@ const CompleteProfileScreen = () => {
     const { setActive } = useSignUp()
     const route = useRoute();
     const { createdSessionId } = route.params;
-    const {setIsSignUp, setUser} = useContext(UserContext)
-    
+    const { setIsSignUp, setUser } = useContext(UserContext)
+
 
     const handleSubmit = async () => {
 
         try {
-            
+
             const res = await fetch(`${API_URL}/signup_oath`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    name : name,
-                    phone : phone
+                    name: name,
+                    phone: phone
                 }),
             });
             const json = await res.json();
@@ -37,7 +37,7 @@ const CompleteProfileScreen = () => {
             await setActive({ session: createdSessionId });
 
             //set Context
-            setUser(json.user_id);
+            setUser(json.user_id)
             setIsSignUp(true);
 
         } catch (error) {

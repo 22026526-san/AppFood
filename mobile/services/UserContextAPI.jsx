@@ -5,9 +5,11 @@ import { useAuth } from '@clerk/clerk-expo';
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState('');
+  const [user, setUser] = useState();
   const [isSignUp, setIsSignUp] = useState(false);
   const { userId } = useAuth();
+  const [name,setName] = useState();
+  const [phone,setPhone] = useState();
 
   useEffect(() => {
     const updateUser = async () => {
@@ -40,7 +42,7 @@ export const UserProvider = ({ children }) => {
   }, [isSignUp, userId]);
 
   return (
-    <UserContext.Provider value={{ user, setUser, setIsSignUp }}>
+    <UserContext.Provider value={{ user, setUser, setIsSignUp ,phone,name,setPhone,setName}}>
       {children}
     </UserContext.Provider>
   );

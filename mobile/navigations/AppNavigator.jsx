@@ -7,6 +7,7 @@ import AuthNavigator from './AuthNavigator';
 import MainTabNavigator from './MainTabNavigator';
 import LoadingScreen from '../screens/LoadingScreen'; 
 import CartScreen from '../screens/CartScreen'; 
+import EditProfileScreen from '../screens/EditProfileScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +26,7 @@ const AppNavigator = () => {
           <Stack.Screen name="Main" component={MainTabNavigator} />
 
           {/* Các màn hình không có Tab bar */}
+          <Stack.Screen name='EditProfile'component={EditProfileScreen}/>
           <Stack.Screen name="Cart" component={CartScreen}/>
         </Stack.Navigator>
       </SignedIn>
