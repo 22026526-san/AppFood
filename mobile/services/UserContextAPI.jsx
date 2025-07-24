@@ -25,9 +25,7 @@ export const UserProvider = ({ children }) => {
         });
 
         const result = await res.json();
-        console.log(result)
-        console.log(userId);
-        console.log(user)
+      
         if (result.success) {
           setIsSignUp(false);
         }

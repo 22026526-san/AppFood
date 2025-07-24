@@ -63,7 +63,7 @@ export default function ForgotPasswordScreen({ navigation }) {
       });
 
       const json = await res.json();
-      console.log(json)
+      
       if (!json.success) {
         Alert.alert(json.message);
         return;

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSignIn } from '@clerk/clerk-expo'
 import { useRouter } from 'expo-router'
-import { Text, TextInput, TouchableOpacity, View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
+import { Text, TextInput, TouchableOpacity, View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native'
 import * as WebBrowser from 'expo-web-browser'
 import SocialLoginButton from "../components/SocialLoginButton";
 import { useNavigation } from '@react-navigation/native';
@@ -39,10 +39,10 @@ export default function Login() {
       if (signInAttempt.status === 'complete') {
         await setActive({ session: signInAttempt.createdSessionId })
       } else {
-        console.error(JSON.stringify(signInAttempt, null, 2))
+        Alert.alert('Mật khẩu hoặc Tài khoản không đúng')
       }
     } catch (err) {
-      console.error(JSON.stringify(err, null, 2))
+      Alert.alert('Mật khẩu hoặc Tài Khoản không đúng')
     }
   }
 

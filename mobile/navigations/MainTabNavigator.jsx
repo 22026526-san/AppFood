@@ -23,8 +23,8 @@ const MainTabNavigator = () => {
           else if (route.name === 'Profile') iconName = 'person';
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#f97316', 
-        tabBarInactiveTintColor: '#8f8f8fff', 
+        tabBarActiveTintColor: '#f97416cf', 
+        tabBarInactiveTintColor: '#8f8f8f91', 
         headerShown: false,
       })}>
       <Tab.Screen name="Home" component={HomeScreen} />
