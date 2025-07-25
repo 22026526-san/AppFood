@@ -17,7 +17,7 @@ const EditProfileScreen = () => {
   const { userId } = useAuth();
   const { phone, name, imgUser, setImgUser, setName, setPhone } = useContext(UserContext)
   const [isChange, setChange] = useState(false)
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
 
 
