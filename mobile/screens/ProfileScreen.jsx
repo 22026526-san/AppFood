@@ -14,7 +14,7 @@ const ProfileScreen = () => {
   const navigation = useNavigation();
   const { signOut } = useClerk();
   const { userId } = useAuth();
-  const { setName,setPhone, setUser,name,phone } = useContext(UserContext)
+  const { setName,setPhone, setUser,name,phone, imgUser,setImgUser } = useContext(UserContext)
 
   const handleSignOut = async () => {
     try {
@@ -43,6 +43,7 @@ const ProfileScreen = () => {
         setPhone(result.user.phone)
         setUser(result.user.user_id)
         setName(result.user.user_name)
+        setImgUser(result.user.img)
         
       } catch (err) {
         console.error('Lỗi khi cập nhật user:', err);
@@ -66,7 +67,7 @@ const ProfileScreen = () => {
 
         <View style={styles.contentUser}>
           <View>
-            <Image style={styles.ImgUser} source={{ uri: user.imageUrl, resizeMode: 'cover' }} ></Image>
+            <Image style={styles.ImgUser} source={{ uri: imgUser ? imgUser : user.imageUrl, resizeMode: 'cover' }} ></Image>
           </View>
           <View style={{ display: 'flex', flexDirection: 'column', gap: 5, justifyContent: 'center' }}>
             <Text style={{ fontSize: '26', color: '#000000d5', fontWeight: 'bold' }}>

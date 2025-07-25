@@ -1,21 +1,25 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, TextInput,Alert } from 'react-native'
-import React, { useState,useContext } from 'react'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, TextInput, Alert,ActivityIndicator } from 'react-native'
+import React, { useState, useContext } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useUser } from '@clerk/clerk-react';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@clerk/clerk-expo';
-import {API_URL} from '@env'
+import { API_URL } from '@env'
 import { UserContext } from '../services/UserContextAPI';
+import * as ImagePicker from 'expo-image-picker';
+
 
 const EditProfileScreen = () => {
   const { user } = useUser()
   const navigation = useNavigation();
   const [formError, setFormError] = useState({})
   const { userId } = useAuth();
-  const { phone,name } = useContext(UserContext)
-  const [isChange,setChange] = useState(false)
-  
+  const { phone, name, imgUser, setImgUser, setName, setPhone } = useContext(UserContext)
+  const [isChange, setChange] = useState(false)
+  const [isLoading, setIsLoading] = useState(true);
+
+
 
   const [data, setData] = React.useState({
     phone: phone,
@@ -29,6 +33,55 @@ const EditProfileScreen = () => {
       ...prev,
       [field]: value
     }));
+  };
+
+  const pickAndUploadImage = async () => {
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+
+      const imageAsset = result.assets[0];
+      const fileName = imageAsset.uri.split('/').pop();
+      const fileType = imageAsset.type || 'image/jpeg';
+
+      const formData = new FormData();
+      formData.append("image", {
+        uri: imageAsset.uri,
+        name: fileName,
+        type: fileType
+      });
+
+      formData.append("Id", userId);
+
+      try {
+
+        setIsLoading(true);
+
+        const response = await fetch(`${API_URL}/user/img_update`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          body: formData,
+        });
+
+        const data = await response.json();
+        console.log(data)
+        if (data.success) {
+          setImgUser(data.img)
+          Alert.alert(data.message);
+        }
+      } catch (err) {
+        console.error("Upload lỗi:", err);
+      } finally {
+      setIsLoading(false); 
+    }
+    }
   };
 
   const handleSubmit = async () => {
@@ -48,7 +101,7 @@ const EditProfileScreen = () => {
           name: data.username,
           phone: data.phone,
           email: data.email,
-          clerk_id : userId
+          clerk_id: userId
         }),
       });
       const json = await res.json();
@@ -59,6 +112,8 @@ const EditProfileScreen = () => {
       }
 
       Alert.alert(json.message);
+      setName(data.username)
+      setPhone(data.phone)
       setChange(false)
     } catch (error) {
       console.error('Error completing profile:', error);
@@ -94,9 +149,9 @@ const EditProfileScreen = () => {
 
         <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
           <View style={styles.contentIMG}>
-            <Image style={styles.ImgUser} source={{ uri: user.imageUrl, resizeMode: 'cover' }} ></Image>
+            <Image style={styles.ImgUser} source={{ uri: imgUser ? imgUser : user.imageUrl, resizeMode: 'cover' }} ></Image>
             <TouchableOpacity
-              onPress={() => console.log('Edit avatar')}
+              onPress={pickAndUploadImage}
               style={{
                 position: 'absolute',
                 bottom: 0,
@@ -106,7 +161,7 @@ const EditProfileScreen = () => {
                 padding: 6,
               }}
             >
-              <Ionicons name="settings-outline" size={16} color="#fff" />
+              <Ionicons name="camera-outline" size={16} color="#fff" />
             </TouchableOpacity>
           </View>
         </View>
@@ -151,6 +206,12 @@ const EditProfileScreen = () => {
             <Text style={{ color: '#fffffffb', fontWeight: 'bold' }}>SAVE</Text>
           </TouchableOpacity>
         </View>
+
+        {isLoading && (
+          <View style={{ position: 'absolute', top: '15%', left: '59%', transform: [{ translateX: -25 }, { translateY: -25 }] }}>
+            <ActivityIndicator size="large" color="#1f1f20ff" />
+          </View>
+        )}
 
       </ScrollView>
     </SafeAreaView>

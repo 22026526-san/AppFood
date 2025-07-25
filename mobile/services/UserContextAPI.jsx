@@ -10,6 +10,7 @@ export const UserProvider = ({ children }) => {
   const { userId } = useAuth();
   const [name,setName] = useState();
   const [phone,setPhone] = useState();
+  const [imgUser,setImgUser] = useState();
 
   useEffect(() => {
     const updateUser = async () => {
@@ -42,7 +43,7 @@ export const UserProvider = ({ children }) => {
   }, [isSignUp, userId]);
 
   return (
-    <UserContext.Provider value={{ user, setUser, setIsSignUp ,phone,name,setPhone,setName}}>
+    <UserContext.Provider value={{ user, setUser, setIsSignUp ,phone,name,setPhone,setName,imgUser,setImgUser}}>
       {children}
     </UserContext.Provider>
   );
