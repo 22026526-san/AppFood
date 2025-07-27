@@ -1,16 +1,17 @@
 import { View, Text, TextInput, Alert, StyleSheet, KeyboardAvoidingView, Platform, TouchableOpacity, ScrollView } from 'react-native'
 import React, { useContext } from 'react'
-import { useRoute } from '@react-navigation/native';
+import { useLocalSearchParams } from 'expo-router';
 import { useSignUp } from '@clerk/clerk-expo'
 import { API_URL } from '@env'
-import { UserContext } from '../services/UserContextAPI';
+import { UserContext } from '../../services/UserContextAPI';
+import { useRouter } from 'expo-router'
 
 const CompleteProfileScreen = () => {
     const [name, setName] = React.useState('')
     const [phone, setPhone] = React.useState('')
     const { setActive } = useSignUp()
-    const route = useRoute();
-    const { createdSessionId } = route.params;
+    const router = useRouter();
+    const { createdSessionId } = useLocalSearchParams();
     const { setIsSignUp, setUser } = useContext(UserContext)
 
 

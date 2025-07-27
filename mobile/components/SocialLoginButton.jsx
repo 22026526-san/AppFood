@@ -1,19 +1,19 @@
 import React, { useCallback } from 'react'
 import { TouchableOpacity, View } from 'react-native'
-import Ionicons from 'react-native-vector-icons/Ionicons'
+import { Ionicons } from '@expo/vector-icons';
 import { useSSO } from '@clerk/clerk-expo'
-import { useNavigation } from '@react-navigation/native'
+import { useRouter } from 'expo-router'
 import * as AuthSession from 'expo-auth-session'
 
 export default function SocialLoginButton() {
 
   const { startSSOFlow } = useSSO()
-  const navigation = useNavigation()
+  const router = useRouter()
 
   const handleOAuthSignIn = useCallback(async (provider) => {
     try {
       const redirectUrl = AuthSession.makeRedirectUri({
-        native: 'my-app://',
+        native: 'myapp://',
       })
 
       const { createdSessionId, setActive, signIn, signUp } = await startSSOFlow({
@@ -22,11 +22,15 @@ export default function SocialLoginButton() {
       })
 
       if (createdSessionId) {
-        if (signUp.createdSessionId) {
-        navigation.navigate('CompleteProfile', {
-          createdSessionId
-        });
-        return; 
+        if (createdSessionId) {
+  if (signUp.createdSessionId) {
+    router.push({
+      pathname: '/CompleteProfileScreen',
+      params: { createdSessionId }
+    });
+    return;
+  
+}
       }
         setActive({ session: createdSessionId })
       } else {

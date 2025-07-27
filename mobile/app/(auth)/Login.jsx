@@ -3,8 +3,7 @@ import { useSignIn } from '@clerk/clerk-expo'
 import { useRouter } from 'expo-router'
 import { Text, TextInput, TouchableOpacity, View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native'
 import * as WebBrowser from 'expo-web-browser'
-import SocialLoginButton from "../components/SocialLoginButton";
-import { useNavigation } from '@react-navigation/native';
+import SocialLoginButton from '../../components/SocialLoginButton'
 import { Ionicons } from '@expo/vector-icons';
 
 
@@ -21,7 +20,7 @@ WebBrowser.maybeCompleteAuthSession();
 
 export default function Login() {
   const { signIn, setActive, isLoaded } = useSignIn()
-  const navigation = useNavigation()
+  const router = useRouter()
 
   const [emailAddress, setEmailAddress] = React.useState('')
   const [password, setPassword] = React.useState('')
@@ -88,7 +87,7 @@ export default function Login() {
           </View>
         </View>
         <View style={{ padding: 10, position: "relative" }}>
-          <TouchableOpacity onPress={() => navigation.navigate('ForgotPasswordScreen')}>
+          <TouchableOpacity onPress={() => router.push('/ForgotPasswordScreen')}>
             <Text style={{ position: "absolute", right: 0, color: '#ff6a00ff' }}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
@@ -99,7 +98,7 @@ export default function Login() {
         </View>
         <View style={{ display: 'flex', flexDirection: 'row', alignContent: 'center', justifyContent: 'center' }}>
           <Text style={{ textAlign: 'center', color: '#0000005e' }}>Don't have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+          <TouchableOpacity onPress={() => router.push('/SignUp')}>
             <Text style={{ color: '#ff6a00ff' }}>Sign up</Text>
           </TouchableOpacity>
         </View>

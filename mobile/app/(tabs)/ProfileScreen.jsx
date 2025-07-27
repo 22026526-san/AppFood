@@ -3,15 +3,15 @@ import React, { useEffect,useContext } from 'react'
 import { useUser } from '@clerk/clerk-react';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import { useClerk } from '@clerk/clerk-expo'
 import { useAuth } from '@clerk/clerk-expo';
-import { UserContext } from '../services/UserContextAPI';
+import { UserContext } from '../../services/UserContextAPI';
 import {API_URL} from '@env'
 
 const ProfileScreen = () => {
   const { user } = useUser()
-  const navigation = useNavigation();
+  const router = useRouter();
   const { signOut } = useClerk();
   const { userId } = useAuth();
   const { setName,setPhone, setUser,name,phone, imgUser,setImgUser } = useContext(UserContext)
@@ -19,6 +19,7 @@ const ProfileScreen = () => {
   const handleSignOut = async () => {
     try {
       await signOut()
+      // router.replace('/(auth)/Login')
     } catch (err) {
       console.error(JSON.stringify(err, null, 2))
     }
@@ -46,7 +47,7 @@ const ProfileScreen = () => {
         setImgUser(result.user.img)
         
       } catch (err) {
-        console.error('Lỗi khi cập nhật user:', err);
+        console.error('Lỗi khi lấy thông tin user:', err);
       }
     };
     if (userId) {
@@ -59,7 +60,7 @@ const ProfileScreen = () => {
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingLeft: 20, paddingRight: 20 }}>
         <View style={styles.header}>
           <View>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.button}><Ionicons name="chevron-back" size={22} color="#000000d5" /></TouchableOpacity>
+            <TouchableOpacity onPress={() => router.back()} style={styles.button}><Ionicons name="chevron-back" size={22} color="#000000d5" /></TouchableOpacity>
           </View>
           <Text style={{ fontSize: '22', color: '#000000d5' }}>Profile</Text>
         </View>
@@ -78,7 +79,7 @@ const ProfileScreen = () => {
         </View>
 
         <View style={styles.contentNav}>
-          <TouchableOpacity onPress={() => navigation.navigate('EditProfile')} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <TouchableOpacity onPress={() => router.push('/EditProfileScreen')} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <Ionicons name="person-outline" style={[{ color: '#eb4d0fe9' }, styles.icon]} size={20}></Ionicons>
               <Text style={{ fontSize: '16', color: 'rgba(0, 0, 0, 0.54)' }}>Edit Profile</Text>

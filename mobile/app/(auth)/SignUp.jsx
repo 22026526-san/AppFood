@@ -3,7 +3,7 @@ import { Text, TextInput, TouchableOpacity, View, StyleSheet, KeyboardAvoidingVi
 import { useSignUp } from '@clerk/clerk-expo'
 import { Ionicons } from '@expo/vector-icons';
 import { API_URL } from '@env';
-import { UserContext } from '../services/UserContextAPI';
+import { UserContext } from '../../services/UserContextAPI';
 
 export default function SignUp() {
   const { isLoaded, signUp, setActive } = useSignUp()

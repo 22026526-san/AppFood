@@ -3,16 +3,16 @@ import React, { useState, useContext } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useUser } from '@clerk/clerk-react';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import { useAuth } from '@clerk/clerk-expo';
 import { API_URL } from '@env'
-import { UserContext } from '../services/UserContextAPI';
+import { UserContext } from '../../services/UserContextAPI';
 import * as ImagePicker from 'expo-image-picker';
 
 
 const EditProfileScreen = () => {
   const { user } = useUser()
-  const navigation = useNavigation();
+  const router = useRouter();
   const [formError, setFormError] = useState({})
   const { userId } = useAuth();
   const { phone, name, imgUser, setImgUser, setName, setPhone } = useContext(UserContext)
@@ -142,7 +142,7 @@ const EditProfileScreen = () => {
 
         <View style={styles.header}>
           <View>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.button}><Ionicons name="chevron-back" size={22} color="#000000d5" /></TouchableOpacity>
+            <TouchableOpacity onPress={() => router.back()} style={styles.button}><Ionicons name="chevron-back" size={22} color="#000000d5" /></TouchableOpacity>
           </View>
           <Text style={{ fontSize: '22', color: '#000000d5' }}>Edit Profile</Text>
         </View>

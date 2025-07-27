@@ -2,13 +2,13 @@ import { View, Text ,StyleSheet,ScrollView,TouchableOpacity, TextInput} from 're
 import React, { useState } from 'react'
 import { useAuth } from '@clerk/clerk-expo';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import CategoriCard from '../components/CategoriCard';
+import CategoriCard from '../../components/CategoriCard';
 
 const HomeScreen = () => {
   const {userId} = useAuth();
-  const navigation = useNavigation();
+  const router = useRouter();
   const count = 2;
   const [search,setSearch] = useState();
 
@@ -32,7 +32,7 @@ const HomeScreen = () => {
             </Text>
           </View>
           <View style={styles.contenCart}>
-            <TouchableOpacity onPress={() => navigation.navigate('Cart')} style={styles.button}><Ionicons name="bag-outline" size={32} color="#ffffffd5" /></TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/CartScreen')} style={styles.button}><Ionicons name="bag-outline" size={32} color="#ffffffd5" /></TouchableOpacity>
             <View style={{
                 position: 'absolute',
                 top: 0,
