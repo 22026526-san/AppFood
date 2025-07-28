@@ -145,6 +145,7 @@ const ProfileScreen = () => {
             <Ionicons name="chevron-forward" size={16} color='rgba(0, 0, 0, 0.23)'></Ionicons>
           </View>
         </TouchableOpacity>
+        <View style={{marginBottom:22}}/>
       </ScrollView>
     </SafeAreaView>
   )

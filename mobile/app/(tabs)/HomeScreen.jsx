@@ -5,6 +5,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import CategoriCard from '../../components/CategoriCard';
+import Logo from '../../assets/fast-food.png'
+import FoodCard from '../../components/FoodCard';
+import TopRateCard from '../../components/TopRateCard';
 
 const HomeScreen = () => {
   const {userId} = useAuth();
@@ -20,6 +23,46 @@ const HomeScreen = () => {
   { id: 5, name: 'Rice Meals' },
   { id: 6, name: 'Drinks' }
 ];
+
+const fakeData = [
+  {
+    food_id: 1,
+    food_name: 'Cheese Burger',
+    img_url: Logo,
+    price: '$5.99'
+  },
+  {
+    food_id: 2,
+    food_name: 'Fried Chicken',
+    img_url: Logo,
+    price: '$7.49'
+  },
+  {
+    food_id: 3,
+    food_name: 'Pepperoni Pizza',
+    img_url: Logo,
+    price: '$8.99'
+  },
+  {
+    food_id: 4,
+    food_name: 'Hotdog Classic',
+    img_url:Logo,
+    price: '$4.50'
+  },
+  {
+    food_id: 5,
+    food_name: 'French Fries',
+    img_url: Logo,
+    price: '$3.99'
+  },
+  {
+    food_id: 6,
+    food_name: 'Coca Cola',
+    img_url: Logo,
+    price: '$1.99'
+  }
+];
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -60,10 +103,10 @@ const HomeScreen = () => {
 
         <View style={styles.contentCategory}>
           <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
-            <Text style={{fontSize:'18',color:'#000000a9'}}>All Categories</Text>
+            <Text style={{fontSize:'18',color:'#000000be'}}>All Categories</Text>
             <View style={{display:'flex',flexDirection:'row',gap:5,alignItems:'center'}}>
-              <Text style={{fontSize:'18',color:'#000000a9'}}>See All</Text>
-              <Ionicons name="chevron-forward" size={18} color='#000000a9'></Ionicons>
+              <Text style={{fontSize:'18',color:'#000000be'}}>See All</Text>
+              <Ionicons name="chevron-forward" size={18} color='#000000be'></Ionicons>
             </View>
           </View>
           
@@ -73,7 +116,37 @@ const HomeScreen = () => {
 
         </View>
 
+        <View style={styles.contentCategory}>
+          <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
+            <Text style={{fontSize:'18',color:'#000000be'}}>Top Rate</Text>
+            <View style={{display:'flex',flexDirection:'row',gap:5,alignItems:'center'}}>
+              <Text style={{fontSize:'18',color:'#000000be'}}>See All</Text>
+              <Ionicons name="chevron-forward" size={18} color='#000000be'></Ionicons>
+            </View>
+          </View>
+          
+          <View style={{marginTop:22}}>
+            <TopRateCard data={fakeData}></TopRateCard>
+          </View>
+
+        </View>
+
+        <View style={styles.contentCategory}>
+          <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
+            <Text style={{fontSize:'18',color:'#000000be'}}>Top Rate</Text>
+            <View style={{display:'flex',flexDirection:'row',gap:5,alignItems:'center'}}>
+              <Ionicons name="chevron-forward" size={18} color='#000000be'></Ionicons>
+            </View>
+          </View>
+            
+          <View style={{marginTop:22}}>
+            <FoodCard data={fakeData}></FoodCard>
+          </View>
+
+        </View>
+
       </ScrollView>
+      
     </SafeAreaView>
   )
 }
