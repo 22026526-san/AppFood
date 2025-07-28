@@ -1,8 +1,10 @@
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
+import { useRouter } from 'expo-router'
 
 const CategoriCard = (props) => {
 
+    const router = useRouter();
 
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 5 }}
@@ -10,7 +12,10 @@ const CategoriCard = (props) => {
             showsHorizontalScrollIndicator={false}>
             {props.data.map((item) => (
                 <View key={item.id} style={styles.card}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => router.push({
+                        pathname: '/CategoriDetail',
+                        params: {cate_id : item.id, cate_name : item.name}
+                    })}>
                         <Text style={styles.name}>{item.name}</Text>
                     </TouchableOpacity>
                 </View>
@@ -36,7 +41,7 @@ const styles = StyleSheet.create({
     },
     name: {
         fontSize: 18,
-        color: '#000000a9',
+        color: '#000000d2',
     }
 });
 

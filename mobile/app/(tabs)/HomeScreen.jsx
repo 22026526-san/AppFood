@@ -75,35 +75,35 @@ const fakeData = [
             </Text>
           </View>
           <View style={styles.contenCart}>
-            <TouchableOpacity onPress={() => router.push('/CartScreen')} style={styles.button}><Ionicons name="bag-outline" size={32} color="#ffffffd5" /></TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/CartScreen')} style={styles.button}><Ionicons name="bag-outline" size={22} color="#ffffffd5" /></TouchableOpacity>
             <View style={{
                 position: 'absolute',
                 top: 0,
-                right: 0,
+                right: 2,
                 backgroundColor: '#FF6B00',
                 borderRadius: 20,
                 padding: 6,
               }}>
-              <Text style={{color:'#ffffff',fontSize:'12'}}>{count}</Text>
+              <Text style={{color:'#ffffff',fontSize:'8'}}>{count}</Text>
             </View>
           </View>
         </View>
 
-        <View style={styles.contenSearch}>
-          <View>
+        <TouchableOpacity style={styles.contenSearch} onPress={()=>router.push('/SearchScreen')}>
+          <TouchableOpacity>
             <Ionicons name="search" size={23} color="#2521213c"></Ionicons>
-          </View>
+          </TouchableOpacity>
           <TextInput  
               value={search}
               placeholder="Search dishes ..."
               onChangeText={(e) => setSearch(e)}
               style={styles.input}>
           </TextInput>
-        </View>
+        </TouchableOpacity>
 
         <View style={styles.contentCategory}>
           <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
-            <Text style={{fontSize:'18',color:'#000000be'}}>All Categories</Text>
+            <Text style={{fontSize:'18',color:'#000000be'}}>Categories</Text>
             <View style={{display:'flex',flexDirection:'row',gap:5,alignItems:'center'}}>
               <Text style={{fontSize:'18',color:'#000000be'}}>See All</Text>
               <Ionicons name="chevron-forward" size={18} color='#000000be'></Ionicons>
@@ -132,13 +132,9 @@ const fakeData = [
         </View>
 
         <View style={styles.contentCategory}>
-          <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
-            <Text style={{fontSize:'18',color:'#000000be'}}>Top Rate</Text>
-            <View style={{display:'flex',flexDirection:'row',gap:5,alignItems:'center'}}>
-              <Ionicons name="chevron-forward" size={18} color='#000000be'></Ionicons>
-            </View>
-          </View>
-            
+
+          <Text style={{fontSize:'18',color:'#000000be'}}>All Fast Food</Text>
+        
           <View style={{marginTop:22}}>
             <FoodCard data={fakeData}></FoodCard>
           </View>
