@@ -1,16 +1,20 @@
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity ,Image} from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
+import { useRouter } from 'expo-router'
 
 const TopRateCard = (props) => {
 
-
+    const router = useRouter();
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 5 }}
             horizontal
             showsHorizontalScrollIndicator={false}>
             {props.data.map((item) => (
-                <TouchableOpacity key={item.food_id} style={styles.card}>
+                <TouchableOpacity key={item.food_id} style={styles.card} onPress={()=> router.push({
+                    pathname: '/FoodDetail',
+                    params: {foodId : item.food_id}
+                })}>
                     <View style={{width:'120',height:'120'}}>
                         <Image source={item.img_url} style={{ width: '100%', height: '100%' }}resizeMode="cover"/>
                     </View>

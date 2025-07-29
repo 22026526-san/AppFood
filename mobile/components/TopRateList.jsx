@@ -1,16 +1,11 @@
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
-import { useRouter } from 'expo-router'
 
-const FoodCard = (props) => {
-    const router = useRouter();
+const TopRateList = (props) => {
 
     const renderItem = ({ item }) => (
-        <TouchableOpacity key={item.food_id} style={styles.card} onPress={() => router.push({
-            pathname: '/FoodDetail',
-            params: {foodId : item.food_id}
-        })}>
+        <TouchableOpacity key={item.food_id} style={styles.card}>
             <View style={{ width: '120', height: '120' }}>
                 <Image source={item.img_url} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
             </View>
@@ -62,4 +57,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default FoodCard
+export default TopRateList

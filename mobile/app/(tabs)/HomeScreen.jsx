@@ -2,7 +2,7 @@ import { View, Text ,StyleSheet,ScrollView,TouchableOpacity, TextInput} from 're
 import React, { useState } from 'react'
 import { useAuth } from '@clerk/clerk-expo';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import CategoriCard from '../../components/CategoriCard';
 import Logo from '../../assets/fast-food.png'
@@ -102,12 +102,8 @@ const fakeData = [
         </TouchableOpacity>
 
         <View style={styles.contentCategory}>
-          <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
+          <View>
             <Text style={{fontSize:'18',color:'#000000be'}}>Categories</Text>
-            <View style={{display:'flex',flexDirection:'row',gap:5,alignItems:'center'}}>
-              <Text style={{fontSize:'18',color:'#000000be'}}>See All</Text>
-              <Ionicons name="chevron-forward" size={18} color='#000000be'></Ionicons>
-            </View>
           </View>
           
           <View style={{marginTop:22}}>
@@ -119,10 +115,10 @@ const fakeData = [
         <View style={styles.contentCategory}>
           <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
             <Text style={{fontSize:'18',color:'#000000be'}}>Top Rate</Text>
-            <View style={{display:'flex',flexDirection:'row',gap:5,alignItems:'center'}}>
+            <TouchableOpacity onPress={()=> router.push('/TopRateScreen')} style={{display:'flex',flexDirection:'row',gap:5,alignItems:'center'}} >
               <Text style={{fontSize:'18',color:'#000000be'}}>See All</Text>
               <Ionicons name="chevron-forward" size={18} color='#000000be'></Ionicons>
-            </View>
+            </TouchableOpacity>
           </View>
           
           <View style={{marginTop:22}}>
