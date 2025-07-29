@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@clerk/clerk-expo": "^2.14.12",
+    "@reduxjs/toolkit": "^2.8.2",
     "expo": "^53.0.20",
     "expo-auth-session": "~6.2.1",
     "expo-image-picker": "^16.1.4",
@@ -20,7 +21,8 @@
     "react": "^19.0.0",
     "react-native": "0.79.5",
     "react-native-dotenv": "^3.4.11",
-    "react-native-safe-area-context": "^5.4.0"
+    "react-native-safe-area-context": "^5.4.0",
+    "react-redux": "^9.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
