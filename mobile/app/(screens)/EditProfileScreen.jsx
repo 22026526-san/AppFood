@@ -144,7 +144,7 @@ const EditProfileScreen = () => {
           <View>
             <TouchableOpacity onPress={() => router.back()} style={styles.button}><Ionicons name="chevron-back" size={22} color="#000000d5" /></TouchableOpacity>
           </View>
-          <Text style={{ fontSize: '22', color: '#000000d5' }}>Edit Profile</Text>
+          <Text style={{ fontSize: 22, color: '#000000d5' ,fontWeight:'bold'}}>Edit Profile</Text>
         </View>
 
         <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>

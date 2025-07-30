@@ -61,7 +61,7 @@ const CategoriDetail = () => {
                     <View style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
                         <TouchableOpacity onPress={() => router.back()} style={styles.button}><Ionicons name="chevron-back" size={22} color="#000000d5" /></TouchableOpacity>
                         <View style={styles.card}>
-                            <Text style={{ fontSize: '14', color: '#000000d2', fontWeight: 'bold' }}>{cate_name}</Text>
+                            <Text style={{ fontSize: 14, color: '#000000d2', fontWeight: 'bold' }}>{cate_name}</Text>
                             <Ionicons name="caret-down" color={'#ff5e00b0'} size={14}></Ionicons>
                         </View>
                     </View>
@@ -73,7 +73,7 @@ const CategoriDetail = () => {
 
                 <View style={styles.contentCategory}>
                     
-                    <Text style={{ fontSize: '18', color: '#000000be' }}>Popular {cate_name}</Text>
+                    <Text style={{ fontSize: 18, color: '#000000be' }}>Popular {cate_name}</Text>
     
 
                     <View style={{ marginTop: 22 }}>
@@ -84,7 +84,7 @@ const CategoriDetail = () => {
 
                 <View style={styles.contentCategory}>
                     
-                    <Text style={{ fontSize: '18', color: '#000000be' }}>All {cate_name}</Text>
+                    <Text style={{ fontSize: 18, color: '#000000be' }}>All {cate_name}</Text>
     
 
                     <View style={{ marginTop: 22 }}>

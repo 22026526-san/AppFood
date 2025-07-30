@@ -31,12 +31,12 @@ const FoodDetail = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20, minHeight: '80%' }}>
+            <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20, minHeight: '88%' }}>
 
                 <View style={styles.header}>
                     <View style={{ display: 'flex', gap: '8', flexDirection: 'row', alignItems: 'center' }}>
                         <TouchableOpacity onPress={() => router.back()} style={styles.button}><Ionicons name="chevron-back" size={22} color="#000000d5" /></TouchableOpacity>
-                        <Text style={{ fontSize: '22', color: '#000000d5', fontWeight: 'bold' }}>Details</Text>
+                        <Text style={{ fontSize: 22, color: '#000000d5', fontWeight: 'bold' }}>Details</Text>
                     </View>
                     <TouchableOpacity style={styles.button}><Ionicons name="heart" size={22} color="#c8c8c8d5" /></TouchableOpacity>
                 </View>
@@ -47,31 +47,31 @@ const FoodDetail = () => {
 
                 <View>
 
-                    <Text style={{ fontSize: '26', fontWeight: 'bold', marginTop: 22, color: '#000000c8' }}>{dataFood[0].food_name}</Text>
+                    <Text style={{ fontSize: 26, fontWeight: 'bold', marginTop: 22, color: '#000000c8' }}>{dataFood[0].food_name}</Text>
 
 
 
                     <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center', marginTop: 10 }}>
                         <View style={{ display: 'flex', flexDirection: 'row', gap: 2, alignItems: 'center' }}>
-                            <Text style={{ fontSize: '16' }}>{dataFood[0].food_rate}</Text>
+                            <Text style={{ fontSize: 16 }}>{dataFood[0].food_rate}</Text>
                             <Ionicons name="star-outline" color={'#ff7104dd'} size={16}></Ionicons>
-                            <Text style={{ fontSize: '16' }}>{`(${dataFood[0].sum_rate})`}</Text>
+                            <Text style={{ fontSize: 16 }}>{`(${dataFood[0].sum_rate})`}</Text>
                         </View>
                         <View style={{ display: 'flex', flexDirection: 'row', gap: 2, alignItems: 'center' }}>
-                            <Text style={{ fontSize: '16' }}>Free</Text>
+                            <Text style={{ fontSize: 16 }}>Free</Text>
                             <Ionicons name="car-outline" color={'#ff7104dd'} size={20}></Ionicons>
                         </View>
                         <View style={{ display: 'flex', flexDirection: 'row', gap: 2, alignItems: 'center' }}>
-                            <Text style={{ fontSize: '16' }}>20min</Text>
+                            <Text style={{ fontSize: 16 }}>20min</Text>
                             <Ionicons name="time-outline" color={'#ff7104dd'} size={20}></Ionicons>
                         </View>
                     </View>
 
-                    <Text style={{ fontSize: '26', marginTop: 10, color: '#ff7104dd' }}>{(dataFood[0].price * quantity).toLocaleString('VND')}</Text>
+                    <Text style={{ fontSize: 26, marginTop: 10, color: '#ff7104dd' }}>{(dataFood[0].price * quantity).toLocaleString('VND')}</Text>
 
                     <View style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: '22' }}>
-                        <Text style={{ fontSize: '20', fontWeight: 'bold', color: '#000000c8' }}>Description</Text>
-                        <Text style={{ fontSize: '16', color: '#38383899' }}>{dataFood[0].description}</Text>
+                        <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000c8' }}>Description</Text>
+                        <Text style={{ fontSize: 16, color: '#38383899' }}>{dataFood[0].description}</Text>
                     </View>
 
                 </View>
@@ -80,16 +80,16 @@ const FoodDetail = () => {
             <View style={styles.buttonContainer}>
                 <View style={styles.quantityContainer}>
                     <TouchableOpacity
-                        style={[styles.button, styles.minusButton]}
+                        style={[styles.buttonn, styles.minusButton]}
                         onPress={() => setQuantity(prev => Math.max(prev - 1, 1))}
                     >
                         <Text style={styles.buttonText}>-</Text>
                     </TouchableOpacity>
 
-                    <Text style={{ fontSize: '20' }}>{quantity}</Text>
+                    <Text style={{ fontSize: 20 }}>{quantity}</Text>
 
                     <TouchableOpacity
-                        style={[styles.button, styles.plusButton]}
+                        style={[styles.buttonn, styles.plusButton]}
                         onPress={() => setQuantity(prev => prev + 1)}
                     >
                         <Text style={[styles.buttonText,{color:'white'}]}>+</Text>
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
         color: '#000',
         fontWeight: 'bold',
     },
-    button: {
+    buttonn: {
         paddingHorizontal: 12,
         paddingVertical: 6,
         borderRadius: 8,
@@ -196,5 +196,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
+    button:{
+        backgroundColor: '#96a8be11',
+        borderRadius: 25,
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
 })
 export default FoodDetail

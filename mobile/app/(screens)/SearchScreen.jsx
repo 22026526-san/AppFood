@@ -12,6 +12,7 @@ const SearchScreen = () => {
 
   const router = useRouter();
   const [search, setSearch] = useState();
+  const count = 2;
 
   const fakeData = [
     {
@@ -53,13 +54,13 @@ const SearchScreen = () => {
   ];
 
   const keyword = [
-  { id: 1, name: 'Burger' },
-  { id: 2, name: 'Fried Chicken' },
-  { id: 3, name: 'Pizza' },
-  { id: 4, name: 'Noodles & Pasta' },
-  { id: 5, name: 'Rice Meals' },
-  { id: 6, name: 'Drinks' }
-];
+    { id: 1, name: 'Burger' },
+    { id: 2, name: 'Fried Chicken' },
+    { id: 3, name: 'Pizza' },
+    { id: 4, name: 'Noodles & Pasta' },
+    { id: 5, name: 'Rice Meals' },
+    { id: 6, name: 'Drinks' }
+  ];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -69,12 +70,22 @@ const SearchScreen = () => {
           <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
             <TouchableOpacity onPress={() => router.back()} style={styles.button}><Ionicons name="chevron-back" size={22} color="#000000d5" /></TouchableOpacity>
             <View style={{ alignItems: 'center' }} >
-              <Text style={{ fontSize: '22', color: '#000000d2', fontWeight: 'bold' }}>Search</Text>
+              <Text style={{ fontSize: 22, color: '#000000d2', fontWeight: 'bold' }}>Search</Text>
             </View>
           </View>
 
-          <View>
-            <TouchableOpacity onPress={() => router.push('/CartScreen')} style={styles.buttonSearch}><Ionicons name="search" size={20} color="#ffffffd5" /></TouchableOpacity>
+          <View style={styles.contenCart}>
+            <TouchableOpacity onPress={() => router.push('/CartScreen')} style={styles.buttonSearch}><Ionicons name="bag-outline" size={22} color="#ffffffd5" /></TouchableOpacity>
+            <View style={{
+              position: 'absolute',
+              top: 0,
+              right: 2,
+              backgroundColor: '#FF6B00',
+              borderRadius: 20,
+              padding: 6,
+            }}>
+              <Text style={{ color: '#ffffff', fontSize: 8 }}>{count}</Text>
+            </View>
           </View>
         </View>
 
@@ -92,7 +103,7 @@ const SearchScreen = () => {
 
         <View style={styles.contentCategory}>
 
-          <Text style={{ fontSize: '18', color: '#000000be' ,marginBottom:22}}>Recent Keywords</Text>
+          <Text style={{ fontSize: 18, color: '#000000be', marginBottom: 22 }}>Recent Keywords</Text>
 
 
           <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 5 }}
@@ -101,7 +112,7 @@ const SearchScreen = () => {
             {keyword.map((item) => (
               <View key={item.id} style={styles.card}>
                 <TouchableOpacity onPress={() => setSearch(item.name)}>
-                  <Text style={{fontSize:'15'}}>{item.name}</Text>
+                  <Text style={{ fontSize: 15 }}>{item.name}</Text>
                 </TouchableOpacity>
               </View>
             ))}
@@ -112,7 +123,7 @@ const SearchScreen = () => {
 
         <View style={styles.contentCategory}>
 
-          <Text style={{ fontSize: '18', color: '#000000be' }}>Popular Fast Food</Text>
+          <Text style={{ fontSize: 18, color: '#000000be' }}>Popular Fast Food</Text>
 
 
           <View style={{ marginTop: 22 }}>
@@ -188,6 +199,10 @@ const styles = StyleSheet.create({
   input: {
     fontSize: 16,
     color: '#000000c2',
+  },
+  contenCart: {
+    display: 'flex',
+    flexDirection: 'column',
   },
 })
 

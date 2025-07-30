@@ -6,6 +6,12 @@ import { Link, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import CategoriCard from '../../components/CategoriCard';
 import Logo from '../../assets/fast-food.png'
+import burger from '../../assets/burger.png'
+import Noodles from '../../assets/Noodles.png'
+import Pizza from '../../assets/pizza.png'
+import rice from '../../assets/rice.png'
+import fried_chicken from '../../assets/fried_chicken.png'
+import Drinks from '../../assets/drink.jpg'
 import FoodCard from '../../components/FoodCard';
 import TopRateCard from '../../components/TopRateCard';
 
@@ -16,12 +22,12 @@ const HomeScreen = () => {
   const [search,setSearch] = useState();
 
   const data = [
-  { id: 1, name: 'Burger' },
-  { id: 2, name: 'Fried Chicken' },
-  { id: 3, name: 'Pizza' },
-  { id: 4, name: 'Noodles & Pasta' },
-  { id: 5, name: 'Rice Meals' },
-  { id: 6, name: 'Drinks' }
+  { id: 1, name: 'Burger',img :burger },
+  { id: 2, name: 'Fried Chicken',img : fried_chicken},
+  { id: 3, name: 'Pizza', img: Pizza },
+  { id: 4, name: 'Noodles',img: Noodles },
+  { id: 5, name: 'Rice Meals',img: rice },
+  { id: 6, name: 'Drinks',img: Drinks }
 ];
 
 const fakeData = [
@@ -70,7 +76,7 @@ const fakeData = [
 
         <View style={styles.header}>
           <View style={{display:'flex',justifyContent:'center'}}>
-            <Text style={{ fontSize: '32', color: '#000000b8' ,fontWeight:"bold"}}>
+            <Text style={{ fontSize: 32, color: '#000000b8' ,fontWeight:"bold"}}>
               Fast Food
             </Text>
           </View>
@@ -84,7 +90,7 @@ const fakeData = [
                 borderRadius: 20,
                 padding: 6,
               }}>
-              <Text style={{color:'#ffffff',fontSize:'8'}}>{count}</Text>
+              <Text style={{color:'#ffffff',fontSize:8}}>{count}</Text>
             </View>
           </View>
         </View>
@@ -103,7 +109,7 @@ const fakeData = [
 
         <View style={styles.contentCategory}>
           <View>
-            <Text style={{fontSize:'18',color:'#000000be'}}>Categories</Text>
+            <Text style={{fontSize:18,color:'#000000be'}}>Categories</Text>
           </View>
           
           <View style={{marginTop:22}}>
@@ -114,9 +120,9 @@ const fakeData = [
 
         <View style={styles.contentCategory}>
           <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
-            <Text style={{fontSize:'18',color:'#000000be'}}>Top Rate</Text>
+            <Text style={{fontSize:18,color:'#000000be'}}>Top Rate</Text>
             <TouchableOpacity onPress={()=> router.push('/TopRateScreen')} style={{display:'flex',flexDirection:'row',gap:5,alignItems:'center'}} >
-              <Text style={{fontSize:'18',color:'#000000be'}}>See All</Text>
+              <Text style={{fontSize:18,color:'#000000be'}}>See All</Text>
               <Ionicons name="chevron-forward" size={18} color='#000000be'></Ionicons>
             </TouchableOpacity>
           </View>
@@ -129,7 +135,7 @@ const fakeData = [
 
         <View style={styles.contentCategory}>
 
-          <Text style={{fontSize:'18',color:'#000000be'}}>All Fast Food</Text>
+          <Text style={{fontSize:18,color:'#000000be'}}>All Fast Food</Text>
         
           <View style={{marginTop:22}}>
             <FoodCard data={fakeData}></FoodCard>

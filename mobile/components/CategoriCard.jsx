@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity,Image } from 'react-native'
 import React from 'react'
 import { useRouter } from 'expo-router'
 
@@ -11,13 +11,14 @@ const CategoriCard = (props) => {
             horizontal
             showsHorizontalScrollIndicator={false}>
             {props.data.map((item) => (
-                <View key={item.id} style={styles.card}>
-                    <TouchableOpacity onPress={() => router.push({
+                <View key={item.id} style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:8, marginRight:22}}>
+                    <TouchableOpacity style={styles.card} onPress={() => router.push({
                         pathname: '/CategoriDetail',
                         params: {cate_id : item.id, cate_name : item.name}
                     })}>
-                        <Text style={styles.name}>{item.name}</Text>
+                        <Image source={item.img} style={{width:100,height:100}} resizeMode='cover'></Image>
                     </TouchableOpacity>
+                    <Text style={styles.name}>{item.name}</Text>
                 </View>
             ))}
         </ScrollView>
@@ -30,14 +31,15 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         paddingVertical: 10,
         paddingHorizontal: 16,
-        marginRight: 12,
         alignItems: 'center',
         justifyContent: 'center',
         shadowColor: '#888888ff',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 4,
-        elevation: 5
+        elevation: 5,
+        width:120,
+        height:120
     },
     name: {
         fontSize: 18,

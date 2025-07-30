@@ -58,7 +58,7 @@ const TopRateScreen = () => {
                     <View style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
                         <TouchableOpacity onPress={() => router.back()} style={styles.button}><Ionicons name="chevron-back" size={22} color="#000000d5" /></TouchableOpacity>
                         <View style={styles.card}>
-                            <Text style={{ fontSize: '14', color: '#000000d2', fontWeight: 'bold' }}>Top Rate</Text>
+                            <Text style={{ fontSize: 14, color: '#000000d2', fontWeight: 'bold' }}>Top Rate</Text>
                             <Ionicons name="caret-down" color={'#ff5e00b0'} size={14}></Ionicons>
                         </View>
                     </View>
@@ -109,27 +109,6 @@ const styles = StyleSheet.create({
         padding: 10,
         justifyContent: 'center',
         alignItems: 'center'
-    },
-    ImgUser: {
-        borderRadius: 50,
-        width: 86,
-        height: 86
-    },
-    contentUser: {
-        display: 'flex',
-        flexDirection: 'row',
-        gap: 20,
-        marginTop: 20
-    },
-    contentNav: {
-        backgroundColor: '#96a8be11',
-        paddingVertical: 16,
-        paddingHorizontal: 20,
-        borderRadius: 16,
-        borderWidth: 1,
-        borderColor: '#ffffff',
-        marginTop: 20,
-
     },
     icon: {
         backgroundColor: '#ffffffff',
