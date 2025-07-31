@@ -3,9 +3,12 @@ import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
 import Logo from '../assets/fast-food.png'
+import { useDispatch } from 'react-redux';
+import {addItemToCart} from '../redux/cartAction';
 
 const FoodCard = (props) => {
     const router = useRouter();
+    const dispatch = useDispatch();
 
     const renderItem = ({ item }) => (
         <TouchableOpacity key={item.food_id} style={styles.card} onPress={() => router.push({
@@ -18,7 +21,7 @@ const FoodCard = (props) => {
             <Text style={styles.name} numberOfLines={1} ellipsizeMode="tail">{item.food_name}</Text>
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Text>{(item.price*1).toLocaleString('VND')}</Text>
-                <TouchableOpacity style={{ alignItems: 'center' }}>
+                <TouchableOpacity style={{ alignItems: 'center' }} onPress={()=>{dispatch(addItemToCart(item))}}>
                     <Ionicons name="cart-outline" color={'#ff5704c0'} size={18}></Ionicons>
                 </TouchableOpacity>
             </View>

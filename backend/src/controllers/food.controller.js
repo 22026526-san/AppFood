@@ -12,8 +12,9 @@ export const getFoodInfo = async (req, res) => {
     `SELECT 
     f.food_id,
     f.food_name,
-    f.description,
     f.price,
+    f.image_url,
+    f.description,
     f.category_id,
     r.food_rate,
     r.sum_rate
@@ -211,6 +212,29 @@ export const getFoodPopular = async (req, res) => {
     res.status(201).json({
       success: true,
       message: foodInfo
+    });
+  } catch (error) {
+    console.error('Error inserting user:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+export const getVouchers = async (req, res) => {
+  try {
+
+    const {voucher_code} = req.body
+
+    if (!voucher_code) {
+      return res.status(400).json({ error: 'Missing required fiel' });
+    }
+    
+    const [vouchers] = await pool
+      .promise()
+      .query('SELECT v.discount_percent, max_discount FROM  vouchers v WHERE v.code = ?', [voucher_code]);
+
+    res.status(201).json({
+      success: true,
+      message: vouchers
     });
   } catch (error) {
     console.error('Error inserting user:', error);

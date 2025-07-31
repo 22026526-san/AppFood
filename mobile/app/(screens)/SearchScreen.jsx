@@ -7,12 +7,13 @@ import { API_URL } from '@env'
 import TopRateCard from '../../components/TopRateCard';
 import Logo from '../../assets/fast-food.png'
 import LoadingScreen from '../../components/LoadingScreen';
+import { useSelector } from 'react-redux';
 
 const SearchScreen = () => {
 
   const router = useRouter();
   const [search, setSearch] = useState();
-  const count = 2;
+  const CartFood =  useSelector((state) => state.cart.items)
 
   const [data, setData] = useState([]);
 
@@ -75,7 +76,7 @@ const SearchScreen = () => {
               borderRadius: 20,
               padding: 6,
             }}>
-              <Text style={{ color: '#ffffff', fontSize: 8 }}>{count}</Text>
+              <Text style={{ color: '#ffffff', fontSize: 8 }}>{CartFood.length}</Text>
             </View>
           </View>
         </View>

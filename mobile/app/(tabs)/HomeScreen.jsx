@@ -16,14 +16,15 @@ import FoodCard from '../../components/FoodCard';
 import TopRateCard from '../../components/TopRateCard';
 import {API_URL} from '@env'
 import LoadingScreen from '../../components/LoadingScreen';
+import { useSelector } from 'react-redux';
 
 const HomeScreen = () => {
   const { userId } = useAuth();
   const router = useRouter();
-  const count = 2;
   const [search, setSearch] = useState();
   const [dataCard, setDataCard] = useState([]);
   const [dataRate, setDataRate] = useState([]);
+  const CartFood =  useSelector((state) => state.cart.items)
 
   const data = [
     { id: 1, name: 'Burger', img: burger },
@@ -59,6 +60,9 @@ const HomeScreen = () => {
     apiFoodCard()
   }, []);
 
+  useEffect(() => {
+    console.log(CartFood)
+  }, [CartFood]);
 
   if (!dataRate.length || !dataCard.length) {
         return <LoadingScreen />;
@@ -85,7 +89,7 @@ const HomeScreen = () => {
               borderRadius: 20,
               padding: 6,
             }}>
-              <Text style={{ color: '#ffffff', fontSize: 8 }}>{count}</Text>
+              <Text style={{ color: '#ffffff', fontSize: 8 }}>{CartFood.length}</Text>
             </View>
           </View>
         </View>

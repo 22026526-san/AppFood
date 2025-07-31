@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, TextInput, KeyboardAvoidingView, Platform } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, TextInput, KeyboardAvoidingView, Platform } from 'react-native'
 import React, { useEffect, useContext, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,11 +7,14 @@ import { useLocalSearchParams } from 'expo-router';
 import { API_URL } from '@env'
 import Logo from "../../assets/fast-food.png";
 import CartItem from '../../components/CartItem';
+import { useSelector } from 'react-redux';
 
 const CartScreen = () => {
 
   const router = useRouter();
   const [voucher, setVoucher] = useState('')
+  const [discount,setDiscount] = useState(0)
+  const CartFood = useSelector((state) => state.cart.items)
 
   const TotalPrice = (products) => {
     return products.reduce((total, product) => {
@@ -19,31 +22,41 @@ const CartScreen = () => {
     }, 0);
   };
 
-  const dataCart = [
-    {
-      "food_id": 1,
-      "food_name": "Pizza Calzone European",
-      "price": 64000,
-      "quantity": 2,
-      "img_url": Logo
-    },
-    {
-      "food_id": 2,
-      "food_name": "Pepperoni Cheese Pizza",
-      "price": 59000,
-      "quantity": 1,
-      "img_url": Logo
-    },
-    {
-      "food_id": 3,
-      "food_name": "Margherita Classic Pizza",
-      "price": 55000,
-      "quantity": 3,
-      "img_url": Logo
-    }
-  ]
+  const handleSubmit = async () => {
 
-  if (dataCart.length === 0) {
+    try {
+
+      const res = await fetch(`${API_URL}/food/voucher`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          voucher_code: voucher,
+        }),
+      });
+      const json = await res.json();
+      console.log(json)
+  
+      if (!json.success) {
+        Alert.alert('Mã giảm giá đã hết hạn hoặc nhập không đúng');
+        return;
+      }
+
+      if((json.message[0].discount_percent/100) * TotalPrice(CartFood) > json.message[0].max_discount){
+        setDiscount(json.message[0].max_discount)
+      } else {
+        setDiscount((json.message[0].discount_percent/100) * TotalPrice(CartFood) )
+      }
+      
+
+    } catch (error) {
+      console.error('Error completing profile:', error);
+      Alert.alert('Đã xảy ra lỗi');
+    }
+  };
+
+  if (CartFood.length === 0) {
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }}>
@@ -70,7 +83,7 @@ const CartScreen = () => {
           <Text style={{ fontSize: 22, color: '#ffffffff', fontWeight: 'bold' }}>Cart</Text>
         </View>
 
-        <CartItem data={dataCart}></CartItem>
+        <CartItem data={CartFood}></CartItem>
 
       </ScrollView>
 
@@ -84,7 +97,7 @@ const CartScreen = () => {
           <View style={{ marginBottom: 12 }}>
             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12, alignItems: 'center' }}>
               <Text style={{ fontSize: 16, color: '#3838385f' }}>Voucher</Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={handleSubmit}>
                 <Text style={{ fontSize: 16, color: '#ff6a00b9', textDecorationLine: 'underline' }}>Apply</Text>
               </TouchableOpacity>
             </View>
@@ -99,7 +112,7 @@ const CartScreen = () => {
           <View>
             <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
               <Text style={{ fontSize: 16, color: '#3838385f' }}>Total: </Text>
-              <Text style={{ fontSize: 26 }}>{TotalPrice(dataCart).toLocaleString('VND')}</Text>
+              <Text style={{ fontSize: 26 }}>{(TotalPrice(CartFood) - discount).toLocaleString('VND')}</Text>
             </View>
             <TouchableOpacity activeOpacity={0.7} style={styles.buttonSubmit}>
               <Text style={{ color: '#fffffffb', fontWeight: 'bold' }}>ORDER</Text>

@@ -4,26 +4,35 @@ import { createSlice } from '@reduxjs/toolkit';
 const cartSlice = createSlice({
   name: 'cart',
   initialState: {
-    items: [], 
+    items: [],
   },
   reducers: {
-    addToCart: (state, action) => {
+    addItemToCart: (state, action) => {
       const item = action.payload;
-      const existingItem = state.items.find(i => i.id === item.id);
-      if (existingItem) {
-        existingItem.quantity += 1;
+      const existingItem = state.items.findIndex(i => i.food_id === item.food_id);
+      if (existingItem !== -1) {
+        state.items[existingItem].quantity += 1;
       } else {
         state.items.push({ ...item, quantity: 1 });
       }
     },
     removeFromCart: (state, action) => {
-      state.items = state.items.filter(i => i.id !== action.payload);
+      const item = action.payload;
+      const existingItem = state.items.findIndex(i => i.food_id === item.food_id);
+      if (state.items[existingItem].quantity > 1) {
+        state.items[existingItem].quantity -= 1;
+      } else if (state.items[existingItem].quantity === 1) {
+        state.items.splice(existingItem, 1);
+      }
     },
-    updateQuantity: (state, action) => {
-      const { id, quantity } = action.payload;
-      const item = state.items.find(i => i.id === id);
-      if (item) {
-        item.quantity = quantity;
+    addFoodToCart: (state, action) => {
+      const {item,count} = action.payload;
+      const existingItem = state.items.findIndex(i => i.food_id === item.food_id);
+      if (existingItem === -1) {
+        const limitedPayload = Object.fromEntries(Object.entries(item).slice(0, 4));
+        state.items.push({ ...limitedPayload, quantity: count })
+      } else {
+        state.items[existingItem].quantity += count;
       }
     },
     clearCart: (state) => {
@@ -32,5 +41,5 @@ const cartSlice = createSlice({
   }
 });
 
-export const { addToCart, removeFromCart, updateQuantity, clearCart } = cartSlice.actions;
+export const { addItemToCart, removeFromCart, addFoodToCart, clearCart } = cartSlice.actions;
 export default cartSlice.reducer;

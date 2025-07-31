@@ -7,6 +7,8 @@ import { useLocalSearchParams } from 'expo-router';
 import { API_URL } from '@env'
 import Logo from "../../assets/fast-food.png";
 import LoadingScreen from '../../components/LoadingScreen';
+import { useDispatch } from 'react-redux';
+import {addFoodToCart} from '../../redux/cartAction';
 
 
 const FoodDetail = () => {
@@ -14,6 +16,7 @@ const FoodDetail = () => {
     const router = useRouter();
     const { foodId } = useLocalSearchParams();
     const [quantity, setQuantity] = useState(1);
+    const dispatch = useDispatch();
     const [dataFood, setDataFood] = useState([])
 
     useEffect(() => {
@@ -116,7 +119,7 @@ const FoodDetail = () => {
                     </TouchableOpacity>
                 </View>
                 <View>
-                    <TouchableOpacity style={styles.addToCartButton}>
+                    <TouchableOpacity style={styles.addToCartButton} onPress={()=>{dispatch(addFoodToCart({ item : dataFood[0],count: quantity}))}}>
                         <Text style={styles.addToCartText}>Add To Cart</Text>
                     </TouchableOpacity>
                 </View>
