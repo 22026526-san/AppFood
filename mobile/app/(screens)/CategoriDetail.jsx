@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native'
-import React, { useEffect, useContext } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -8,50 +8,47 @@ import { API_URL } from '@env'
 import TopRateCard from '../../components/TopRateCard';
 import Logo from '../../assets/fast-food.png'
 import FoodCard from '../../components/FoodCard';
+import LoadingScreen from '../../components/LoadingScreen';
 
 const CategoriDetail = () => {
 
     const router = useRouter();
     const { cate_id, cate_name } = useLocalSearchParams();
+    const [dataCateTop, setDataCateTop] = useState([]);
+    const [dataCateAll, setDataCateAll] = useState([]);
 
-    const fakeData = [
-      {
-        food_id: 1,
-        food_name: 'Cheese Burger',
-        img_url: Logo,
-        price: '$5.99'
-      },
-      {
-        food_id: 2,
-        food_name: 'Fried Chicken',
-        img_url: Logo,
-        price: '$7.49'
-      },
-      {
-        food_id: 3,
-        food_name: 'Pepperoni Pizza',
-        img_url: Logo,
-        price: '$8.99'
-      },
-      {
-        food_id: 4,
-        food_name: 'Hotdog Classic',
-        img_url:Logo,
-        price: '$4.50'
-      },
-      {
-        food_id: 5,
-        food_name: 'French Fries',
-        img_url: Logo,
-        price: '$3.99'
-      },
-      {
-        food_id: 6,
-        food_name: 'Coca Cola',
-        img_url: Logo,
-        price: '$1.99'
-      }
-    ];
+    useEffect(() => {
+        const foodInfo = async () => {
+            try {
+
+                const res = await fetch(`${API_URL}/food/get_food_with_category`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        categoryId: cate_id,
+                    }),
+                });
+
+                const result = await res.json();
+                if (result.success) {
+                    setDataCateAll(result.message.cateAll);
+                    setDataCateTop(result.message.cateRate);
+                }
+
+            } catch (err) {
+                console.error('Lỗi khi lấy thông tin food:', err);
+            }
+        };
+        if (cate_id) {
+            foodInfo();
+        }
+    }, [cate_id]);
+
+    if (!dataCateAll.length || !dataCateTop.length) {
+        return <LoadingScreen />;
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -72,23 +69,23 @@ const CategoriDetail = () => {
                 </View>
 
                 <View style={styles.contentCategory}>
-                    
+
                     <Text style={{ fontSize: 18, color: '#000000be' }}>Popular {cate_name}</Text>
-    
+
 
                     <View style={{ marginTop: 22 }}>
-                        <TopRateCard data={fakeData}></TopRateCard>
+                        <TopRateCard data={dataCateTop}></TopRateCard>
                     </View>
 
                 </View>
 
                 <View style={styles.contentCategory}>
-                    
+
                     <Text style={{ fontSize: 18, color: '#000000be' }}>All {cate_name}</Text>
-    
+
 
                     <View style={{ marginTop: 22 }}>
-                        <FoodCard data={fakeData}></FoodCard>
+                        <FoodCard data={dataCateAll}></FoodCard>
                     </View>
 
                 </View>
@@ -104,10 +101,10 @@ const styles = StyleSheet.create({
         backgroundColor: "#ffffffff",
         marginBottom: -36
     },
-    contentCategory:{
-    display:'flex',
-    flexDirection:'column',
-    marginTop:22
+    contentCategory: {
+        display: 'flex',
+        flexDirection: 'column',
+        marginTop: 22
     },
     header: {
         display: 'flex',

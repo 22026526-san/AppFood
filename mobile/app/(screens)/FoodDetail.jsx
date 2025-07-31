@@ -6,6 +6,7 @@ import { useRouter } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
 import { API_URL } from '@env'
 import Logo from "../../assets/fast-food.png";
+import LoadingScreen from '../../components/LoadingScreen';
 
 
 const FoodDetail = () => {
@@ -13,21 +14,40 @@ const FoodDetail = () => {
     const router = useRouter();
     const { foodId } = useLocalSearchParams();
     const [quantity, setQuantity] = useState(1);
+    const [dataFood, setDataFood] = useState([])
 
-    const dataFood = [
-        {
-            "food_id": 1,
-            "food_name": "Classic Beef Hamburger",
-            "description": "A juicy beef patty served in a fresh bun with lettuce, tomato, cheddar cheese, pickles, and our special sauce.",
-            "image_url": Logo,
-            "price": 199000.00,
-            "category_id": 2,
-            "is_available": true,
-            "created_at": "2025-07-29T10:00:00Z",
-            "food_rate": 4.7,
-            "sum_rate": 1000
-        },
-    ]
+    useEffect(() => {
+        const foodInfo = async () => {
+            try {
+
+                const res = await fetch(`${API_URL}/food/get_info`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        foodId: foodId,
+                    }),
+                });
+
+                const result = await res.json();
+                if (result.success) {
+                    setDataFood(result.message);
+                }
+
+            } catch (err) {
+                console.error('Lỗi khi lấy thông tin food:', err);
+            }
+        };
+        if (foodId) {
+            foodInfo();
+        }
+    }, [foodId]);
+
+
+    if (!dataFood.length) {
+        return <LoadingScreen />;
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -42,7 +62,7 @@ const FoodDetail = () => {
                 </View>
 
                 <View style={styles.foodCard}>
-                    <Image source={dataFood[0].image_url} style={styles.Img}></Image>
+                    <Image source={Logo} style={styles.Img}></Image>
                 </View>
 
                 <View>
@@ -92,7 +112,7 @@ const FoodDetail = () => {
                         style={[styles.buttonn, styles.plusButton]}
                         onPress={() => setQuantity(prev => prev + 1)}
                     >
-                        <Text style={[styles.buttonText,{color:'white'}]}>+</Text>
+                        <Text style={[styles.buttonText, { color: 'white' }]}>+</Text>
                     </TouchableOpacity>
                 </View>
                 <View>
@@ -196,7 +216,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
-    button:{
+    button: {
         backgroundColor: '#96a8be11',
         borderRadius: 25,
         padding: 10,

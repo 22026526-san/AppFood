@@ -6,7 +6,7 @@ import { useRouter } from 'expo-router';
 import { API_URL } from '@env'
 import TopRateCard from '../../components/TopRateCard';
 import Logo from '../../assets/fast-food.png'
-import FoodCard from '../../components/FoodCard';
+import LoadingScreen from '../../components/LoadingScreen';
 
 const SearchScreen = () => {
 
@@ -14,44 +14,35 @@ const SearchScreen = () => {
   const [search, setSearch] = useState();
   const count = 2;
 
-  const fakeData = [
-    {
-      food_id: 1,
-      food_name: 'Cheese Burger',
-      img_url: Logo,
-      price: '$5.99'
-    },
-    {
-      food_id: 2,
-      food_name: 'Fried Chicken',
-      img_url: Logo,
-      price: '$7.49'
-    },
-    {
-      food_id: 3,
-      food_name: 'Pepperoni Pizza',
-      img_url: Logo,
-      price: '$8.99'
-    },
-    {
-      food_id: 4,
-      food_name: 'Hotdog Classic',
-      img_url: Logo,
-      price: '$4.50'
-    },
-    {
-      food_id: 5,
-      food_name: 'French Fries',
-      img_url: Logo,
-      price: '$3.99'
-    },
-    {
-      food_id: 6,
-      food_name: 'Coca Cola',
-      img_url: Logo,
-      price: '$1.99'
+  const [data, setData] = useState([]);
+
+  const popular = async () => {
+    try {
+
+      const res = await fetch(`${API_URL}/food/get_popular`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const result = await res.json();
+      if (result.success) {
+        setData(result.message);
+      }
+
+    } catch (err) {
+      console.error('Lỗi khi lấy thông tin food:', err);
     }
-  ];
+  };
+  useEffect(() => {
+    popular()
+  }, []);
+
+
+  if (!data.length) {
+    return <LoadingScreen />;
+  }
 
   const keyword = [
     { id: 1, name: 'Burger' },
@@ -127,7 +118,7 @@ const SearchScreen = () => {
 
 
           <View style={{ marginTop: 22 }}>
-            <TopRateCard data={fakeData}></TopRateCard>
+            <TopRateCard data={data}></TopRateCard>
           </View>
 
         </View>

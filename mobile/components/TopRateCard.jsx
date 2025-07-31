@@ -2,6 +2,7 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity ,Image} from 'reac
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
+import Logo from '../assets/fast-food.png'
 
 const TopRateCard = (props) => {
 
@@ -16,15 +17,15 @@ const TopRateCard = (props) => {
                     params: {foodId : item.food_id}
                 })}>
                     <View style={{width:'120',height:'120'}}>
-                        <Image source={item.img_url} style={{ width: '100%', height: '100%' }}resizeMode="cover"/>
+                        <Image source={Logo} style={{ width: '100%', height: '100%' }}resizeMode="cover"/>
                     </View>
                     <Text style={styles.name} numberOfLines={1} ellipsizeMode="tail">{item.food_name}</Text>
                     <View style={{display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-between'}}> 
                         <View style={{display:'flex',flexDirection:'row',alignItems:'center',gap:2}}>
-                            <Text>4.7</Text>
+                            <Text>{item.food_rate}</Text>
                             <Ionicons name="star-outline" color={'#ffb804cd'} size={15}></Ionicons>
                         </View>
-                        <Text>{item.price}</Text>
+                        <Text>{(item.price*1).toLocaleString('VND')}</Text>
                     </View>
                 </TouchableOpacity>
             ))}

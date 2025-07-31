@@ -2,6 +2,7 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
+import Logo from '../assets/fast-food.png'
 
 const FoodCard = (props) => {
     const router = useRouter();
@@ -12,11 +13,11 @@ const FoodCard = (props) => {
             params: {foodId : item.food_id}
         })}>
             <View style={{ width: '120', height: '120' }}>
-                <Image source={item.img_url} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+                <Image source={Logo} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
             </View>
             <Text style={styles.name} numberOfLines={1} ellipsizeMode="tail">{item.food_name}</Text>
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Text>{item.price}</Text>
+                <Text>{(item.price*1).toLocaleString('VND')}</Text>
                 <TouchableOpacity style={{ alignItems: 'center' }}>
                     <Ionicons name="cart-outline" color={'#ff5704c0'} size={18}></Ionicons>
                 </TouchableOpacity>

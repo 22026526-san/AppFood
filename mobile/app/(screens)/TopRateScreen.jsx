@@ -1,54 +1,45 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native'
-import React, { useEffect, useContext } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { API_URL } from '@env'
 import Logo from '../../assets/fast-food.png'
-import FoodCard from '../../components/FoodCard';
+import TopRateList from '../../components/TopRateList';
+import LoadingScreen from '../../components/LoadingScreen';
 
 const TopRateScreen = () => {
 
     const router = useRouter();
+    const [data, setData] = useState([]);
 
-    const fakeData = [
-        {
-            food_id: 1,
-            food_name: 'Cheese Burger',
-            img_url: Logo,
-            price: '$5.99'
-        },
-        {
-            food_id: 2,
-            food_name: 'Fried Chicken',
-            img_url: Logo,
-            price: '$7.49'
-        },
-        {
-            food_id: 3,
-            food_name: 'Pepperoni Pizza',
-            img_url: Logo,
-            price: '$8.99'
-        },
-        {
-            food_id: 4,
-            food_name: 'Hotdog Classic',
-            img_url: Logo,
-            price: '$4.50'
-        },
-        {
-            food_id: 5,
-            food_name: 'French Fries',
-            img_url: Logo,
-            price: '$3.99'
-        },
-        {
-            food_id: 6,
-            food_name: 'Coca Cola',
-            img_url: Logo,
-            price: '$1.99'
+    const topRateAll = async () => {
+        try {
+
+            const res = await fetch(`${API_URL}/food/get_alltoprate`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const result = await res.json();
+            if (result.success) {
+                setData(result.message);
+            }
+
+        } catch (err) {
+            console.error('Lỗi khi lấy thông tin food:', err);
         }
-    ];
+    };
+    useEffect(() => {
+        topRateAll()
+    }, []);
+
+
+    if (!data.length) {
+        return <LoadingScreen />;
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -69,7 +60,7 @@ const TopRateScreen = () => {
                 </View>
 
                 <View style={{ marginTop: 22 }}>
-                    <FoodCard data={fakeData}></FoodCard>
+                    <TopRateList data={data}></TopRateList>
                 </View>
 
 

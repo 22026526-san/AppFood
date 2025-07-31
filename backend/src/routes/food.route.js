@@ -1,0 +1,13 @@
+import express from 'express';
+import { getAllTopRate, getFoodCard, getFoodInfo, getFoodPopular, getFoodwithCategory } from '../controllers/food.controller.js';
+
+const router = express.Router();
+
+router.post('/food/get_info', getFoodInfo);
+router.get('/food/get_foodcard', getFoodCard);
+router.post('/food/get_food_with_category', getFoodwithCategory);
+router.get('/food/get_alltoprate', getAllTopRate);
+router.get('/food/get_popular', getFoodPopular);
+
+
+export default router;
