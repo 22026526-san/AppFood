@@ -2,9 +2,9 @@ import pool from '../configs/database.js';
 
 export const getFoodInfo = async (req, res) => {
   try {
-    const { foodId } = req.body;
+    const { foodId,clerkId } = req.body;
 
-    if (!foodId) {
+    if (!foodId || !clerkId) {
       return res.status(400).json({ error: 'Missing required field' });
     }
 
@@ -29,7 +29,27 @@ export const getFoodInfo = async (req, res) => {
             });
         });
 
-    res.status(201).json({
+    const queryy = 
+    `SELECT *
+    from favorites f
+    WHERE f.food_id = ? and f.cleck_id = ?`
+    const like = await new Promise((resolve, reject) => {
+            pool.query(queryy, [foodId,clerkId], (err, results) => {
+                if (err) return reject(err);
+                resolve(results);
+            });
+        });
+
+    if (like.length === 0) {
+      return res.status(201).json({
+      like:false,
+      success: true,
+      message: foodInfo
+    });
+    }
+
+    return res.status(201).json({
+      like:true,
       success: true,
       message: foodInfo
     });

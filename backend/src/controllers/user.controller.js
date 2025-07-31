@@ -82,3 +82,42 @@ export const updateImgUser = async (req, res) => {
   }
 
 };
+
+export const updateFavourite = async (req, res) => {
+  try {
+    const {clerkId,foodId,userLike} = req.body;
+
+    if (!clerkId||!foodId) {
+      return res.status(400).json({ success: false, message: "No file uploaded" });
+    }
+
+    if (userLike === false) {
+      const [updateUser_1] = await pool
+      .promise()
+      .query('DELETE FROM favorites WHERE cleck_id = ? AND food_id = ?', [ clerkId, foodId ]);
+
+        res.status(200).json({
+        success: true,
+        message: "Removed from favorites"
+      })
+
+    } else {
+      const [updateUser] = await pool
+      .promise()
+      .query('insert into favorites (cleck_id , food_id) values (?,?)', [clerkId, foodId]);
+
+      res.status(200).json({
+        success: true,
+        message: "Added to favorites"
+      });
+    }
+
+  } catch (error) {
+    console.log(error);
+    res.json({
+      message: error.message,
+      success: false
+    });
+  }
+
+};

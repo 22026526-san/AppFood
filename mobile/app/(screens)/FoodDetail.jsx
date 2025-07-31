@@ -9,15 +9,18 @@ import Logo from "../../assets/fast-food.png";
 import LoadingScreen from '../../components/LoadingScreen';
 import { useDispatch } from 'react-redux';
 import {addFoodToCart} from '../../redux/cartAction';
+import { useAuth } from '@clerk/clerk-expo';
 
 
 const FoodDetail = () => {
 
     const router = useRouter();
+    const { userId } = useAuth();
     const { foodId } = useLocalSearchParams();
     const [quantity, setQuantity] = useState(1);
     const dispatch = useDispatch();
-    const [dataFood, setDataFood] = useState([])
+    const [dataFood, setDataFood] = useState([]);
+    const [like,setLike] = useState()
 
     useEffect(() => {
         const foodInfo = async () => {
@@ -30,10 +33,16 @@ const FoodDetail = () => {
                     },
                     body: JSON.stringify({
                         foodId: foodId,
+                        clerkId : userId,
                     }),
                 });
 
                 const result = await res.json();
+                if (result.like) {
+                    setLike(true);
+                } else {
+                    setLike(false)
+                }
                 if (result.success) {
                     setDataFood(result.message);
                 }
@@ -46,6 +55,31 @@ const FoodDetail = () => {
             foodInfo();
         }
     }, [foodId]);
+
+    const handleLike = async () => {
+
+        const newLike = !like; 
+        setLike(newLike);
+    
+        try {
+    
+          const res = await fetch(`${API_URL}/user/update_favourite`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              foodId: foodId,
+              clerkId : userId,
+              userLike : newLike,
+            }),
+          });
+    
+        } catch (error) {
+          console.error('Error completing profile:', error);
+          Alert.alert('Đã xảy ra lỗi');
+        }
+      };
 
 
     if (!dataFood.length) {
@@ -61,7 +95,7 @@ const FoodDetail = () => {
                         <TouchableOpacity onPress={() => router.back()} style={styles.button}><Ionicons name="chevron-back" size={22} color="#000000d5" /></TouchableOpacity>
                         <Text style={{ fontSize: 22, color: '#000000d5', fontWeight: 'bold' }}>Details</Text>
                     </View>
-                    <TouchableOpacity style={styles.button}><Ionicons name="heart" size={22} color="#c8c8c8d5" /></TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={handleLike}><Ionicons name="heart" size={22} color={like ? "red" : "#c8c8c8d5"} /></TouchableOpacity>
                 </View>
 
                 <View style={styles.foodCard}>

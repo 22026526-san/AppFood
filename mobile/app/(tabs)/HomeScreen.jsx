@@ -60,9 +60,6 @@ const HomeScreen = () => {
     apiFoodCard()
   }, []);
 
-  useEffect(() => {
-    console.log(CartFood)
-  }, [CartFood]);
 
   if (!dataRate.length || !dataCard.length) {
         return <LoadingScreen />;
