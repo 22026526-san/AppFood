@@ -3,11 +3,11 @@ import React, { useEffect, useContext, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { useLocalSearchParams } from 'expo-router';
 import { API_URL } from '@env'
 import Logo from "../../assets/fast-food.png";
 import CartItem from '../../components/CartItem';
 import { useSelector } from 'react-redux';
+import { useAuth } from '@clerk/clerk-expo';
 
 const CartScreen = () => {
 
@@ -15,7 +15,8 @@ const CartScreen = () => {
   const [voucher, setVoucher] = useState('')
   const [discount,setDiscount] = useState(0)
   const CartFood = useSelector((state) => state.cart.items)
-
+  const { userId } = useAuth();
+  console.log(CartFood)
   const TotalPrice = (products) => {
     return products.reduce((total, product) => {
       return total + (product.price * product.quantity);
@@ -36,7 +37,6 @@ const CartScreen = () => {
         }),
       });
       const json = await res.json();
-      console.log(json)
   
       if (!json.success) {
         Alert.alert('Mã giảm giá đã hết hạn hoặc nhập không đúng');
@@ -56,12 +56,32 @@ const CartScreen = () => {
     }
   };
 
+  const handleSaveCart = async () => {
+
+    try {
+
+      const res = await fetch(`${API_URL}/user/save_cart`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          clerkId : userId,
+          cart : CartFood
+        }),
+      });
+  
+    } catch (error) {
+      console.error('Error completing profile:', error);
+    }
+  };
+
   if (CartFood.length === 0) {
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }}>
           <View style={styles.header}>
-            <TouchableOpacity onPress={() => router.back()} style={styles.button}><Ionicons name="chevron-back" size={22} color="#ffffffff" /></TouchableOpacity>
+            <TouchableOpacity onPress={() => {router.back(),handleSaveCart()}} style={styles.button}><Ionicons name="chevron-back" size={22} color="#ffffffff" /></TouchableOpacity>
             <Text style={{ fontSize: 22, color: '#ffffffff', fontWeight: 'bold' }}>Cart</Text>
           </View>
 
@@ -79,7 +99,7 @@ const CartScreen = () => {
       <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20, minHeight: '70%' }}>
 
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.button}><Ionicons name="chevron-back" size={22} color="#ffffffff" /></TouchableOpacity>
+          <TouchableOpacity onPress={() => {router.back();handleSaveCart()}} style={styles.button}><Ionicons name="chevron-back" size={22} color="#ffffffff" /></TouchableOpacity>
           <Text style={{ fontSize: 22, color: '#ffffffff', fontWeight: 'bold' }}>Cart</Text>
         </View>
 

@@ -13,8 +13,8 @@ const CartItem = (props) => {
 
     return (
         <>
-            {props.data.map((item) => (
-                <View key={item.food_id} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 22, width: '100%' }}>
+            {props.data.map((item,index) => (
+                <View key={index} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 22, width: '100%' }}>
                     <TouchableOpacity style={styles.card} onPress={() => router.push(
                         {
                             pathname: '/FoodDetail',

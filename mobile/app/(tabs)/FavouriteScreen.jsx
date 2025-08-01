@@ -3,31 +3,59 @@ import React, { useEffect, useContext, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { useLocalSearchParams } from 'expo-router';
 import { API_URL } from '@env'
 import FoodCard from '../../components/FoodCard';
-import Logo from "../../assets/fast-food.png";
-import CartItem from '../../components/CartItem';
+import { useAuth } from '@clerk/clerk-expo';
+
 
 const FavouriteScreen = () => {
 
   const router = useRouter();
+  const [data, setData] = useState([]);
+  const { userId } = useAuth();
 
-  const fakeData = [
-    
-  ];
 
-  if (fakeData.length === 0) {
+
+  const setFavourite = async () => {
+    try {
+
+      const res = await fetch(`${API_URL}/user/set_favourite`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          clerkId: userId,
+        }),
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        setData(result.message[0]);
+      }
+
+    } catch (err) {
+      console.error('Lỗi khi cập nhật favourite:', err);
+    }
+  };
+
+  useEffect(() => {
+    setFavourite();
+  });
+
+
+  if (data.length === 0) {
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }}>
           <View style={styles.header}>
-            <View style={{ display: 'flex', flexDirection: 'row', gap: 10 ,alignItems:'center'}}>
+            <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
               <TouchableOpacity onPress={() => router.back()} style={styles.button}><Ionicons name="chevron-back" size={22} color="#000000d5" /></TouchableOpacity>
-              
+
               <Text style={{ fontSize: 22, color: '#000000d2', fontWeight: 'bold' }}>Favourite</Text>
-                
-              
+
+
             </View>
 
             <View>
@@ -61,7 +89,7 @@ const FavouriteScreen = () => {
         </View>
 
         <View style={{ marginTop: 22 }}>
-          <FoodCard data={fakeData}></FoodCard>
+          <FoodCard data={data}></FoodCard>
         </View>
       </ScrollView>
     </SafeAreaView >
