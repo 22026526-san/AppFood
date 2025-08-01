@@ -185,3 +185,27 @@ export const getFavourites = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const getVouchers = async (req, res) => {
+  const { clerkId } = req.body;
+
+  if (!clerkId) {
+    return res.status(400).json({ error: "Invalid data" });
+  }
+
+  try {
+    
+    const vouchers = await pool
+      .promise()
+      .query(`SELECT *
+              FROM vouchers v
+              WHERE v.id NOT IN (
+              SELECT uv.voucher_id
+              FROM user_vouchers uv
+              WHERE uv.clerk_id = ? );`, [clerkId]);
+
+    res.json({ success: true, message: vouchers });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

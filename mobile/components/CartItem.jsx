@@ -2,7 +2,7 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image } from 'rea
 import React, { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
-import {addItemToCart ,removeFromCart} from '../redux/cartAction';
+import {addItemToCart ,removeFromCart, removeCart} from '../redux/cartAction';
 import { useDispatch } from 'react-redux';
 import Logo from '../assets/fast-food.png'
 
@@ -25,7 +25,14 @@ const CartItem = (props) => {
                     </TouchableOpacity>
 
                     <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: 120, width: 200 }}>
-                        <Text style={{ fontSize: 18, color: '#ffffff' }}>{item.food_name}</Text>
+                        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between',alignItems:'center'}}>
+                            <View style={{width:168}}>
+                                <Text style={{ fontSize: 18, color: '#ffffff' }}>{item.food_name}</Text>
+                            </View>
+                            <TouchableOpacity style={[styles.buttonn, styles.minusButton]} onPress={()=>{dispatch(removeCart(item.food_id))}}>
+                                <Text style={{color:'orange'}}>x</Text>
+                            </TouchableOpacity>
+                        </View>
                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                             <Text style={{ fontSize: 18, color: '#ffffff' }} >{(item.price*1).toLocaleString('VND')}</Text>
                             <View style={{ display: 'flex', flexDirection: 'row', gap: 5, alignItems: 'center' }}>
@@ -33,7 +40,7 @@ const CartItem = (props) => {
                                     style={[styles.buttonn, styles.minusButton]}
                                     onPress={() => dispatch(removeFromCart(item))}
                                 >
-                                    <Text style={[styles.buttonText, { color: '#ffffff' }]}>-</Text>
+                                    <Text style={{ color: '#ffffff' }}>-</Text>
                                 </TouchableOpacity>
 
                                 <Text style={{ fontSize: 18, color: '#ffffff' }}>{item.quantity}</Text>
@@ -42,7 +49,7 @@ const CartItem = (props) => {
                                     style={[styles.buttonn, styles.plusButton]}
                                     onPress={() => dispatch(addItemToCart(item))}
                                 >
-                                    <Text style={[styles.buttonText, { color: 'white' }]}>+</Text>
+                                    <Text style={{ color: 'white' }}>+</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>

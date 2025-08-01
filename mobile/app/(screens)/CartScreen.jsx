@@ -16,7 +16,6 @@ const CartScreen = () => {
   const [discount,setDiscount] = useState(0)
   const CartFood = useSelector((state) => state.cart.items)
   const { userId } = useAuth();
-  console.log(CartFood)
   const TotalPrice = (products) => {
     return products.reduce((total, product) => {
       return total + (product.price * product.quantity);

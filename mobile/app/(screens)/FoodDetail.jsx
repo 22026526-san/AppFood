@@ -93,7 +93,7 @@ const FoodDetail = () => {
                 <View style={styles.header}>
                     <View style={{ display: 'flex', gap: '8', flexDirection: 'row', alignItems: 'center' }}>
                         <TouchableOpacity onPress={() => router.back()} style={styles.button}><Ionicons name="chevron-back" size={22} color="#000000d5" /></TouchableOpacity>
-                        <Text style={{ fontSize: 22, color: '#000000d5', fontWeight: 'bold' }}>Details</Text>
+                        <Text style={{ fontSize: 22, color: '#000000d5', fontWeight: 'bold' }}>Food Details</Text>
                     </View>
                     <TouchableOpacity style={styles.button} onPress={handleLike}><Ionicons name="heart" size={22} color={like ? "red" : "#c8c8c8d5"} /></TouchableOpacity>
                 </View>
