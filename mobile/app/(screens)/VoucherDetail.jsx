@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image,Alert } from 'react-native'
 import React, { useEffect, useContext, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
+import * as Clipboard from 'expo-clipboard';
 import voucher_logo from '../../assets/vouchers.png'
 
 const VoucherDeatil = () => {
@@ -12,6 +13,17 @@ const VoucherDeatil = () => {
 
     const { data } = useLocalSearchParams();
     const voucher = JSON.parse(data);
+
+
+    const copyToClipboard = async () => {
+        try {
+            await Clipboard.setStringAsync(voucher.code);
+            Alert.alert('Sao chép mã thành công');
+        } catch (e) {
+            console.log(e)
+            Alert.alert('Đã có lỗi xảy ra khi sao chép mã.');
+        }
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -69,6 +81,9 @@ const VoucherDeatil = () => {
                         <Text style={{color:'orange',fontSize:14,marginTop:12}}>
                             {voucher.code}
                         </Text>
+                        <TouchableOpacity style={{alignItems:'center',marginTop:10}} onPress={copyToClipboard}>
+                            <Ionicons name="copy-outline" size={18} color="orange" />
+                        </TouchableOpacity>
                     </View>
                 </View>
 
