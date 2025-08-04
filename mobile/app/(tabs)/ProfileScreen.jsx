@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native'
-import React, { useEffect,useContext } from 'react'
+import React, { useEffect, useContext,useRef,useState } from 'react'
 import { useUser } from '@clerk/clerk-react';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,14 +7,29 @@ import { useRouter } from 'expo-router';
 import { useClerk } from '@clerk/clerk-expo'
 import { useAuth } from '@clerk/clerk-expo';
 import { UserContext } from '../../services/UserContextAPI';
-import {API_URL} from '@env'
+import { API_URL } from '@env'
 
 const ProfileScreen = () => {
   const { user } = useUser()
   const router = useRouter();
   const { signOut } = useClerk();
   const { userId } = useAuth();
-  const { setName,setPhone, setUser,name,phone, imgUser,setImgUser } = useContext(UserContext)
+  const { setName, setPhone, setUser, name, phone, imgUser, setImgUser } = useContext(UserContext);
+  const [showHeader, setShowHeader] = useState(true);
+  const lastScrollY = useRef(0);
+
+  const handleScroll = (event) => {
+    const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
+    const currentY = contentOffset.y;
+    const isCloseToBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
+
+    if (currentY > lastScrollY.current && currentY > 50) {
+      setShowHeader(false);
+    } else if (currentY < lastScrollY.current && !isCloseToBottom) {
+      setShowHeader(true);
+    }
+    lastScrollY.current = currentY;
+  };
 
   const handleSignOut = async () => {
     try {
@@ -40,12 +55,12 @@ const ProfileScreen = () => {
         });
 
         const result = await res.json();
-        
+
         setPhone(result.user.phone)
         setUser(result.user.user_id)
         setName(result.user.user_name)
         setImgUser(result.user.img)
-        
+
       } catch (err) {
         console.error('Lỗi khi lấy thông tin user:', err);
       }
@@ -53,18 +68,19 @@ const ProfileScreen = () => {
     if (userId) {
       userInfo();
     }
-  }, [ userId]);
+  }, [userId]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingLeft: 20, paddingRight: 20 }}>
+      {showHeader && (
         <View style={styles.header}>
           <View>
             <TouchableOpacity onPress={() => router.back()} style={styles.button}><Ionicons name="chevron-back" size={22} color="#000000d5" /></TouchableOpacity>
           </View>
-          <Text style={{ fontSize: 22, color: '#000000d5',fontWeight:'bold' }}>Profile</Text>
+          <Text style={{ fontSize: 22, color: '#000000d5', fontWeight: 'bold' }}>Profile</Text>
         </View>
-
+      )}
+      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingLeft: 20, paddingRight: 20 }} onScroll={handleScroll}>
 
         <View style={styles.contentUser}>
           <View>
@@ -89,28 +105,28 @@ const ProfileScreen = () => {
         </View>
 
         <View style={styles.contentNav}>
-          <TouchableOpacity onPress={()=>router.push('/CartScreen')} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <TouchableOpacity onPress={() => router.push('/CartScreen')} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <Ionicons name="cart-outline" style={[{ color: '#0fceebbb' }, styles.icon]} size={20}></Ionicons>
               <Text style={{ fontSize: 16, color: 'rgba(0, 0, 0, 0.54)' }}>Cart</Text>
             </View>
             <Ionicons name="chevron-forward" size={16} color='rgba(0, 0, 0, 0.23)'></Ionicons>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>router.push('/FavouriteScreen')} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: '16' }}>
+          <TouchableOpacity onPress={() => router.push('/FavouriteScreen')} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: '16' }}>
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <Ionicons name="heart-outline" style={[{ color: '#eb0fc65f' }, styles.icon]} size={20}></Ionicons>
               <Text style={{ fontSize: 16, color: 'rgba(0, 0, 0, 0.54)' }}>Favourite</Text>
             </View>
             <Ionicons name="chevron-forward" size={16} color='rgba(0, 0, 0, 0.23)'></Ionicons>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>router.push('/NoticeScreen')} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: '16' }}>
+          <TouchableOpacity onPress={() => router.push('/NoticeScreen')} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: '16' }}>
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <Ionicons name="notifications-outline" style={[{ color: '#ebca0f98' }, styles.icon]} size={20}></Ionicons>
               <Text style={{ fontSize: 16, color: 'rgba(0, 0, 0, 0.54)' }}>Notification</Text>
             </View>
             <Ionicons name="chevron-forward" size={16} color='rgba(0, 0, 0, 0.23)'></Ionicons>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>router.push('/VoucherScreen')} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: '16' }}>
+          <TouchableOpacity onPress={() => router.push('/VoucherScreen')} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: '16' }}>
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <Ionicons name="ticket-outline" style={[{ color: '#1aeb0f79' }, styles.icon]} size={20}></Ionicons>
               <Text style={{ fontSize: 16, color: 'rgba(0, 0, 0, 0.54)' }}>Vouchers</Text>
@@ -152,7 +168,7 @@ const ProfileScreen = () => {
             <Ionicons name="chevron-forward" size={16} color='rgba(0, 0, 0, 0.23)'></Ionicons>
           </View>
         </TouchableOpacity>
-        <View style={{marginBottom:22}}/>
+        <View style={{ marginBottom: 22 }} />
       </ScrollView>
     </SafeAreaView>
   )
@@ -168,7 +184,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10
+    gap: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    marginBottom: 10
   },
   button: {
     backgroundColor: '#96a8be11',

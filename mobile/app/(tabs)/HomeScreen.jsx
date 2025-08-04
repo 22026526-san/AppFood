@@ -1,11 +1,10 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native'
-import React, { useState,useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useAuth } from '@clerk/clerk-expo';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import CategoriCard from '../../components/CategoriCard';
-import Logo from '../../assets/fast-food.png'
 import burger from '../../assets/burger.png'
 import Noodles from '../../assets/Noodles.png'
 import Pizza from '../../assets/pizza.png'
@@ -14,7 +13,7 @@ import fried_chicken from '../../assets/fried_chicken.png'
 import Drinks from '../../assets/drink.jpg'
 import FoodCard from '../../components/FoodCard';
 import TopRateCard from '../../components/TopRateCard';
-import {API_URL} from '@env'
+import { API_URL } from '@env'
 import LoadingScreen from '../../components/LoadingScreen';
 import { useSelector } from 'react-redux';
 
@@ -24,7 +23,22 @@ const HomeScreen = () => {
   const [search, setSearch] = useState();
   const [dataCard, setDataCard] = useState([]);
   const [dataRate, setDataRate] = useState([]);
-  const CartFood =  useSelector((state) => state.cart.items)
+  const CartFood = useSelector((state) => state.cart.items);
+  const [showHeader, setShowHeader] = useState(true);
+  const lastScrollY = useRef(0);
+
+  const handleScroll = (event) => {
+    const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
+    const currentY = contentOffset.y;
+    const isCloseToBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
+
+    if (currentY > lastScrollY.current && currentY > 50) {
+      setShowHeader(false);
+    } else if (currentY < lastScrollY.current && !isCloseToBottom) {
+      setShowHeader(true);
+    }
+    lastScrollY.current = currentY;
+  };
 
   const data = [
     { id: 1, name: 'Burger', img: burger },
@@ -62,14 +76,13 @@ const HomeScreen = () => {
 
 
   if (!dataRate.length || !dataCard.length) {
-        return <LoadingScreen />;
-    }
+    return <LoadingScreen />;
+  }
 
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingLeft: 20, paddingRight: 20 }}>
-
+      {showHeader && (
         <View style={styles.header}>
           <View style={{ display: 'flex', justifyContent: 'center' }}>
             <Text style={{ fontSize: 32, color: '#000000b8', fontWeight: "bold" }}>
@@ -90,6 +103,8 @@ const HomeScreen = () => {
             </View>
           </View>
         </View>
+      )}
+      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingLeft: 20, paddingRight: 20 }} onScroll={handleScroll}>
 
         <TouchableOpacity style={styles.contenSearch} onPress={() => router.push('/SearchScreen')}>
           <TouchableOpacity>
@@ -163,7 +178,10 @@ const styles = StyleSheet.create({
   header: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    paddingLeft: 20,
+    paddingRight: 20,
+    marginBottom: 10
   },
   contenCart: {
     display: 'flex',
@@ -184,7 +202,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     borderColor: '#ffffff',
-    marginTop: 22
+    marginTop: 12
   },
   contentCategory: {
     display: 'flex',

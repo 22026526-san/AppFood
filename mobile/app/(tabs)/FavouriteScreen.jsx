@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, TextInput, KeyboardAvoidingView, Platform } from 'react-native'
-import React, { useEffect, useContext, useState } from 'react'
+import React, { useEffect, useContext, useState,useRef } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -13,7 +13,21 @@ const FavouriteScreen = () => {
   const router = useRouter();
   const [data, setData] = useState([]);
   const { userId } = useAuth();
+  const [showHeader, setShowHeader] = useState(true);
+  const lastScrollY = useRef(0);
 
+  const handleScroll = (event) => {
+    const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
+    const currentY = contentOffset.y;
+    const isCloseToBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
+
+    if (currentY > lastScrollY.current && currentY > 50) {
+      setShowHeader(false);
+    } else if (currentY < lastScrollY.current && !isCloseToBottom) {
+      setShowHeader(true);
+    }
+    lastScrollY.current = currentY;
+  };
 
 
   const setFavourite = async () => {
@@ -48,20 +62,19 @@ const FavouriteScreen = () => {
   if (data.length === 0) {
     return (
       <SafeAreaView style={styles.container}>
-        <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }}>
-          <View style={styles.header}>
-            <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
-              <TouchableOpacity onPress={() => router.back()} style={styles.button}><Ionicons name="chevron-back" size={22} color="#000000d5" /></TouchableOpacity>
+        <View style={styles.header}>
+          <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => router.back()} style={styles.button}><Ionicons name="chevron-back" size={22} color="#000000d5" /></TouchableOpacity>
 
-              <Text style={{ fontSize: 22, color: '#000000d2', fontWeight: 'bold' }}>Favourite</Text>
+            <Text style={{ fontSize: 22, color: '#000000d2', fontWeight: 'bold' }}>Favourite</Text>
 
-
-            </View>
-
-            <View>
-              <TouchableOpacity onPress={() => router.push('/SearchScreen')} style={styles.buttonSearch}><Ionicons name="search" size={20} color="#ffffffd5" /></TouchableOpacity>
-            </View>
           </View>
+
+          <View>
+            <TouchableOpacity onPress={() => router.push('/SearchScreen')} style={styles.buttonSearch}><Ionicons name="search" size={20} color="#ffffffd5" /></TouchableOpacity>
+          </View>
+        </View>
+        <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }}>
 
           <View style={{ marginTop: 286, justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ fontSize: 18, color: '#ff5e00b0' }} >There are no food in your collection.</Text>
@@ -73,24 +86,26 @@ const FavouriteScreen = () => {
   }
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20, minHeight: '70%' }}>
+      {showHeader && (
         <View style={styles.header}>
-          <View style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
+          <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
             <TouchableOpacity onPress={() => router.back()} style={styles.button}><Ionicons name="chevron-back" size={22} color="#000000d5" /></TouchableOpacity>
-            <View style={styles.card}>
-              <Text style={{ fontSize: 14, color: '#000000d2', fontWeight: 'bold' }}>Favourite</Text>
-              <Ionicons name="caret-down" color={'#ff5e00b0'} size={14}></Ionicons>
-            </View>
+
+            <Text style={{ fontSize: 22, color: '#000000d2', fontWeight: 'bold' }}>Favourite</Text>
+
           </View>
 
           <View>
             <TouchableOpacity onPress={() => router.push('/SearchScreen')} style={styles.buttonSearch}><Ionicons name="search" size={20} color="#ffffffd5" /></TouchableOpacity>
           </View>
         </View>
+      )}
+      <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20}} onScroll={handleScroll}>
 
         <View style={{ marginTop: 22 }}>
           <FoodCard data={data}></FoodCard>
         </View>
+
       </ScrollView>
     </SafeAreaView >
   )
@@ -111,7 +126,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    paddingLeft: 20,
+    paddingRight: 20,
+    marginBottom: 10
   },
   button: {
     backgroundColor: '#96a8be11',

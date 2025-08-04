@@ -36,7 +36,8 @@ const VoucherDeatil = () => {
                         <Text style={styles.conditionText}>Áp dụng cho mọi đơn hàng</Text>
 
                         <View style={styles.reminderRow}>
-                            <Text style={styles.reminderText}>Có hiệu lực sau khi sử dụng</Text>
+                            <Ionicons name='time-outline' color={'#FFF'} size={15} />
+                            <Text style={styles.reminderText}>Có hiệu lực:  khi sử dụng</Text>
                         </View>
                     </View>
                 </View>
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
     },
     reminderRow: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        gap:3,
         alignItems: 'center',
     },
     reminderText: {

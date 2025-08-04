@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native'
-import React, { useEffect, useContext, useState } from 'react'
+import React, { useEffect, useContext, useState, useRef } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -8,7 +8,7 @@ import { API_URL } from '@env'
 import Logo from "../../assets/fast-food.png";
 import LoadingScreen from '../../components/LoadingScreen';
 import { useDispatch } from 'react-redux';
-import {addFoodToCart} from '../../redux/cartAction';
+import { addFoodToCart } from '../../redux/cartAction';
 import { useAuth } from '@clerk/clerk-expo';
 
 
@@ -20,7 +20,22 @@ const FoodDetail = () => {
     const [quantity, setQuantity] = useState(1);
     const dispatch = useDispatch();
     const [dataFood, setDataFood] = useState([]);
-    const [like,setLike] = useState()
+    const [like, setLike] = useState();
+    const [showHeader, setShowHeader] = useState(true);
+    const lastScrollY = useRef(0);
+
+    const handleScroll = (event) => {
+        const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
+        const currentY = contentOffset.y;
+        const isCloseToBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
+
+        if (currentY > lastScrollY.current && currentY > 50) {
+            setShowHeader(false);
+        } else if (currentY < lastScrollY.current && !isCloseToBottom) {
+            setShowHeader(true);
+        }
+        lastScrollY.current = currentY;
+    };
 
     useEffect(() => {
         const foodInfo = async () => {
@@ -33,7 +48,7 @@ const FoodDetail = () => {
                     },
                     body: JSON.stringify({
                         foodId: foodId,
-                        clerkId : userId,
+                        clerkId: userId,
                     }),
                 });
 
@@ -58,28 +73,28 @@ const FoodDetail = () => {
 
     const handleLike = async () => {
 
-        const newLike = !like; 
+        const newLike = !like;
         setLike(newLike);
-    
+
         try {
-    
-          const res = await fetch(`${API_URL}/user/update_favourite`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              foodId: foodId,
-              clerkId : userId,
-              userLike : newLike,
-            }),
-          });
-    
+
+            const res = await fetch(`${API_URL}/user/update_favourite`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    foodId: foodId,
+                    clerkId: userId,
+                    userLike: newLike,
+                }),
+            });
+
         } catch (error) {
-          console.error('Error completing profile:', error);
-          Alert.alert('Đã xảy ra lỗi');
+            console.error('Error completing profile:', error);
+            Alert.alert('Đã xảy ra lỗi');
         }
-      };
+    };
 
 
     if (!dataFood.length) {
@@ -88,8 +103,8 @@ const FoodDetail = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20, minHeight: '88%' }}>
 
+            {showHeader && (
                 <View style={styles.header}>
                     <View style={{ display: 'flex', gap: '8', flexDirection: 'row', alignItems: 'center' }}>
                         <TouchableOpacity onPress={() => router.back()} style={styles.button}><Ionicons name="chevron-back" size={22} color="#000000d5" /></TouchableOpacity>
@@ -97,6 +112,9 @@ const FoodDetail = () => {
                     </View>
                     <TouchableOpacity style={styles.button} onPress={handleLike}><Ionicons name="heart" size={22} color={like ? "red" : "#c8c8c8d5"} /></TouchableOpacity>
                 </View>
+            )}
+
+            <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }} onScroll={handleScroll}>
 
                 <View style={styles.foodCard}>
                     <Image source={Logo} style={styles.Img}></Image>
@@ -153,7 +171,7 @@ const FoodDetail = () => {
                     </TouchableOpacity>
                 </View>
                 <View>
-                    <TouchableOpacity style={styles.addToCartButton} onPress={()=>{dispatch(addFoodToCart({ item : dataFood[0],count: quantity}))}}>
+                    <TouchableOpacity style={styles.addToCartButton} onPress={() => { dispatch(addFoodToCart({ item: dataFood[0], count: quantity })) }}>
                         <Text style={styles.addToCartText}>Add To Cart</Text>
                     </TouchableOpacity>
                 </View>
@@ -187,7 +205,10 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        paddingLeft: 20,
+        paddingRight: 20,
+        marginBottom: 10
     },
     buttonContainer: {
         minHeight: '12%',
@@ -220,7 +241,7 @@ const styles = StyleSheet.create({
         borderRadius: 36,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 68,
+        marginTop: 58,
         shadowColor: '#000',
         shadowOpacity: 0.15,
         shadowRadius: 8,

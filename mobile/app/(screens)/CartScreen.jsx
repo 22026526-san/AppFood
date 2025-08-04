@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, TextInput, KeyboardAvoidingView, Platform } from 'react-native'
-import React, { useEffect, useContext, useState } from 'react'
+import React, { useEffect, useContext, useState, useRef } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -13,9 +13,25 @@ const CartScreen = () => {
 
   const router = useRouter();
   const [voucher, setVoucher] = useState('')
-  const [discount,setDiscount] = useState(0)
+  const [discount, setDiscount] = useState(0)
   const CartFood = useSelector((state) => state.cart.items)
   const { userId } = useAuth();
+  const [showHeader, setShowHeader] = useState(true);
+  const lastScrollY = useRef(0);
+
+  const handleScroll = (event) => {
+    const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
+    const currentY = contentOffset.y;
+    const isCloseToBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
+
+    if (currentY > lastScrollY.current && currentY > 50) {
+      setShowHeader(false);
+    } else if (currentY < lastScrollY.current && !isCloseToBottom) {
+      setShowHeader(true);
+    }
+    lastScrollY.current = currentY;
+  };
+
   const TotalPrice = (products) => {
     return products.reduce((total, product) => {
       return total + (product.price * product.quantity);
@@ -36,18 +52,18 @@ const CartScreen = () => {
         }),
       });
       const json = await res.json();
-  
+
       if (!json.success) {
         Alert.alert('Mã giảm giá đã hết hạn hoặc nhập không đúng');
         return;
       }
 
-      if((json.message[0].discount_percent/100) * TotalPrice(CartFood) > json.message[0].max_discount){
+      if ((json.message[0].discount_percent / 100) * TotalPrice(CartFood) > json.message[0].max_discount) {
         setDiscount(json.message[0].max_discount)
       } else {
-        setDiscount((json.message[0].discount_percent/100) * TotalPrice(CartFood) )
+        setDiscount((json.message[0].discount_percent / 100) * TotalPrice(CartFood))
       }
-      
+
 
     } catch (error) {
       console.error('Error completing profile:', error);
@@ -65,11 +81,11 @@ const CartScreen = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          clerkId : userId,
-          cart : CartFood
+          clerkId: userId,
+          cart: CartFood
         }),
       });
-  
+
     } catch (error) {
       console.error('Error completing profile:', error);
     }
@@ -78,11 +94,11 @@ const CartScreen = () => {
   if (CartFood.length === 0) {
     return (
       <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => { router.back(), handleSaveCart() }} style={styles.button}><Ionicons name="chevron-back" size={22} color="#ffffffff" /></TouchableOpacity>
+          <Text style={{ fontSize: 22, color: '#ffffffff', fontWeight: 'bold' }}>Cart</Text>
+        </View>
         <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }}>
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => {router.back(),handleSaveCart()}} style={styles.button}><Ionicons name="chevron-back" size={22} color="#ffffffff" /></TouchableOpacity>
-            <Text style={{ fontSize: 22, color: '#ffffffff', fontWeight: 'bold' }}>Cart</Text>
-          </View>
 
           <View style={{ marginTop: 286, justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ fontSize: 22, color: '#ffffffff' }} >There are no food in the cart.</Text>
@@ -95,12 +111,15 @@ const CartScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20, minHeight: '70%' }}>
 
+      {showHeader && (
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => {router.back();handleSaveCart()}} style={styles.button}><Ionicons name="chevron-back" size={22} color="#ffffffff" /></TouchableOpacity>
+          <TouchableOpacity onPress={() => { router.back(), handleSaveCart() }} style={styles.button}><Ionicons name="chevron-back" size={22} color="#ffffffff" /></TouchableOpacity>
           <Text style={{ fontSize: 22, color: '#ffffffff', fontWeight: 'bold' }}>Cart</Text>
         </View>
+      )}
+
+      <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20}} onScroll={handleScroll}>
 
         <CartItem data={CartFood}></CartItem>
 
@@ -155,7 +174,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10
+    gap: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    marginBottom: 10
   },
   buttonContainer: {
     minHeight: '30%',
