@@ -119,7 +119,7 @@ const CartScreen = () => {
         </View>
       )}
 
-      <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20}} onScroll={handleScroll}>
+      <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }} onScroll={handleScroll}>
 
         <CartItem data={CartFood}></CartItem>
 
@@ -152,7 +152,12 @@ const CartScreen = () => {
               <Text style={{ fontSize: 16, color: '#3838385f' }}>Total: </Text>
               <Text style={{ fontSize: 26 }}>{(TotalPrice(CartFood) - discount).toLocaleString('VND')}</Text>
             </View>
-            <TouchableOpacity activeOpacity={0.7} style={styles.buttonSubmit}>
+            <TouchableOpacity activeOpacity={0.7} style={styles.buttonSubmit} onPress={() => {
+              handleSaveCart(); router.push({
+                pathname: '/OrderOptionsScreen',
+                params: { discount: discount , voucher : voucher}
+              })
+            }}>
               <Text style={{ color: '#fffffffb', fontWeight: 'bold' }}>ORDER</Text>
             </TouchableOpacity>
           </View>

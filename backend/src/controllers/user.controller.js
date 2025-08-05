@@ -134,10 +134,10 @@ export const saveCart = async (req, res) => {
     await pool.promise().query("DELETE FROM cart WHERE clerk_id = ?", [clerkId]);
 
    
-    const values = cart.map(item => [clerkId, item.food_id, item.quantity]);
+    const values = cart.map(item => [clerkId, item.food_id, item.quantity,item.price]);
     if (values.length > 0) {
       await pool.promise().query(
-        "INSERT INTO cart (clerk_id, food_id, quantity) VALUES ?",
+        "INSERT INTO cart (clerk_id, food_id, quantity,price) VALUES ?",
         [values]
       );
     }
@@ -199,12 +199,32 @@ export const getVouchers = async (req, res) => {
       .promise()
       .query(`SELECT *
               FROM vouchers v
-              WHERE v.id NOT IN (
-              SELECT uv.voucher_id
-              FROM user_vouchers uv
-              WHERE uv.clerk_id = ? );`, [clerkId]);
+              WHERE v.code NOT IN (
+              SELECT o.voucher_code
+              FROM orders o
+              WHERE o.clerk_id = ? )
+              AND CURDATE() BETWEEN v.start_date AND v.end_date;`, [clerkId]);
 
     res.json({ success: true, message: vouchers });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const OrderFood = async (req, res) => {
+  const { clerkId, order_type, text , discount, payment, voucher } = req.body;
+
+  if (!clerkId || !order_type || !text || !discount || !payment || !voucher) {
+    return res.status(400).json({ error: "Invalid data" });
+  }
+
+  try {
+    
+    const orders = await pool
+      .promise()
+      .query(`CALL process_order_food(?,?,?,?,?,?);`, [clerkId, order_type, text , discount, payment, voucher]);
+
+    res.json({ success: true, message: "Đặt hàng thành công" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

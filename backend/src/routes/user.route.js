@@ -1,6 +1,6 @@
 import express from 'express';
 import {upload} from '../middlewares/upload.js'
-import { updateUser, getUserInfo ,updateImgUser, updateFavourite, saveCart, setUserCart, getFavourites, getVouchers} from '../controllers/user.controller.js'; 
+import { updateUser, getUserInfo ,updateImgUser, updateFavourite, saveCart, setUserCart, getFavourites, getVouchers, OrderFood} from '../controllers/user.controller.js'; 
 const router = express.Router();
 
 router.post('/user/update_user', updateUser);
@@ -11,4 +11,5 @@ router.post('/user/save_cart',saveCart);
 router.post('/user/set_cart',setUserCart);
 router.post('/user/set_favourite',getFavourites);
 router.post('/user/get_vouchers',getVouchers);
+router.post('/user/order_foods',OrderFood);
 export default router;
