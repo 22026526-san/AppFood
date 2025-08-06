@@ -94,11 +94,14 @@ const VoucherScreen = () => {
           </View>
 
           <View>
-            <TouchableOpacity onPress={() => router.push('/SearchScreen')} style={styles.buttonSearch}><Ionicons name="search" size={20} color="#ffffffd5" /></TouchableOpacity>
+            <TouchableOpacity style={styles.buttonSearch} onPress={() => router.push({
+              pathname: '/SearchScreen',
+              params: { data_search: [], text_search: '' }
+            })}><Ionicons name="search" size={20} color="#ffffffd5" /></TouchableOpacity>
           </View>
         </View>
       )}
-      <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }} onScroll={handleScroll}> 
+      <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }} onScroll={handleScroll}>
 
         <View style={{ marginTop: 22 }}>
           <VoucherCard data={data}></VoucherCard>

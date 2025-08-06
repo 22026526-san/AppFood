@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, TextInput, KeyboardAvoidingView, Platform } from 'react-native'
-import React, { useEffect, useContext, useState,useRef } from 'react'
+import React, { useEffect, useContext, useState, useRef } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -96,11 +96,14 @@ const FavouriteScreen = () => {
           </View>
 
           <View>
-            <TouchableOpacity onPress={() => router.push('/SearchScreen')} style={styles.buttonSearch}><Ionicons name="search" size={20} color="#ffffffd5" /></TouchableOpacity>
+            <TouchableOpacity style={styles.buttonSearch} onPress={() => router.push({
+              pathname: '/SearchScreen',
+              params: { data_search: [], text_search: '' }
+            })} ><Ionicons name="search" size={20} color="#ffffffd5" /></TouchableOpacity>
           </View>
         </View>
       )}
-      <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20}} onScroll={handleScroll}>
+      <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }} onScroll={handleScroll}>
 
         <View style={{ marginTop: 22 }}>
           <FoodCard data={data}></FoodCard>

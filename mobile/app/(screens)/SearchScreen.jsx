@@ -1,18 +1,22 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native'
-import React, { useEffect, useContext, useState,useRef } from 'react'
+import React, { useEffect, useContext, useState, useRef } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { API_URL } from '@env'
 import TopRateCard from '../../components/TopRateCard';
-import Logo from '../../assets/fast-food.png'
 import LoadingScreen from '../../components/LoadingScreen';
 import { useSelector } from 'react-redux';
+import FoodCard from '../../components/FoodCard';
+import { useLocalSearchParams } from 'expo-router';
 
 const SearchScreen = () => {
 
+
   const router = useRouter();
+  const { data_search, text_search } = useLocalSearchParams();
   const [search, setSearch] = useState();
+  const [dataSearch, setDataSearch] = useState([]);
   const CartFood = useSelector((state) => state.cart.items)
 
   const [data, setData] = useState([]);
@@ -54,6 +58,45 @@ const SearchScreen = () => {
   useEffect(() => {
     popular()
   }, []);
+
+  useEffect(() => {
+    if (data_search.length === 0) {
+      setDataSearch(data_search);
+      setSearch(text_search);
+    } else {
+      setDataSearch(JSON.parse(data_search));
+      setSearch(text_search);
+    }
+  }, [data_search]);
+
+  const handleSearch = async () => {
+
+    try {
+
+      const res = await fetch(`${API_URL}/food/search`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          search: search,
+        }),
+      });
+      const json = await res.json();
+
+      if (!json.success) {
+        Alert.alert('Không tìm thấy sản phẩm');
+        return;
+      }
+
+      setDataSearch(json.message)
+
+
+    } catch (error) {
+      console.error('Error completing:', error);
+      Alert.alert('Đã xảy ra lỗi');
+    }
+  };
 
 
   if (!data.length) {
@@ -98,7 +141,7 @@ const SearchScreen = () => {
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingLeft: 20, paddingRight: 20 }} onScroll={handleScroll}>
 
         <View style={styles.contenSearch}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleSearch}>
             <Ionicons name="search" size={23} color="#2521213c"></Ionicons>
           </TouchableOpacity>
           <TextInput
@@ -109,36 +152,53 @@ const SearchScreen = () => {
           </TextInput>
         </View>
 
-        <View style={styles.contentCategory}>
+        {dataSearch.length === 0 && (
+          <>
+            <View style={styles.contentCategory}>
 
-          <Text style={{ fontSize: 18, color: '#000000be', marginBottom: 22 }}>Recent Keywords</Text>
+              <Text style={{ fontSize: 18, color: '#000000be', marginBottom: 22 }}>Recent Keywords</Text>
 
 
-          <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 5 }}
-            horizontal
-            showsHorizontalScrollIndicator={false}>
-            {keyword.map((item) => (
-              <View key={item.id} style={styles.card}>
-                <TouchableOpacity onPress={() => setSearch(item.name)}>
-                  <Text style={{ fontSize: 15 }}>{item.name}</Text>
-                </TouchableOpacity>
+              <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 5 }}
+                horizontal
+                showsHorizontalScrollIndicator={false}>
+                {keyword.map((item) => (
+                  <View key={item.id} style={styles.card}>
+                    <TouchableOpacity onPress={() => setSearch(item.name)}>
+                      <Text style={{ fontSize: 15 }}>{item.name}</Text>
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </ScrollView>
+
+
+            </View>
+
+            <View style={styles.contentCategory}>
+
+              <Text style={{ fontSize: 18, color: '#000000be' }}>Popular Fast Food</Text>
+
+
+              <View style={{ marginTop: 22 }}>
+                <TopRateCard data={data}></TopRateCard>
               </View>
-            ))}
-          </ScrollView>
+
+            </View>
+          </>
+        )}
+
+        {dataSearch.length !== 0 && (
+          <View style={styles.contentCategory}>
+
+            <Text style={{ fontSize: 18, color: '#000000be' }}>Kết quả tìm kiếm cho : '{search}'</Text>
 
 
-        </View>
+            <View style={{ marginTop: 22 }}>
+              <FoodCard data={dataSearch}></FoodCard>
+            </View>
 
-        <View style={styles.contentCategory}>
-
-          <Text style={{ fontSize: 18, color: '#000000be' }}>Popular Fast Food</Text>
-
-
-          <View style={{ marginTop: 22 }}>
-            <TopRateCard data={data}></TopRateCard>
           </View>
-
-        </View>
+        )}
 
 
       </ScrollView>

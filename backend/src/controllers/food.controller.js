@@ -261,3 +261,33 @@ export const getVouchers = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 }
+
+export const SearchFood = async (req, res) => {
+  const { search } = req.body;
+
+  if (!search) {
+    return res.status(400).json({ error: "Invalid data" });
+  }
+
+  try {
+    
+    const query = 
+    `SELECT 
+    f.food_id,
+    f.food_name,
+    f.price,
+    f.image_url
+    FROM food f 
+    where f.food_name like ? `
+    const card = await new Promise((resolve, reject) => {
+            pool.query(query,[`%${search}%`],(err, results) => {
+                if (err) return reject(err);
+                resolve(results);
+            });
+        });
+
+    res.json({ success: true, message: card });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

@@ -157,14 +157,19 @@ const OrderOptionsScreen = () => {
                 </View>
 
                 {CartFood.map((item) => (
-                    <View key={item.food_id} style={styles.info}>
+                    <TouchableOpacity key={item.food_id} style={styles.info} onPress={() => router.push(
+                        {
+                            pathname: '/FoodDetail',
+                            params: { foodId: item.food_id }
+                        }
+                    )}>
 
                         <Image source={Logo} style={styles.image} resizeMode='cover'></Image>
                         <Text style={styles.quantity}>{item.quantity} x</Text>
                         <Text style={styles.name}>{item.food_name}</Text>
                         <Text style={styles.price}>{(item.price * 1).toLocaleString('VND')}</Text>
 
-                    </View>
+                    </TouchableOpacity>
                 ))}
 
                 <View style={{ marginTop: 22 }}>

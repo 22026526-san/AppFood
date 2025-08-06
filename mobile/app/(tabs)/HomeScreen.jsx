@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native'
 import React, { useState, useEffect, useRef } from 'react'
 import { useAuth } from '@clerk/clerk-expo';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -20,7 +20,7 @@ import { useSelector } from 'react-redux';
 const HomeScreen = () => {
   const { userId } = useAuth();
   const router = useRouter();
-  const [search, setSearch] = useState();
+  const [search, setSearch] = useState('');
   const [dataCard, setDataCard] = useState([]);
   const [dataRate, setDataRate] = useState([]);
   const CartFood = useSelector((state) => state.cart.items);
@@ -74,6 +74,38 @@ const HomeScreen = () => {
     apiFoodCard()
   }, []);
 
+  const handleSearch = async () => {
+
+    try {
+
+      const res = await fetch(`${API_URL}/food/search`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          search: search,
+        }),
+      });
+      const json = await res.json();
+  
+      if (!json.success) {
+        Alert.alert('Không tìm thấy sản phẩm');
+        return;
+      }
+
+      router.push({
+        pathname: '/SearchScreen',
+        params: { data_search: JSON.stringify(json.message), text_search: search }
+      })
+
+
+    } catch (error) {
+      console.error('Error completing:', error);
+      Alert.alert('Đã xảy ra lỗi');
+    }
+  };
+
 
   if (!dataRate.length || !dataCard.length) {
     return <LoadingScreen />;
@@ -106,8 +138,11 @@ const HomeScreen = () => {
       )}
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingLeft: 20, paddingRight: 20 }} onScroll={handleScroll}>
 
-        <TouchableOpacity style={styles.contenSearch} onPress={() => router.push('/SearchScreen')}>
-          <TouchableOpacity>
+        <TouchableOpacity style={styles.contenSearch} onPress={() => router.push({
+          pathname: '/SearchScreen',
+          params: { data_search: [], text_search: search }
+        })}>
+          <TouchableOpacity onPress={handleSearch}>
             <Ionicons name="search" size={23} color="#2521213c"></Ionicons>
           </TouchableOpacity>
           <TextInput

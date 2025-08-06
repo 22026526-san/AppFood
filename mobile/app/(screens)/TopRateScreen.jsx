@@ -69,7 +69,10 @@ const TopRateScreen = () => {
                     </View>
 
                     <View>
-                        <TouchableOpacity onPress={() => router.push('/SearchScreen')} style={styles.buttonSearch}><Ionicons name="search" size={20} color="#ffffffd5" /></TouchableOpacity>
+                        <TouchableOpacity style={styles.buttonSearch} onPress={() => router.push({
+                            pathname: '/SearchScreen',
+                            params: { data_search: [], text_search: '' }
+                        })}><Ionicons name="search" size={20} color="#ffffffd5" /></TouchableOpacity>
                     </View>
                 </View>
             )}

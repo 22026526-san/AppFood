@@ -31,7 +31,7 @@ const FoodCard = (props) => {
     return (
         <FlatList
             data={props.data}
-            keyExtractor={(item) => item.food_id.toString()}
+            keyExtractor={(item,index) => `${index}`}
             renderItem={renderItem}
             numColumns={2}
             contentContainerStyle={{ padding: 5}}

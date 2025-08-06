@@ -23,7 +23,7 @@ const CategoriDetail = () => {
         const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
         const currentY = contentOffset.y;
         const isCloseToBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
-        
+
         if (currentY > lastScrollY.current && currentY > 50) {
             setShowHeader(false);
         } else if (currentY < lastScrollY.current && !isCloseToBottom) {
@@ -78,11 +78,14 @@ const CategoriDetail = () => {
                     </View>
 
                     <View>
-                        <TouchableOpacity onPress={() => router.push('/SearchScreen')} style={styles.buttonSearch}><Ionicons name="search" size={20} color="#ffffffd5" /></TouchableOpacity>
+                        <TouchableOpacity style={styles.buttonSearch} onPress={() => router.push({
+                            pathname: '/SearchScreen',
+                            params: { data_search: [], text_search: '' }
+                        })} ><Ionicons name="search" size={20} color="#ffffffd5" /></TouchableOpacity>
                     </View>
                 </View>
             )}
-            <ScrollView contentContainerStyle={{ flexGrow: 1, paddingLeft: 20, paddingRight: 20 , marginBottom:20}} onScroll={handleScroll}>
+            <ScrollView contentContainerStyle={{ flexGrow: 1, paddingLeft: 20, paddingRight: 20, marginBottom: 20 }} onScroll={handleScroll}>
 
                 <View style={styles.contentCategory}>
 
