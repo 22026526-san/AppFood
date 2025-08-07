@@ -202,7 +202,8 @@ export const getVouchers = async (req, res) => {
               WHERE v.code NOT IN (
               SELECT o.voucher_code
               FROM orders o
-              WHERE o.clerk_id = ? )
+              WHERE o.clerk_id = ?
+              AND o.voucher_code IS NOT NULL )
               AND CURDATE() BETWEEN v.start_date AND v.end_date;`, [clerkId]);
 
     res.json({ success: true, message: vouchers });

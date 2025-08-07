@@ -19,10 +19,12 @@ const HisCard = (props) => {
   return (
     <>
       {props.data.map((item) => (
-        <TouchableOpacity key={item.order_id} style={styles.container} onPress={()=>{router.push({
-          pathname: '/OrderDetailScreen',
-          params: { data: JSON.stringify(item), discount: TotalPrice(item.order_detail) - item.total_price ,action:'re_order'}
-        })}}>
+        <TouchableOpacity key={item.order_id} style={styles.container} onPress={() => {
+          router.push({
+            pathname: '/OrderDetailScreen',
+            params: { data: JSON.stringify(item), discount: TotalPrice(item.order_detail) - item.total_price, action: 're_order' }
+          })
+        }}>
           <View style={{ display: 'flex', flexDirection: 'row', gap: 16, alignItems: 'center' }}>
             <Text style={{ fontSize: 18 }}>Food</Text>
             <Text style={{ fontSize: 18, color: item.status === 'completed' ? 'green' : 'red' }}>{item.status}</Text>
@@ -49,7 +51,10 @@ const HisCard = (props) => {
             </View>
           </View>
           <View style={styles.buttonRow}>
-            <TouchableOpacity style={styles.cancelBtn} >
+            <TouchableOpacity style={styles.cancelBtn} onPress={() => router.push({
+              pathname: '/RateScreen',
+              params: { data: JSON.stringify(item)}
+            })}>
               <Text style={styles.cancelText}>Rate</Text>
             </TouchableOpacity>
 

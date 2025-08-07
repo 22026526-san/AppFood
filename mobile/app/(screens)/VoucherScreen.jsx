@@ -75,7 +75,7 @@ const VoucherScreen = () => {
         <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }}>
 
           <View style={{ marginTop: 286, justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ fontSize: 18, color: '#ff5e00b0' }} >There are no food in your collection.</Text>
+            <Text style={{ fontSize: 18, color: '#ff5e00b0' }} >There are no vouchers in your collection.</Text>
           </View>
 
         </ScrollView>
