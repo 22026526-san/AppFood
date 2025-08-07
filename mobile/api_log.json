@@ -1,10 +1,110 @@
+[
+    {
+    "address": null,
+    "clerk_id": "user_30K35tV3EgR5Hk3dnjCdlEuLgMP",
+    "created_at": "2025-08-05T16:58:47.000Z",
+    "order_detail": [
+        {
+            "food_id": 1,
+            "food_name": "Classic Beef Burger",
+            "image_url": null,
+            "quantity": 1,
+            "unit_price": "55000.00"
+        },
+        {
+            "food_id": 2,
+            "food_name": "Cheese Burger",
+            "image_url": null,
+            "quantity": 1,
+            "unit_price": "60000.00"
+        },
+        {
+            "food_id": 5,
+            "food_name": "Chicken Burger",
+            "image_url": null,
+            "quantity": 2,
+            "unit_price": "50000.00"
+        }
+    ],
+    "order_id": 1,
+    "order_type": "at_store",
+    "payment_method": "online",
+    "status": "pending",
+    "status_payment": "no",
+    "table_number": "15",
+    "total_price": "193500.00",
+    "voucher_code": "SUMMER10"
+},
 {
-    "category_id": 1,
-    "description": "Crispy bacon layered over a savory beef patty, combined with cheddar cheese, lettuce, and our smoky BBQ sauce for the ultimate taste.",
-    "food_id": 3,
-    "food_name": "Bacon Burger",
-    "food_rate": 0,
-    "price": "65000.00",
-    "sum_rate": 0,
-    "sum_star": 0
+    "address": null,
+    "clerk_id": "user_30K35tV3EgR5Hk3dnjCdlEuLgMP",
+    "created_at": "2025-08-05T16:58:47.000Z",
+    "order_detail": [
+        {
+            "food_id": 1,
+            "food_name": "Classic Beef Burger",
+            "image_url": null,
+            "quantity": 1,
+            "unit_price": "55000.00"
+        },
+        {
+            "food_id": 2,
+            "food_name": "Cheese Burger",
+            "image_url": null,
+            "quantity": 1,
+            "unit_price": "60000.00"
+        },
+        {
+            "food_id": 5,
+            "food_name": "Chicken Burger",
+            "image_url": null,
+            "quantity": 2,
+            "unit_price": "50000.00"
+        }
+    ],
+    "order_id": 1,
+    "order_type": "at_store",
+    "payment_method": "online",
+    "status": "canceled",
+    "status_payment": "no",
+    "table_number": "15",
+    "total_price": "193500.00",
+    "voucher_code": "SUMMER10"
+},
+{
+    "address": null,
+    "clerk_id": "user_30K35tV3EgR5Hk3dnjCdlEuLgMP",
+    "created_at": "2025-08-05T16:58:47.000Z",
+    "order_detail": [
+        {
+            "food_id": 1,
+            "food_name": "Classic Beef Burger",
+            "image_url": null,
+            "quantity": 1,
+            "unit_price": "55000.00"
+        },
+        {
+            "food_id": 2,
+            "food_name": "Cheese Burger",
+            "image_url": null,
+            "quantity": 1,
+            "unit_price": "60000.00"
+        },
+        {
+            "food_id": 5,
+            "food_name": "Chicken Burger",
+            "image_url": null,
+            "quantity": 2,
+            "unit_price": "50000.00"
+        }
+    ],
+    "order_id": 1,
+    "order_type": "at_store",
+    "payment_method": "online",
+    "status": "completed",
+    "status_payment": "no",
+    "table_number": "15",
+    "total_price": "193500.00",
+    "voucher_code": "SUMMER10"
 }
+]

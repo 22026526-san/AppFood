@@ -14,7 +14,7 @@ const ProfileScreen = () => {
   const router = useRouter();
   const { signOut } = useClerk();
   const { userId } = useAuth();
-  const { setName, setPhone, setUser, name, phone, imgUser, setImgUser } = useContext(UserContext);
+  const { name, phone, imgUser } = useContext(UserContext);
   const [showHeader, setShowHeader] = useState(true);
   const lastScrollY = useRef(0);
 
@@ -40,35 +40,6 @@ const ProfileScreen = () => {
     }
   }
 
-  useEffect(() => {
-    const userInfo = async () => {
-      try {
-
-        const res = await fetch(`${API_URL}/user/user_info`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            clerkId: userId,
-          }),
-        });
-
-        const result = await res.json();
-
-        setPhone(result.user.phone)
-        setUser(result.user.user_id)
-        setName(result.user.user_name)
-        setImgUser(result.user.img)
-
-      } catch (err) {
-        console.error('Lỗi khi lấy thông tin user:', err);
-      }
-    };
-    if (userId) {
-      userInfo();
-    }
-  }, [userId]);
 
   return (
     <SafeAreaView style={styles.container}>

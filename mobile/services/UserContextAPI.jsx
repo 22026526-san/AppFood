@@ -74,6 +74,36 @@ export const UserProvider = ({ children }) => {
     }
   }, [userId]);
 
+  useEffect(() => {
+    const userInfo = async () => {
+      try {
+
+        const res = await fetch(`${API_URL}/user/user_info`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            clerkId: userId,
+          }),
+        });
+
+        const result = await res.json();
+
+        setPhone(result.user.phone)
+        setUser(result.user.user_id)
+        setName(result.user.user_name)
+        setImgUser(result.user.img)
+
+      } catch (err) {
+        console.error('Lỗi khi lấy thông tin user:', err);
+      }
+    };
+    if (userId) {
+      userInfo();
+    }
+  }, [userId]);
+
 
   return (
     <UserContext.Provider value={{ user, setUser, setIsSignUp ,phone,name,setPhone,setName,imgUser,setImgUser}}>
