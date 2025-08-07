@@ -49,12 +49,13 @@ const CartScreen = () => {
         },
         body: JSON.stringify({
           voucher_code: voucher,
+          clerkId : userId
         }),
       });
       const json = await res.json();
-
+      console.log(json)
       if (!json.success) {
-        Alert.alert('Mã giảm giá đã hết hạn hoặc nhập không đúng');
+        Alert.alert('voucher đã được sử dụng hoặc đã hết hạn');
         return;
       }
 
