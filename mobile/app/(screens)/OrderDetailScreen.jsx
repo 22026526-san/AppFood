@@ -180,7 +180,9 @@ const OrderDetailScreen = () => {
                         <Text style={styles.totalValue}>{(TotalPrice(_data_.order_detail) - discount).toLocaleString('VND')}</Text>
                     </View>
 
-                    <Text style={styles.footer}>Đã bao gồm thuế</Text>
+                    <View style={{width:'100%', alignItems:'flex-end'}}>
+                        <Text style={styles.footer}>Đã bao gồm thuế</Text>
+                    </View>
 
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 22 }}>
                         <Text style={styles.footer}>Mã đơn hàng</Text>
@@ -333,8 +335,7 @@ const styles = StyleSheet.create({
     footer: {
         fontSize: 12,
         color: '#999',
-        marginTop: 4,
-        justifyContent: 'flex-end'
+        marginTop: 4
     },
     buttonContainer: {
         minHeight: '10%',

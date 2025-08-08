@@ -33,7 +33,8 @@ export const getFoodInfo = async (req, res) => {
       `select r.review_id , r.star, r.comment, r.created_at, u.user_name, u.img
           from reviews r 
           inner join users u on r.clerk_id = u.clerk_id 
-          where r.food_id = ?`
+          where r.food_id = ?
+          ORDER BY r.created_at desc;`
     const review = await new Promise((resolve, reject) => {
       pool.query(query_review, [foodId], (err, results) => {
         if (err) return reject(err);
@@ -228,7 +229,8 @@ export const getFoodPopular = async (req, res) => {
     f.food_name,
     f.price,
     f.image_url,
-    r.sum_rate
+    r.sum_rate,
+    r.food_rate
     FROM food f
     INNER JOIN rate r 
     ON f.food_id = r.food_id

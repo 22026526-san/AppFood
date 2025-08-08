@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Modal, FlatList } from 'react-native'
 import React, { useEffect, useContext, useState, useRef } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux';
 import { addFoodToCart } from '../../redux/cartAction';
 import { useAuth } from '@clerk/clerk-expo';
 import ReviewCard from '../../components/ReviewCard';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 
 const FoodDetail = () => {
@@ -24,7 +25,17 @@ const FoodDetail = () => {
     const [like, setLike] = useState();
     const [showHeader, setShowHeader] = useState(true);
     const lastScrollY = useRef(0);
-    const [dataReview, setDataReview] = useState([])
+    const [dataReview, setDataReview] = useState([]);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedStar, setSelectedStar] = useState(null);
+    const [dataFill, setDataFill] = useState([]);
+    const starOptions = [
+        { id: '5', stars: 5 },
+        { id: '4', stars: 4 },
+        { id: '3', stars: 3 },
+        { id: '2', stars: 2 },
+        { id: '1', stars: 1 },
+    ];
 
     const handleScroll = (event) => {
         const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
@@ -38,6 +49,23 @@ const FoodDetail = () => {
         }
         lastScrollY.current = currentY;
     };
+
+    const renderStarOption = ({ item }) => (
+        <TouchableOpacity
+            style={styles.option}
+            onPress={() => setSelectedStar(item.stars)}
+        >
+            <View style={styles.radioCircle}>
+                {selectedStar === item.stars && <View style={styles.selectedRb} />}
+            </View>
+            <Text style={styles.count}>{item.stars}</Text>
+            <View style={styles.starRow}>
+                {Array.from({ length: item.stars }).map((_, i) => (
+                    <Ionicons key={i} name="star" color="#f5a623" size={16} style={{ marginRight: 2 }} />
+                ))}
+            </View>
+        </TouchableOpacity>
+    );
 
     useEffect(() => {
         const foodInfo = async () => {
@@ -63,6 +91,7 @@ const FoodDetail = () => {
                 if (result.success) {
                     setDataFood(result.message.foodInfo);
                     setDataReview(result.message.review);
+                    setDataFill(result.message.review);
                 }
 
             } catch (err) {
@@ -154,9 +183,22 @@ const FoodDetail = () => {
 
                     {dataReview.length !== 0 && (
                         <>
-                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000c8', marginTop: '22' }}>Reviews</Text>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 22 }}>
+                                <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000c8' }}>Reviews</Text>
+                                <TouchableOpacity onPress={() => setModalVisible(true)}>
+                                    <Ionicons name="caret-down" color={'#ff5e00b0'} size={18} />
+                                </TouchableOpacity>
+                            </View>
 
-                            <ReviewCard data={dataReview} />
+                            {dataFill.length === 0 && (
+                                <View style={{ height: 86, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Text>Chưa có đánh giá nào</Text>
+                                </View>
+                            )}
+
+                            {dataFill.length !== 0 && (
+                                <ReviewCard data={dataFill} />
+                            )}
                         </>
                     )}
 
@@ -188,6 +230,37 @@ const FoodDetail = () => {
                     </TouchableOpacity>
                 </View>
             </View>
+            {modalVisible && (
+                <View style={{ padding: 20 }}>
+
+                    <Modal visible={modalVisible} animationType="slide" transparent>
+                        <View style={styles.modalWrapper}>
+                            <View style={styles.modalContainer}>
+                                <FlatList
+                                    data={starOptions}
+                                    keyExtractor={(item) => item.id}
+                                    renderItem={renderStarOption}
+                                />
+
+                                <View style={styles.buttonRow}>
+                                    <TouchableOpacity onPress={() => {
+                                        setSelectedStar(null);
+                                        setModalVisible(false);
+                                        setDataFill(dataReview);
+                                    }} style={styles.clearButton}>
+                                        <Text style={{ color: '#f4511e' }}>Bỏ lọc</Text>
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity onPress={() => { setModalVisible(false), setDataFill(dataReview.filter((i) => i.star === selectedStar)) }} style={styles.okButton}>
+                                        <Text style={{ color: 'white' }}>Đồng ý</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
+                    
+                </View>
+            )}
         </SafeAreaView>
     )
 }
@@ -292,6 +365,64 @@ const styles = StyleSheet.create({
         padding: 10,
         justifyContent: 'center',
         alignItems: 'center'
-    }
+    },
+    modalWrapper: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        backgroundColor: 'rgba(0,0,0,0.4)',
+    },
+    modalContainer: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderTopRightRadius: 20,
+        borderTopLeftRadius: 20,
+    },
+    option: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 15,
+        gap: 8
+    },
+    radioCircle: {
+        height: 18,
+        width: 18,
+        borderRadius: 9,
+        borderWidth: 2,
+        borderColor: '#f4511e',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 10,
+    },
+    selectedRb: {
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+        backgroundColor: '#f4511e',
+    },
+    starRow: {
+        flexDirection: 'row',
+        marginRight: 10,
+    },
+    buttonRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 20,
+    },
+    clearButton: {
+        borderWidth: 1,
+        borderColor: '#f4511e',
+        padding: 10,
+        borderRadius: 8,
+        flex: 1,
+        marginRight: 10,
+        alignItems: 'center',
+    },
+    okButton: {
+        backgroundColor: '#f4511e',
+        padding: 10,
+        borderRadius: 8,
+        flex: 1,
+        alignItems: 'center',
+    },
 })
 export default FoodDetail
