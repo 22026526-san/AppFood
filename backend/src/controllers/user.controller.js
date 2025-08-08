@@ -329,3 +329,26 @@ export const cancelOrders = async (req, res) => {
   }
 
 };
+
+export const ReviewsFood = async (req, res) => {
+  const { clerkId, comment,star, item } = req.body;
+
+  if (!clerkId || !Array.isArray(item)||!star) {
+    return res.status(400).json({ error: "Invalid data" });
+  }
+
+  try {
+
+    const values = item.map(i => [clerkId, i.food_id, comment, star]);
+    if (values.length > 0) {
+      await pool.promise().query(
+        "INSERT INTO reviews (clerk_id, food_id, comment,star) VALUES ?",
+        [values]
+      );
+    }
+
+    res.json({ success: true, message: "Đã thêm đánh giá" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

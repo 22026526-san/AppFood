@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState, useRef } from 'react'
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView, KeyboardAvoidingView, Platform,Alert } from 'react-native';
 import Logo from '../../assets/fast-food.png'
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
@@ -43,6 +43,36 @@ const ProductReviewScreen = () => {
             setShowHeader(true);
         }
         lastScrollY.current = currentY;
+    };
+
+    const handleSubmit = async () => {
+
+        try {
+
+            const res = await fetch(`${API_URL}/user/review_foods`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    clerkId: userId,
+                    comment: review,
+                    star:rating,
+                    item : _data_.order_detail
+                }),
+            });
+            const json = await res.json();
+            console.log(json)
+            if (json.success) {
+                Alert.alert('Hủy đơn hàng thành công');
+                props.onUpdate()
+                return;
+            }
+
+        } catch (error) {
+            console.error('Error completing profile:', error);
+            Alert.alert('Đã xảy ra lỗi');
+        }
     };
 
 
@@ -142,7 +172,7 @@ const ProductReviewScreen = () => {
             </KeyboardAvoidingView>
 
             <View style={styles.footer}>
-                <TouchableOpacity style={styles.submitButton}>
+                <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
                     <Text style={styles.submitButtonText}>Gửi</Text>
                 </TouchableOpacity>
             </View>
@@ -317,12 +347,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         gap: 5,
-        borderWidth:1,
-        padding:5,
-        marginTop:22,
-        borderColor:'#cecece86',
-        borderRadius:5,
-        marginBottom:22
+        borderWidth: 1,
+        padding: 5,
+        marginTop: 22,
+        borderColor: '#cecece86',
+        borderRadius: 5,
+        marginBottom: 22
     },
     tag: {
         paddingHorizontal: 12,

@@ -10,6 +10,7 @@ import LoadingScreen from '../../components/LoadingScreen';
 import { useDispatch } from 'react-redux';
 import { addFoodToCart } from '../../redux/cartAction';
 import { useAuth } from '@clerk/clerk-expo';
+import ReviewCard from '../../components/ReviewCard';
 
 
 const FoodDetail = () => {
@@ -23,6 +24,7 @@ const FoodDetail = () => {
     const [like, setLike] = useState();
     const [showHeader, setShowHeader] = useState(true);
     const lastScrollY = useRef(0);
+    const [dataReview, setDataReview] = useState([])
 
     const handleScroll = (event) => {
         const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
@@ -59,7 +61,8 @@ const FoodDetail = () => {
                     setLike(false)
                 }
                 if (result.success) {
-                    setDataFood(result.message);
+                    setDataFood(result.message.foodInfo);
+                    setDataReview(result.message.review);
                 }
 
             } catch (err) {
@@ -148,6 +151,15 @@ const FoodDetail = () => {
                         <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000c8' }}>Description</Text>
                         <Text style={{ fontSize: 16, color: '#38383899' }}>{dataFood[0].description}</Text>
                     </View>
+
+                    {dataReview.length !== 0 && (
+                        <>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#000000c8', marginTop: '22' }}>Reviews</Text>
+
+                            <ReviewCard data={dataReview} />
+                        </>
+                    )}
+
 
                 </View>
 

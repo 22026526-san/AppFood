@@ -29,10 +29,22 @@ export const getFoodInfo = async (req, res) => {
       });
     });
 
+    const query_review =
+      `select r.review_id , r.star, r.comment, r.created_at, u.user_name, u.img
+          from reviews r 
+          inner join users u on r.clerk_id = u.clerk_id 
+          where r.food_id = ?`
+    const review = await new Promise((resolve, reject) => {
+      pool.query(query_review, [foodId], (err, results) => {
+        if (err) return reject(err);
+        resolve(results);
+      });
+    });
+
     const queryy =
       `SELECT *
-    from favorites f
-    WHERE f.food_id = ? and f.cleck_id = ?`
+        from favorites f
+        WHERE f.food_id = ? and f.cleck_id = ?`
     const like = await new Promise((resolve, reject) => {
       pool.query(queryy, [foodId, clerkId], (err, results) => {
         if (err) return reject(err);
@@ -44,14 +56,14 @@ export const getFoodInfo = async (req, res) => {
       return res.status(201).json({
         like: false,
         success: true,
-        message: foodInfo
+        message: {foodInfo,review}
       });
     }
 
     return res.status(201).json({
       like: true,
       success: true,
-      message: foodInfo
+      message: {foodInfo,review}
     });
   } catch (error) {
     console.error('Error inserting user:', error);
