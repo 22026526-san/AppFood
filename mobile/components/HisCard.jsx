@@ -1,4 +1,4 @@
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native'
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image,Alert } from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
@@ -51,10 +51,17 @@ const HisCard = (props) => {
             </View>
           </View>
           <View style={styles.buttonRow}>
-            <TouchableOpacity style={styles.cancelBtn} onPress={() => router.push({
-              pathname: '/RateScreen',
-              params: { data: JSON.stringify(item)}
-            })}>
+            <TouchableOpacity style={styles.cancelBtn} onPress={() => {
+              if (item.status === 'canceled') {
+                Alert.alert('Vui lòng mua hàng để thực hiện đánh giá.',);
+                return;
+              }
+
+              router.push({
+                pathname: '/RateScreen',
+                params: { data: JSON.stringify(item) }
+              });
+            }}>
               <Text style={styles.cancelText}>Rate</Text>
             </TouchableOpacity>
 
