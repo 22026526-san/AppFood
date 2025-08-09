@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, TextInput, KeyboardAvoidingView, Platform } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl } from 'react-native'
 import React, { useEffect, useContext, useState, useRef } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -14,6 +14,7 @@ const VoucherScreen = () => {
   const { userId } = useAuth();
   const [showHeader, setShowHeader] = useState(true);
   const lastScrollY = useRef(0);
+  const [refreshing, setRefreshing] = useState(false);
 
   const handleScroll = (event) => {
     const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
@@ -56,6 +57,12 @@ const VoucherScreen = () => {
     setVouchers();
   }, []);
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await setVouchers();
+    setRefreshing(false);
+  };
+
 
   if (data.length === 0) {
     return (
@@ -72,7 +79,10 @@ const VoucherScreen = () => {
             <TouchableOpacity onPress={() => router.push('/SearchScreen')} style={styles.buttonSearch}><Ionicons name="search" size={20} color="#ffffffd5" /></TouchableOpacity>
           </View>
         </View>
-        <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }}>
+        <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
 
           <View style={{ marginTop: 286, justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ fontSize: 18, color: '#ff5e00b0' }} >There are no vouchers in your collection.</Text>
@@ -101,7 +111,10 @@ const VoucherScreen = () => {
           </View>
         </View>
       )}
-      <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }} onScroll={handleScroll}>
+      <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }} onScroll={handleScroll}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
 
         <View style={{ marginTop: 22 }}>
           <VoucherCard data={data}></VoucherCard>

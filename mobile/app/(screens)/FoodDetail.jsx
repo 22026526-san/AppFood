@@ -11,7 +11,6 @@ import { useDispatch } from 'react-redux';
 import { addFoodToCart } from '../../redux/cartAction';
 import { useAuth } from '@clerk/clerk-expo';
 import ReviewCard from '../../components/ReviewCard';
-import DropDownPicker from 'react-native-dropdown-picker';
 
 
 const FoodDetail = () => {

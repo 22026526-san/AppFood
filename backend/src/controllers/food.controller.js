@@ -305,6 +305,9 @@ export const SearchFood = async (req, res) => {
         resolve(results);
       });
     });
+    if (card.length === 0 ) {
+      return res.json({ success: false, message: card });
+    }
 
     res.json({ success: true, message: card });
   } catch (err) {

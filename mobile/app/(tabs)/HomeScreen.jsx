@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Alert, RefreshControl } from 'react-native'
 import React, { useState, useEffect, useRef } from 'react'
 import { useAuth } from '@clerk/clerk-expo';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -26,6 +26,7 @@ const HomeScreen = () => {
   const CartFood = useSelector((state) => state.cart.items);
   const [showHeader, setShowHeader] = useState(true);
   const lastScrollY = useRef(0);
+  const [refreshing, setRefreshing] = useState(false);
 
   const handleScroll = (event) => {
     const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
@@ -74,6 +75,12 @@ const HomeScreen = () => {
     apiFoodCard()
   }, []);
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await apiFoodCard();
+    setRefreshing(false);
+  };
+
   const handleSearch = async () => {
 
     try {
@@ -88,7 +95,7 @@ const HomeScreen = () => {
         }),
       });
       const json = await res.json();
-  
+
       if (!json.success) {
         Alert.alert('Không tìm thấy sản phẩm');
         return;
@@ -136,9 +143,12 @@ const HomeScreen = () => {
           </View>
         </View>
       )}
-      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingLeft: 20, paddingRight: 20 }} onScroll={handleScroll}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingLeft: 20, paddingRight: 20 }} onScroll={handleScroll}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
 
-        <TouchableOpacity style={styles.contenSearch} onPress={() => router.push({
+        <View style={styles.contenSearch} onPress={() => router.push({
           pathname: '/SearchScreen',
           params: { data_search: [], text_search: search }
         })}>
@@ -151,7 +161,7 @@ const HomeScreen = () => {
             onChangeText={(e) => setSearch(e)}
             style={styles.input}>
           </TextInput>
-        </TouchableOpacity>
+        </View>
 
         <View style={styles.contentCategory}>
           <View>

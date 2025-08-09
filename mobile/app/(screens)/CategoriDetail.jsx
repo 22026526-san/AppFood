@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, RefreshControl } from 'react-native'
 import React, { useEffect, useContext, useState, useRef } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,6 +18,7 @@ const CategoriDetail = () => {
     const [dataCateAll, setDataCateAll] = useState([]);
     const [showHeader, setShowHeader] = useState(true);
     const lastScrollY = useRef(0);
+    const [refreshing, setRefreshing] = useState(false);
 
     const handleScroll = (event) => {
         const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
@@ -32,30 +33,37 @@ const CategoriDetail = () => {
         lastScrollY.current = currentY;
     };
 
-    useEffect(() => {
-        const foodInfo = async () => {
-            try {
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await foodInfo();
+        setRefreshing(false);
+    };
 
-                const res = await fetch(`${API_URL}/food/get_food_with_category`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        categoryId: cate_id,
-                    }),
-                });
 
-                const result = await res.json();
-                if (result.success) {
-                    setDataCateAll(result.message.cateAll);
-                    setDataCateTop(result.message.cateRate);
-                }
+    const foodInfo = async () => {
+        try {
 
-            } catch (err) {
-                console.error('Lỗi khi lấy thông tin food:', err);
+            const res = await fetch(`${API_URL}/food/get_food_with_category`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    categoryId: cate_id,
+                }),
+            });
+
+            const result = await res.json();
+            if (result.success) {
+                setDataCateAll(result.message.cateAll);
+                setDataCateTop(result.message.cateRate);
             }
-        };
+
+        } catch (err) {
+            console.error('Lỗi khi lấy thông tin food:', err);
+        }
+    };
+    useEffect(() => {
         if (cate_id) {
             foodInfo();
         }
@@ -85,7 +93,10 @@ const CategoriDetail = () => {
                     </View>
                 </View>
             )}
-            <ScrollView contentContainerStyle={{ flexGrow: 1, paddingLeft: 20, paddingRight: 20, marginBottom: 20 }} onScroll={handleScroll}>
+            <ScrollView contentContainerStyle={{ flexGrow: 1, paddingLeft: 20, paddingRight: 20, marginBottom: 20 }} onScroll={handleScroll}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }>
 
                 <View style={styles.contentCategory}>
 

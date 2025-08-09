@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, RefreshControl } from 'react-native'
 import React, { useEffect, useContext, useRef, useState } from 'react'
 import { useUser } from '@clerk/clerk-react';
 import { Ionicons } from '@expo/vector-icons';
@@ -22,6 +22,7 @@ const OrderScreen = () => {
   const [isOngoing, setIsOngoing] = useState(true);
   const [isHistory, setIsHistory] = useState(false);
   const lastScrollY = useRef(0);
+  const [refreshing, setRefreshing] = useState(false);
 
 
   const handleScroll = (event) => {
@@ -66,6 +67,12 @@ const OrderScreen = () => {
     }
   };
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await orders();
+    setRefreshing(false);
+  };
+
   useEffect(() => {
     orders();
   }, []);
@@ -102,7 +109,10 @@ const OrderScreen = () => {
             <Text style={{ color: isHistory ? 'orange' : '#ccccccff', fontSize: 16 }}>History</Text>
           </TouchableOpacity>
         </View>
-        <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }}>
+        <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
 
           <View style={{ marginTop: 286, justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ fontSize: 18, color: '#ff5e00b0' }} >Bạn chưa có đơn hàng.</Text>
@@ -142,7 +152,10 @@ const OrderScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }} onScroll={handleScroll}>
+      <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }} onScroll={handleScroll}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
 
         {isHistory && (
           <View>

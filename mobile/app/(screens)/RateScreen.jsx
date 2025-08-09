@@ -62,9 +62,9 @@ const ProductReviewScreen = () => {
                 }),
             });
             const json = await res.json();
-            console.log(json)
+            
             if (json.success) {
-                Alert.alert('Hủy đơn hàng thành công');
+                Alert.alert(json.message);
                 props.onUpdate()
                 return;
             }
@@ -105,7 +105,7 @@ const ProductReviewScreen = () => {
                     <View>
                         <TouchableOpacity onPress={() => router.back()} style={styles.button}><Ionicons name="chevron-back" size={22} color="#000000d5" /></TouchableOpacity>
                     </View>
-                    <Text style={{ fontSize: 22, color: '#000000d5', fontWeight: 'bold' }}>Xác nhận đơn hàng</Text>
+                    <Text style={{ fontSize: 22, color: '#000000d5', fontWeight: 'bold' }}>Đánh giá</Text>
                 </View>
             )}
 

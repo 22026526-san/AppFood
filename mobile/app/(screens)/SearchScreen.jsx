@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, RefreshControl } from 'react-native'
 import React, { useEffect, useContext, useState, useRef } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -22,6 +22,7 @@ const SearchScreen = () => {
   const [data, setData] = useState([]);
   const [showHeader, setShowHeader] = useState(true);
   const lastScrollY = useRef(0);
+  const [refreshing, setRefreshing] = useState(false);
 
   const handleScroll = (event) => {
     const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
@@ -58,6 +59,12 @@ const SearchScreen = () => {
   useEffect(() => {
     popular()
   }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await popular();
+    setRefreshing(false);
+  };
 
   useEffect(() => {
     if (data_search.length === 0) {
@@ -138,7 +145,10 @@ const SearchScreen = () => {
           </View>
         </View>
       )}
-      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingLeft: 20, paddingRight: 20 }} onScroll={handleScroll}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingLeft: 20, paddingRight: 20 }} onScroll={handleScroll}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
 
         <View style={styles.contenSearch}>
           <TouchableOpacity onPress={handleSearch}>
