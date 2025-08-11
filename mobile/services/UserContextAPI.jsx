@@ -13,6 +13,7 @@ export const UserProvider = ({ children }) => {
   const [name,setName] = useState();
   const [phone,setPhone] = useState();
   const [imgUser,setImgUser] = useState();
+  const [role, setRole] = useState();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -89,11 +90,12 @@ export const UserProvider = ({ children }) => {
         });
 
         const result = await res.json();
-
+        console.log(result.user)
         setPhone(result.user.phone)
         setUser(result.user.user_id)
         setName(result.user.user_name)
         setImgUser(result.user.img)
+        setRole(result.user.role)
 
       } catch (err) {
         console.error('Lỗi khi lấy thông tin user:', err);
@@ -105,8 +107,12 @@ export const UserProvider = ({ children }) => {
   }, [userId]);
 
 
+  useEffect(() => {
+    
+    console.log(role)
+  }, [role]);
   return (
-    <UserContext.Provider value={{ user, setUser, setIsSignUp ,phone,name,setPhone,setName,imgUser,setImgUser}}>
+    <UserContext.Provider value={{ user, setUser, setIsSignUp ,phone,name,setPhone,setName,imgUser,setImgUser,setRole,role}}>
       {children}
     </UserContext.Provider>
   );

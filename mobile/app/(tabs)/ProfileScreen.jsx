@@ -14,7 +14,7 @@ const ProfileScreen = () => {
   const router = useRouter();
   const { signOut } = useClerk();
   const { userId } = useAuth();
-  const { name, phone, imgUser } = useContext(UserContext);
+  const { name, phone, imgUser, setRole } = useContext(UserContext);
   const [showHeader, setShowHeader] = useState(true);
   const lastScrollY = useRef(0);
 
@@ -32,8 +32,9 @@ const ProfileScreen = () => {
   };
 
   const handleSignOut = async () => {
+    setRole(null);
     try {
-      await signOut()
+      await signOut();
       // router.replace('/(auth)/Login')
     } catch (err) {
       console.error(JSON.stringify(err, null, 2))
