@@ -16,7 +16,7 @@ export default function AdminTab() {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
           let iconName;
-          if (route.name === 'DashboardScreen') iconName = 'apps-outline';
+          if (route.name === 'DashboardScreen') iconName = 'grid-outline';
           else if (route.name === 'FoodListScreen') iconName = 'menu-outline';
           else if (route.name === 'AddNewItem') iconName = 'add-outline';
           else if (route.name === 'NoticeScreen') iconName = 'notifications-outline';

@@ -14,11 +14,11 @@ export default function TabLayout() {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
           let iconName;
-          if (route.name === 'HomeScreen') iconName = 'home';
-          else if (route.name === 'FavouriteScreen') iconName = 'heart';
-          else if (route.name === 'NoticeScreen') iconName = 'notifications';
-          else if (route.name === 'ProfileScreen') iconName = 'person';
-          else if (route.name === 'OrderScreen') iconName = 'receipt';
+          if (route.name === 'HomeScreen') iconName = 'home-outline';
+          else if (route.name === 'FavouriteScreen') iconName = 'heart-outline';
+          else if (route.name === 'NoticeScreen') iconName = 'notifications-outline';
+          else if (route.name === 'ProfileScreen') iconName = 'person-outline';
+          else if (route.name === 'OrderScreen') iconName = 'receipt-outline';
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -27,11 +27,11 @@ export default function TabLayout() {
         headerShown: false,
       })}
     >
-      <Tabs.Screen name="HomeScreen" options={{title: "Home"}}/>
-      <Tabs.Screen name="OrderScreen" options={{title: "Orders"}}/>
-      <Tabs.Screen name="FavouriteScreen" options={{title: "Favourite"}} />
-      <Tabs.Screen name="NoticeScreen" options={{title: "Notice"}}/>
-      <Tabs.Screen name="ProfileScreen" options={{title: "Profile"}}/>
+      <Tabs.Screen name="HomeScreen" options={{title: ""}}/>
+      <Tabs.Screen name="OrderScreen" options={{title: ""}}/>
+      <Tabs.Screen name="FavouriteScreen" options={{title: ""}} />
+      <Tabs.Screen name="NoticeScreen" options={{title: ""}}/>
+      <Tabs.Screen name="ProfileScreen" options={{title: ""}}/>
     </Tabs>
   );
 }
