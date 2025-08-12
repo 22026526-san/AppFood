@@ -71,11 +71,13 @@ const EditProfileScreen = () => {
         });
 
         const data = await response.json();
-        console.log(data)
+      
         if (data.success) {
           setImgUser(data.img)
           Alert.alert(data.message);
+          return;
         }
+        Alert.alert(data.message);
       } catch (err) {
         console.error("Upload lỗi:", err);
       } finally {

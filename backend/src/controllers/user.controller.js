@@ -62,7 +62,7 @@ export const updateImgUser = async (req, res) => {
 
     const base64 = Buffer.from(req.file.buffer).toString("base64");
     const dataURI = `data:${req.file.mimetype};base64,${base64}`;
-    const cldRes = await handleUpload(dataURI);
+    const cldRes = await handleUpload(dataURI,'avatar');
 
     const [updateUser] = await pool
       .promise()
