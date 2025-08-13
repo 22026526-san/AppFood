@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllTopRate, getFoodCard, getFoodInfo, getFoodPopular, getFoodwithCategory, getVouchers, SearchFood } from '../controllers/food.controller.js';
+import { getAllTopRate, getCategory, getFoodCard, getFoodInfo, getFoodPopular, getFoodwithCategory, getVouchers, SearchFood } from '../controllers/food.controller.js';
 
 const router = express.Router();
 
@@ -10,5 +10,6 @@ router.get('/food/get_alltoprate', getAllTopRate);
 router.get('/food/get_popular', getFoodPopular);
 router.post('/food/voucher', getVouchers);
 router.post('/food/search', SearchFood);
+router.get('/food/get_category', getCategory);
 
 export default router;

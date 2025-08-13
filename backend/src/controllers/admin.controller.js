@@ -32,3 +32,22 @@ export const getFoodList = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 }
+
+export const InsertCategory = async (req, res) => {
+  const { categoryName } = req.body;
+
+  if (!categoryName) {
+    return res.status(400).json({ error: "Invalid data" });
+  }
+
+  try {
+
+    const cart = await pool
+      .promise()
+      .query('insert into category_food(category_name) values (?)', [categoryName]);
+
+    res.json({ success: true, message: cart });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

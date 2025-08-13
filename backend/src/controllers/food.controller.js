@@ -314,3 +314,24 @@ export const SearchFood = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const getCategory = async (req, res) => {
+    try {
+        const query = 
+        `select *
+            from category_food ; `
+        const food = await new Promise((resolve, reject) => {
+            pool.query(query, (err, results) => {
+                if (err) return reject(err);
+                resolve(results);
+            });
+        });
+        res.status(201).json({
+            success: true,
+            message: food
+        });
+    } catch (error) {
+        console.error('Error inserting category:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}

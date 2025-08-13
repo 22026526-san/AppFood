@@ -12,7 +12,6 @@ export default function AdminTab() {
 
   return (
     <Tabs
-      style ={{height:56}}
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
           let iconName;
@@ -28,7 +27,7 @@ export default function AdminTab() {
                 style={{
                   width: 32,
                   height: 32,
-                  borderRadius: 27.5,
+                  borderRadius: 26,
                   borderWidth: 2,
                   borderColor: "#f97416cf",
                   backgroundColor: "rgba(249, 116, 22, 0.05)",

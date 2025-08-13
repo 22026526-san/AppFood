@@ -86,7 +86,7 @@ const ProfileScreen = () => {
         <View style={styles.contentNav}>
           <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <Ionicons name="receipt" style={[{ color: '#0fceebbb' }, styles.icon]} size={20}></Ionicons>
+              <Ionicons name="reader-outline" style={[{ color: '#0fceebbb' }, styles.icon]} size={20}></Ionicons>
               <Text style={{ fontSize: 16, color: 'rgba(0, 0, 0, 0.54)' }}>Orders</Text>
             </View>
             <Ionicons name="chevron-forward" size={16} color='rgba(0, 0, 0, 0.23)'></Ionicons>
@@ -95,6 +95,13 @@ const ProfileScreen = () => {
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <Ionicons name="ticket-outline" style={[{ color: '#eb0fc65f' }, styles.icon]} size={20}></Ionicons>
               <Text style={{ fontSize: 16, color: 'rgba(0, 0, 0, 0.54)' }}>Vouchers</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color='rgba(0, 0, 0, 0.23)'></Ionicons>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>router.push('/(adminScreens)/CategoryScreen')} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: '16' }}>
+            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <Ionicons name="list-circle-outline" style={[{ color: '#ebca0f98' }, styles.icon]} size={20}></Ionicons>
+              <Text style={{ fontSize: 16, color: 'rgba(0, 0, 0, 0.54)' }}>Categories</Text>
             </View>
             <Ionicons name="chevron-forward" size={16} color='rgba(0, 0, 0, 0.23)'></Ionicons>
           </TouchableOpacity>
