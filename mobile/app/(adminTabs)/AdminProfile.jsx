@@ -91,7 +91,7 @@ const ProfileScreen = () => {
             </View>
             <Ionicons name="chevron-forward" size={16} color='rgba(0, 0, 0, 0.23)'></Ionicons>
           </TouchableOpacity>
-          <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: '16' }}>
+          <TouchableOpacity onPress={()=>router.push('/(adminScreens)/VoucherScreen')} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: '16' }}>
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <Ionicons name="ticket-outline" style={[{ color: '#eb0fc65f' }, styles.icon]} size={20}></Ionicons>
               <Text style={{ fontSize: 16, color: 'rgba(0, 0, 0, 0.54)' }}>Vouchers</Text>
@@ -108,7 +108,7 @@ const ProfileScreen = () => {
           <TouchableOpacity onPress={()=>router.push('/(adminTabs)/FoodListScreen')} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: '16' }}>
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <Ionicons name="restaurant-outline" style={[{ color: '#ebca0f98' }, styles.icon]} size={20}></Ionicons>
-              <Text style={{ fontSize: 16, color: 'rgba(0, 0, 0, 0.54)' }}>My Food List</Text>
+              <Text style={{ fontSize: 16, color: 'rgba(0, 0, 0, 0.54)' }}>Food List</Text>
             </View>
             <Ionicons name="chevron-forward" size={16} color='rgba(0, 0, 0, 0.23)'></Ionicons>
           </TouchableOpacity>

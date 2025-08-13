@@ -204,7 +204,8 @@ export const getVouchers = async (req, res) => {
               FROM orders o
               WHERE o.clerk_id = ?
               AND o.voucher_code IS NOT NULL )
-              AND CURDATE() BETWEEN v.start_date AND v.end_date;`, [clerkId]);
+              AND CURDATE() BETWEEN v.start_date AND v.end_date
+              order by v.id desc;`, [clerkId]);
 
     res.json({ success: true, message: vouchers });
   } catch (err) {

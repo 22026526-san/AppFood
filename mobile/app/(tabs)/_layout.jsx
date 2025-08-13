@@ -18,7 +18,7 @@ export default function TabLayout() {
           else if (route.name === 'FavouriteScreen') iconName = 'heart-outline';
           else if (route.name === 'NoticeScreen') iconName = 'notifications-outline';
           else if (route.name === 'ProfileScreen') iconName = 'person-outline';
-          else if (route.name === 'OrderScreen') iconName = 'receipt-outline';
+          else if (route.name === 'OrderScreen') iconName = 'reader-outline';
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },

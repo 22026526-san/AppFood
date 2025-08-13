@@ -32,7 +32,7 @@ const FoodListCard = (props) => {
                 <Text style={{fontSize:14,color:'#959595ff'}}>({item.sum_rate} reviews)</Text>
               </View>
               <TouchableOpacity onPress={()=>route.push('/(adminScreens)/FoodDetailScreen')}>
-                <Text style={{fontSize:14,color:'#b5b5b5ff'}}>Pick Up</Text>
+                <Ionicons name="arrow-forward-outline" color={'#b5b5b5ff'} size={16}/>
               </TouchableOpacity>
             </View>
           </View>

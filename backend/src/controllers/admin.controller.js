@@ -51,3 +51,25 @@ export const InsertCategory = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const InsertVouchers = async (req, res) => {
+  const { code,description,maxDiscount,discountPercent,startDate,endDate } = req.body;
+
+  if (!code || !description || !maxDiscount|| !discountPercent || !startDate || !endDate) {
+    return res.status(400).json({ error: "Invalid data" });
+  }
+
+  try {
+
+    const start_Date = startDate.split("T")[0];
+    const end_Date = endDate.split("T")[0];
+
+    const cart = await pool
+      .promise()
+      .query('INSERT INTO vouchers (code, description, discount_percent, max_discount, start_date, end_date) values (?,?,?,?,?,?)', [code,description,discountPercent,maxDiscount,start_Date,end_Date]);
+
+    res.json({ success: true, message: cart });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
