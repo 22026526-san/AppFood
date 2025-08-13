@@ -73,3 +73,22 @@ export const InsertVouchers = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const DeleteReview = async (req, res) => {
+  const { reviewId } = req.body;
+
+  if (!reviewId) {
+    return res.status(400).json({ error: "Invalid data" });
+  }
+
+  try {
+
+    const cart = await pool
+      .promise()
+      .query('delete from reviews where review_id = ?', [reviewId]);
+
+    res.json({ success: true, message: cart });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
