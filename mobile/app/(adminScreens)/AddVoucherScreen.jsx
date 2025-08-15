@@ -240,17 +240,6 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 10
   },
-  input: {
-    fontSize: 16,
-    color: '#000000c2',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    backgroundColor: '#96a8be2f',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#ffffff',
-    width: '100%'
-  },
   formGroup: {
     marginBottom: 20,
   },

@@ -90,7 +90,7 @@ export const UserProvider = ({ children }) => {
         });
 
         const result = await res.json();
-        console.log(result.user)
+      
         setPhone(result.user.phone)
         setUser(result.user.user_id)
         setName(result.user.user_name)
@@ -106,11 +106,6 @@ export const UserProvider = ({ children }) => {
     }
   }, [userId]);
 
-
-  useEffect(() => {
-    
-    console.log(role)
-  }, [role]);
   return (
     <UserContext.Provider value={{ user, setUser, setIsSignUp ,phone,name,setPhone,setName,imgUser,setImgUser,setRole,role}}>
       {children}

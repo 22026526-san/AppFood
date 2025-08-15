@@ -13,6 +13,7 @@ const FoodListScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [cate_selected, setCate_seleced] = useState(0);
   const [sort_selected, setSort_seleced] = useState('food_rate');
+  const [category,setCategory]=useState([])
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [showHeader, setShowHeader] = useState(true);
   const lastScrollY = useRef(0);
@@ -59,16 +60,28 @@ const FoodListScreen = () => {
     }
   }
 
-  const category = [
-    { id: 0, name: 'All' },
-    { id: 1, name: 'Burger' },
-    { id: 2, name: 'Fried Chicken' },
-    { id: 3, name: 'Pizza' },
-    { id: 4, name: 'Noodles & Pasta' },
-    { id: 5, name: 'Rice Meals' },
-    { id: 6, name: 'Drinks' }
-  ];
+  const getCategory = async () => {
+    try {
 
+      const res = await fetch(`${API_URL}/food/get_category`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        setCategory([{ category_id: 0, category_name: 'All' }, ...result.message]);
+      }
+    } catch (err) {
+      console.error('Lỗi khi lấy thông tin food list:', err);
+    }
+  };
+  useEffect(() => {
+    getCategory()
+  }, []);
   const foodList = async () => {
     try {
 
@@ -80,7 +93,7 @@ const FoodListScreen = () => {
       });
 
       const result = await res.json();
-      
+
       if (result.success) {
         setData(result.message);
         setDataFill(result.message);
@@ -115,9 +128,9 @@ const FoodListScreen = () => {
             horizontal
             showsHorizontalScrollIndicator={false}>
             {category.map((item) => (
-              <View key={item.id} style={item.id === cate_selected ? styles.cardSelected : styles.card}>
-                <TouchableOpacity onPress={() => { setCate_seleced(item.id); fillCate(item.id) }}>
-                  <Text style={{ fontSize: 15 }}>{item.name}</Text>
+              <View key={item.category_id} style={item.category_id === cate_selected ? styles.cardSelected : styles.card}>
+                <TouchableOpacity onPress={() => { setCate_seleced(item.category_id); fillCate(item.category_id) }}>
+                  <Text style={{ fontSize: 15 }}>{item.category_name}</Text>
                 </TouchableOpacity>
               </View>
             ))}
@@ -127,26 +140,26 @@ const FoodListScreen = () => {
 
         <View style={{ marginTop: 18, flexDirection: 'row', justifyContent: 'space-between' }}>
           <Text style={{ fontSize: 16, color: '#0000005b' }}>Total {dataFill.length} items</Text>
-          <Ionicons name="reorder-two-sharp" size={22} color={'#0000005b'} onPress={()=>setShowSortMenu(!showSortMenu)}></Ionicons>
+          <Ionicons name="reorder-two-sharp" size={22} color={'#0000005b'} onPress={() => setShowSortMenu(!showSortMenu)}></Ionicons>
         </View>
 
         {showSortMenu && (
           <View style={styles.sortMenu}>
-            <TouchableOpacity style={styles.option} onPress={() => {setSort_seleced('food_rate');setDataFill(sortFoods([...dataFill],'food_rate'))}}>
+            <TouchableOpacity style={styles.option} onPress={() => { setSort_seleced('food_rate'); setDataFill(sortFoods([...dataFill], 'food_rate')) }}>
               <Text style={styles.sortOption}>Theo đánh giá</Text>
-              <Ionicons name="checkmark-sharp" color={sort_selected === 'food_rate' ? 'orange':'#ffffff'} size={16}/>
+              <Ionicons name="checkmark-sharp" color={sort_selected === 'food_rate' ? 'orange' : '#ffffff'} size={16} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.option} onPress={() => {setSort_seleced('created_at');setDataFill(sortFoods([...dataFill],'created_at'))}}>
+            <TouchableOpacity style={styles.option} onPress={() => { setSort_seleced('created_at'); setDataFill(sortFoods([...dataFill], 'created_at')) }}>
               <Text style={styles.sortOption}>Mới nhất</Text>
-              <Ionicons name="checkmark-sharp" color={sort_selected === 'created_at' ? 'orange':'#ffffff'} size={16}/>
+              <Ionicons name="checkmark-sharp" color={sort_selected === 'created_at' ? 'orange' : '#ffffff'} size={16} />
             </TouchableOpacity>
           </View>
         )}
 
-       
-        <FoodListCard data={dataFill}/>
-        
-        <View style={{marginBottom:36}} />
+
+        <FoodListCard data={dataFill} />
+
+        <View style={{ marginBottom: 36 }} />
       </ScrollView>
     </SafeAreaView>
   )
@@ -196,24 +209,24 @@ const styles = StyleSheet.create({
   sortMenu: {
     position: 'absolute',
     right: 22,
-    top: 80, 
+    top: 80,
     backgroundColor: '#fff',
     padding: 8,
-    borderRadius: 8, 
+    borderRadius: 8,
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    gap:8,
+    gap: 8,
     zIndex: 999
   },
   sortOption: {
     fontSize: 14,
     color: '#333',
   },
-  option:{
-    flexDirection:'row',
-    justifyContent:'space-between',
-    alignItems:'center',
-    gap:5
+  option: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 5
   }
 });
 

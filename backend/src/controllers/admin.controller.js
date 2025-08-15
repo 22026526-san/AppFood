@@ -37,12 +37,8 @@ export const getFoodList = async (req, res) => {
 export const InsertCategory = async (req, res) => {
   const  category  = req.body.categoryName;
 
-  if (!req.file) {
-    return res.status(400).json({ error: "Invalid file" });
-  }
-
-  if (!category) {
-    return res.status(400).json({ error: "Invalid cate" });
+  if (!req.file || !category) {
+    return res.status(400).json({ error: "Invalid file data" });
   }
 
   const base64 = Buffer.from(req.file.buffer).toString("base64");
@@ -133,6 +129,99 @@ export const DeleteVoucher = async (req, res) => {
     const cart = await pool
       .promise()
       .query('delete from vouchers where id = ?',[voucherId]);
+
+    res.json({ success: true, message: cart });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const ImgFoodUpload = async (req, res) => {
+
+  try {
+
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "No file uploaded" });
+    }
+
+    const base64 = Buffer.from(req.file.buffer).toString("base64");
+    const dataURI = `data:${req.file.mimetype};base64,${base64}`;
+    const cldRes = await handleUpload(dataURI,'food');
+
+    if (cldRes) {
+      return res.status(200).json({
+        message: 'Ảnh đã được cập nhật.',
+        success: true,
+        img: cldRes.url
+      });
+    }
+    res.json({
+      message: 'Đã có lỗi xảy ra',
+      success: false
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      message: error.message,
+      success: false
+    });
+  }
+};
+
+export const UpdateFoods = async (req, res) => {
+  const { name,description,categoryId,price,img,foodId } = req.body;
+
+  if (!name || !description || !categoryId|| !price || !img||!foodId) {
+    return res.status(400).json({ error: "Invalid data" });
+  }
+
+  try {
+
+    const cart = await pool
+      .promise()
+      .query('UPDATE food SET food_name = ?, description = ? , price = ?, image_url = ?, category_id = ? WHERE food_id = ?', [name, description, price, img,categoryId,foodId])
+
+    res.json({ success: true, message: cart });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const DeleteFood = async (req, res) => {
+  const { foodId } = req.body;
+
+  if (!foodId) {
+    return res.status(400).json({ error: "Invalid data" });
+  }
+
+  try {
+
+    const step1 = await pool
+      .promise()
+      .query('DELETE FROM rate WHERE food_id = ?', [foodId]);
+
+    const step2 = await pool
+      .promise()
+      .query('delete from food where food_id = ?', [foodId]);
+
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const InsertFoods = async (req, res) => {
+  const { name,description,categoryId,price,img } = req.body;
+
+  if (!name || !description || !categoryId|| !price || !img) {
+    return res.status(400).json({ error: "Invalid data" });
+  }
+
+  try {
+
+    const cart = await pool
+      .promise()
+      .query('INSERT INTO food (food_name, description, image_url, price, category_id) VALUES (?,?,?,?,?)', [name, description,img, price,categoryId])
 
     res.json({ success: true, message: cart });
   } catch (err) {

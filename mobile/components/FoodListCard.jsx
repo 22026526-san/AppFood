@@ -3,9 +3,35 @@ import React, { useState, useEffect, useContext } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import Logo from '../assets/logo_food.png'
 import { useRouter } from 'expo-router';
+import {API_URL} from '@env'
 
 const FoodListCard = (props) => {
   const router = useRouter();
+  const handleDeleteFood = async (id) => {
+
+    try {
+
+      const res = await fetch(`${API_URL}/admin/delete_food`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          foodId: id
+        }),
+      });
+      const json = await res.json();
+      console.log(json)
+      if (json.success) {
+        Alert.alert('Xóa thành công');
+        props.onUpdate()
+        return;
+      }
+      Alert.alert('Đã xảy ra lỗi trong quá trình thực thi');
+    } catch (error) {
+      console.error('Error completing error:', error);
+    }
+  };
   return (
     <>
       {props.data.map((item) => (
@@ -16,9 +42,9 @@ const FoodListCard = (props) => {
               : Logo
           } style={styles.img} resizeMode="cover" ></Image>
           <View style={{ flexDirection: 'column', justifyContent: 'space-between', minWidth: '72%', padding: 3 }}>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <Text style={{ fontSize: 14, color: '#272727ff', fontWeight: 'bold' }}>{item.food_name}</Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={()=>handleDeleteFood(item.food_id)}>
                 <Ionicons name="trash-outline" size={14} color={'#cacacaff'} />
               </TouchableOpacity>
             </View>
