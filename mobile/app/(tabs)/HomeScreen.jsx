@@ -20,6 +20,7 @@ import { useSelector } from 'react-redux';
 const HomeScreen = () => {
   const { userId } = useAuth();
   const router = useRouter();
+  const [category,setData] = useState([]);
   const [search, setSearch] = useState('');
   const [dataCard, setDataCard] = useState([]);
   const [dataRate, setDataRate] = useState([]);
@@ -41,14 +42,29 @@ const HomeScreen = () => {
     lastScrollY.current = currentY;
   };
 
-  const data = [
-    { id: 1, name: 'Burger', img: burger },
-    { id: 2, name: 'Fried Chicken', img: fried_chicken },
-    { id: 3, name: 'Pizza', img: Pizza },
-    { id: 4, name: 'Noodles', img: Noodles },
-    { id: 5, name: 'Rice Meals', img: rice },
-    { id: 6, name: 'Drinks', img: Drinks }
-  ];
+  const getCategory = async () => {
+    try {
+
+      const res = await fetch(`${API_URL}/food/get_category`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        setData(result.message);
+      }
+
+    } catch (err) {
+      console.error('Lỗi khi lấy thông tin food list:', err);
+    }
+  };
+  useEffect(() => {
+    getCategory()
+  }, []);
 
   const apiFoodCard = async () => {
     try {
@@ -169,7 +185,7 @@ const HomeScreen = () => {
           </View>
 
           <View style={{ marginTop: 22 }}>
-            <CategoriCard data={data}></CategoriCard>
+            <CategoriCard data={category}></CategoriCard>
           </View>
 
         </View>

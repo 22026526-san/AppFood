@@ -98,7 +98,7 @@ const ProfileScreen = () => {
             </View>
             <Ionicons name="chevron-forward" size={16} color='rgba(0, 0, 0, 0.23)'></Ionicons>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('/VoucherScreen')} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: '16' }}>
+          <TouchableOpacity onPress={() => router.push('/(screens)/VoucherScreen')} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: '16' }}>
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <Ionicons name="ticket-outline" style={[{ color: '#1aeb0f79' }, styles.icon]} size={20}></Ionicons>
               <Text style={{ fontSize: 16, color: 'rgba(0, 0, 0, 0.54)' }}>Vouchers</Text>

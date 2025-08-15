@@ -16,7 +16,12 @@ const FoodListCard = (props) => {
               : Logo
           } style={styles.img} resizeMode="cover" ></Image>
           <View style={{ flexDirection: 'column', justifyContent: 'space-between', minWidth: '72%', padding: 3 }}>
-            <Text style={{ fontSize: 14, color: '#272727ff', fontWeight: 'bold' }}>{item.food_name}</Text>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+              <Text style={{ fontSize: 14, color: '#272727ff', fontWeight: 'bold' }}>{item.food_name}</Text>
+              <TouchableOpacity>
+                <Ionicons name="trash-outline" size={14} color={'#cacacaff'} />
+              </TouchableOpacity>
+            </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <View style={{ backgroundColor: '#ff510037', borderRadius: 15, padding: 5 }}>
                 <Text style={{ fontSize: 14, color: '#ff6200ff' }}>{item.category_name}</Text>

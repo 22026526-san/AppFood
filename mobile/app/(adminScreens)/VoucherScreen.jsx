@@ -4,8 +4,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { API_URL } from '@env'
-import VoucherCard from '../../components/VoucherCard';
 import { useAuth } from '@clerk/clerk-expo';
+import AdminVoucherCard from '../../components/AdminVoucherCard';
 
 const VoucherScreen = () => {
 
@@ -119,7 +119,7 @@ const VoucherScreen = () => {
         }>
 
         <View style={{ marginTop: 22 }}>
-          <VoucherCard data={data}></VoucherCard>
+          <AdminVoucherCard data={data}></AdminVoucherCard>
         </View>
 
       </ScrollView>

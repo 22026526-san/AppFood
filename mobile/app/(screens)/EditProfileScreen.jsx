@@ -210,7 +210,7 @@ const EditProfileScreen = () => {
         </View>
 
         {isLoading && (
-          <View style={{ position: 'absolute', top: '15%', left: '59%', transform: [{ translateX: -25 }, { translateY: -25 }] }}>
+          <View style={{ position: 'absolute', top: '50%', left: '50%', transform: [{ translateX: -25 }, { translateY: -25 }] }}>
             <ActivityIndicator size="large" color="#1f1f20ff" />
           </View>
         )}

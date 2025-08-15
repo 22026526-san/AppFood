@@ -1,4 +1,5 @@
 import pool from '../configs/database.js';
+import { handleUpload } from '../middlewares/upload.js';
 
 export const getFoodList = async (req, res) => {
     try {
@@ -34,17 +35,25 @@ export const getFoodList = async (req, res) => {
 }
 
 export const InsertCategory = async (req, res) => {
-  const { categoryName } = req.body;
+  const  category  = req.body.categoryName;
 
-  if (!categoryName) {
-    return res.status(400).json({ error: "Invalid data" });
+  if (!req.file) {
+    return res.status(400).json({ error: "Invalid file" });
   }
+
+  if (!category) {
+    return res.status(400).json({ error: "Invalid cate" });
+  }
+
+  const base64 = Buffer.from(req.file.buffer).toString("base64");
+  const dataURI = `data:${req.file.mimetype};base64,${base64}`;
+  const cldRes = await handleUpload(dataURI,'category');
 
   try {
 
     const cart = await pool
       .promise()
-      .query('insert into category_food(category_name) values (?)', [categoryName]);
+      .query('insert into category_food(category_name,category_img) values (?,?)', [category,cldRes.url]);
 
     res.json({ success: true, message: cart });
   } catch (err) {
@@ -86,6 +95,44 @@ export const DeleteReview = async (req, res) => {
     const cart = await pool
       .promise()
       .query('delete from reviews where review_id = ?', [reviewId]);
+
+    res.json({ success: true, message: cart });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const DeleteCategory = async (req, res) => {
+  const { cateId } = req.body;
+
+  if (!cateId) {
+    return res.status(400).json({ error: "Invalid data" });
+  }
+
+  try {
+
+    const cart = await pool
+      .promise()
+      .query('delete from category_food where category_id = ?',[cateId]);
+
+    res.json({ success: true, message: cart });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const DeleteVoucher = async (req, res) => {
+  const { voucherId } = req.body;
+
+  if (!voucherId) {
+    return res.status(400).json({ error: "Invalid data" });
+  }
+
+  try {
+
+    const cart = await pool
+      .promise()
+      .query('delete from vouchers where id = ?',[voucherId]);
 
     res.json({ success: true, message: cart });
   } catch (err) {
