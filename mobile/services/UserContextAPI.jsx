@@ -1,4 +1,5 @@
 import {API_URL} from '@env'
+import { useUser } from '@clerk/clerk-react';
 import React, { createContext, useState, useEffect } from 'react';
 import { useAuth } from '@clerk/clerk-expo';
 import {setCart} from '../redux/cartAction';
@@ -7,13 +8,15 @@ import { useDispatch } from 'react-redux';
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState();
+  const [user_id, setUser] = useState();
+  const { user } = useUser()
   const [isSignUp, setIsSignUp] = useState(false);
   const { userId } = useAuth();
   const [name,setName] = useState();
   const [phone,setPhone] = useState();
   const [imgUser,setImgUser] = useState();
   const [role, setRole] = useState();
+  const [active, setActive] = useState('');
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -27,7 +30,8 @@ export const UserProvider = ({ children }) => {
           },
           body: JSON.stringify({
             flerkId: userId,
-            id : user
+            id : user_id,
+            email: user.primaryEmailAddress?.emailAddress,
           }),
         });
 
@@ -96,6 +100,7 @@ export const UserProvider = ({ children }) => {
         setName(result.user.user_name)
         setImgUser(result.user.img)
         setRole(result.user.role)
+        setActive(result.user.user_active)
 
       } catch (err) {
         console.error('Lỗi khi lấy thông tin user:', err);
@@ -107,7 +112,7 @@ export const UserProvider = ({ children }) => {
   }, [userId]);
 
   return (
-    <UserContext.Provider value={{ user, setUser, setIsSignUp ,phone,name,setPhone,setName,imgUser,setImgUser,setRole,role}}>
+    <UserContext.Provider value={{ user_id, setUser, setIsSignUp ,phone,name,setPhone,setName,imgUser,setImgUser,setRole,role,setActive,active}}>
       {children}
     </UserContext.Provider>
   );

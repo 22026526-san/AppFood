@@ -77,7 +77,7 @@ const VoucherScreen = () => {
           </View>
 
           <View>
-            <TouchableOpacity style={styles.buttonSearch} onPress={() => router.push('')}>
+            <TouchableOpacity style={styles.buttonSearch} onPress={() => router.push('/AddVoucherScreen')}>
               <Ionicons name="add-outline" size={20} color="#ffffffd5" />
             </TouchableOpacity>
           </View>

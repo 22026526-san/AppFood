@@ -3,13 +3,24 @@ import { useAuth } from "@clerk/clerk-expo";
 import LoadingScreen from "../../components/LoadingScreen";
 import { UserContext } from '../../services/UserContextAPI'
 import { useContext } from 'react';
+import { useClerk } from '@clerk/clerk-expo'
+import { Alert } from 'react-native';
 
 export default function AuthLayout() {
   const { isLoaded, isSignedIn } = useAuth();
-  const { role } = useContext(UserContext); 
+  const { role, active } = useContext(UserContext);
+  const { signOut } = useClerk();
 
   if (!isLoaded) {
     return <LoadingScreen />;
+  }
+
+  if (active === 0) {
+    signOut();
+    Alert.alert(
+      "Tài khoản của bạn đã bị khóa",
+      "Vui lòng liên hệ quản trị viên để biết thêm chi tiết.",
+    );
   }
 
   if (isSignedIn) {

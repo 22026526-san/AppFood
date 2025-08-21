@@ -228,3 +228,43 @@ export const InsertFoods = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const getUsers = async (req, res) => {
+  try {
+
+    const [rows] = await pool
+      .promise()
+      .query('SELECT * FROM users');
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    return res.status(200).json({
+      success: true,
+      user: rows
+    });
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+export const setUserActive = async (req, res) => {
+  const { active,id } = req.body;
+
+  if (!id || active === undefined) {
+    return res.status(400).json({ error: "Invalid data" });
+  }
+
+  try {
+
+    const step1 = await pool
+      .promise()
+      .query('Update users set user_active = ? WHERE user_id = ?', [active,id]);
+
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

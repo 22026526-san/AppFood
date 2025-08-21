@@ -1,3 +1,4 @@
+import e from 'express';
 import pool from '../configs/database.js';
 import bcrypt from 'bcrypt';
 
@@ -93,15 +94,15 @@ export const sign_check_user = async (req, res) => {
 export const signup_update = async (req, res) => {
 
   try {
-    const { flerkId, id } = req.body;
+    const { flerkId, id, email } = req.body;
 
-    if (!flerkId) {
+    if (!flerkId || !email) {
       return res.status(400).json({ error: 'Missing required field' });
     }
 
     const [update] = await pool
       .promise()
-      .query('UPDATE users SET clerk_id = ? WHERE user_id = ?', [flerkId, id]);
+      .query('UPDATE users SET clerk_id = ?, email = ? WHERE user_id = ?', [flerkId,email, id]);
 
     res.status(201).json({
       success: true,

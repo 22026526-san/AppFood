@@ -84,7 +84,14 @@ const ProfileScreen = () => {
         </View>
 
         <View style={styles.contentNav}>
-          <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <TouchableOpacity onPress={()=>router.push('/(adminScreens)/UsersScreen')} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <Ionicons name="body-outline" style={[{ color: '#0fceebbb' }, styles.icon]} size={20}></Ionicons>
+              <Text style={{ fontSize: 16, color: 'rgba(0, 0, 0, 0.54)' }}>Users</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color='rgba(0, 0, 0, 0.23)'></Ionicons>
+          </TouchableOpacity>
+          <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' ,marginTop: '16'}}>
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <Ionicons name="reader-outline" style={[{ color: '#0fceebbb' }, styles.icon]} size={20}></Ionicons>
               <Text style={{ fontSize: 16, color: 'rgba(0, 0, 0, 0.54)' }}>Orders</Text>

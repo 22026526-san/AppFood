@@ -5,12 +5,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import CategoriCard from '../../components/CategoriCard';
-import burger from '../../assets/burger.png'
-import Noodles from '../../assets/Noodles.png'
-import Pizza from '../../assets/pizza.png'
-import rice from '../../assets/rice.png'
-import fried_chicken from '../../assets/fried_chicken.png'
-import Drinks from '../../assets/drink.jpg'
 import FoodCard from '../../components/FoodCard';
 import TopRateCard from '../../components/TopRateCard';
 import { API_URL } from '@env'
