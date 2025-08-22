@@ -268,3 +268,133 @@ export const setUserActive = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const getDashBoard = async (req, res) => {
+  try {
+    const { start, end } = req.body;
+
+    if (!start || !end) {
+      return res.status(400).json({ error: 'Missing required field' });
+    }
+
+    const start_Date = start.split("T")[0];
+    const end_Date = end.split("T")[0];
+
+    var data = {
+        stats: {
+          activeUsers: '',
+          totalOrders: '',
+          revenue: '',
+          avgOrder: '',
+          order: [],
+        },
+        bestFoods: [],
+        recentOrders: [],
+    }
+    const query =
+      `SELECT IFNULL(COUNT(*), 0) AS totalOrders
+        FROM orders
+        WHERE
+        DATE(created_at) BETWEEN ? AND ?;`
+    const sum_order = await new Promise((resolve, reject) => {
+      pool.query(query, [start_Date ,end_Date], (err, results) => {
+        if (err) return reject(err);
+        resolve(results);
+      });
+    });
+
+    data.stats.totalOrders = sum_order[0].totalOrders;
+
+    const query_user =
+      `SELECT IFNULL(COUNT(DISTINCT clerk_id), 0) AS activeUsers
+        FROM users
+        where user_active = 1;`
+    const user = await new Promise((resolve, reject) => {
+      pool.query(query_user, (err, results) => {
+        if (err) return reject(err);
+        resolve(results);
+      });
+    });
+
+    data.stats.activeUsers = user[0].activeUsers;
+
+    const queryy =
+      `SELECT IFNULL(SUM(total_price), 0) AS revenue
+        FROM orders
+        WHERE status = 'completed'
+        AND DATE(created_at) BETWEEN ? AND ? ;`
+    const price = await new Promise((resolve, reject) => {
+      pool.query(queryy, [start_Date, end_Date], (err, results) => {
+        if (err) return reject(err);
+        resolve(results);
+      });
+    });
+
+    data.stats.revenue = price[0].revenue;
+
+    const query2 =
+      `SELECT IFNULL(AVG(total_price), 0) AS avgOrder
+        FROM orders
+        WHERE status = 'completed'
+        AND DATE(created_at) BETWEEN ? AND ?;`
+    const avg_order = await new Promise((resolve, reject) => {
+      pool.query(query2, [start_Date, end_Date], (err, results) => {
+        if (err) return reject(err);
+        resolve(results);
+      });
+    });
+
+    data.stats.avgOrder = avg_order[0].avgOrder; 
+
+    const query3 =
+      `select u.user_name , o.total_price, o.status, o.order_id
+        from users u
+        inner join orders o on o.clerk_id = u.clerk_id
+        WHERE DATE(o.created_at) BETWEEN ? AND ?
+        ORDER BY o.created_at desc;`
+    const order = await new Promise((resolve, reject) => {
+      pool.query(query3, [start_Date, end_Date], (err, results) => {
+        if (err) return reject(err);
+        resolve(results);
+      });
+    });
+
+    data.stats.order = order;
+
+    const query4 =
+      `select f.food_name , f.sold,f.food_id from food f
+        order by f.sold desc
+        limit 6 `
+    const bestfood = await new Promise((resolve, reject) => {
+      pool.query(query4, (err, results) => {
+        if (err) return reject(err);
+        resolve(results);
+      });
+    });
+
+    data.bestFoods = bestfood;
+
+    const query5 =
+      `select u.user_name , o.total_price, o.status, o.order_id
+        from users u
+        inner join orders o on o.clerk_id = u.clerk_id
+        order by o.created_at desc
+        limit 6 ; `
+    const nearorder = await new Promise((resolve, reject) => {
+      pool.query(query5, (err, results) => {
+        if (err) return reject(err);
+        resolve(results);
+      });
+    });
+
+    data.recentOrders = nearorder;
+
+    return res.status(201).json({
+      success: true,
+      message: data
+    });
+  } catch (error) {
+    console.error('Error inserting user:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}

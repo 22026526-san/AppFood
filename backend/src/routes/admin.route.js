@@ -1,5 +1,5 @@
 import express from 'express';
-import { DeleteCategory, DeleteFood, DeleteReview, DeleteVoucher, getFoodList, ImgFoodUpload, InsertCategory, UpdateFoods, InsertVouchers, InsertFoods, getUsers, setUserActive } from '../controllers/admin.controller.js';
+import { DeleteCategory, DeleteFood, DeleteReview, DeleteVoucher, getFoodList, ImgFoodUpload, InsertCategory, UpdateFoods, InsertVouchers, InsertFoods, getUsers, setUserActive, getDashBoard } from '../controllers/admin.controller.js';
 import {upload} from '../middlewares/upload.js'
 
 const router = express.Router();
@@ -15,4 +15,5 @@ router.post('/admin/delete_food', DeleteFood);
 router.post('/admin/insert_food', InsertFoods);
 router.get('/admin/get_users', getUsers);
 router.post('/admin/user_active', setUserActive);
+router.post('/admin/get_dash_board', getDashBoard);
 export default router;

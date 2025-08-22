@@ -47,7 +47,7 @@ const VoucherScreen = () => {
             });
 
             const result = await res.json();
-            console.log('Users:', result);
+            
             if (result.success) {
                 setData(result.user);
                 setFilteredData(result.user);

@@ -16,6 +16,7 @@ export const getFoodInfo = async (req, res) => {
     f.image_url,
     f.description,
     f.category_id,
+    f.sold,
     r.food_rate,
     r.sum_rate
     FROM food f
