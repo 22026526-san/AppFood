@@ -346,20 +346,67 @@ export const getDashBoard = async (req, res) => {
 
     data.stats.avgOrder = avg_order[0].avgOrder; 
 
-    const query3 =
-      `select u.user_name , o.total_price, o.status, o.order_id
-        from users u
-        inner join orders o on o.clerk_id = u.clerk_id
-        WHERE DATE(o.created_at) BETWEEN ? AND ?
-        ORDER BY o.created_at desc;`
-    const order = await new Promise((resolve, reject) => {
-      pool.query(query3, [start_Date, end_Date], (err, results) => {
-        if (err) return reject(err);
-        resolve(results);
-      });
-    });
+    const [orderDataa] = await pool.promise().query(
+      `SELECT 
+        o.order_id,
+        o.clerk_id,
+        o.order_type,
+        o.address,
+        o.table_number,
+        o.status,
+        o.total_price,
+        o.voucher_code,
+        o.payment_method,
+        o.status_payment,
+        o.created_at,
+        u.user_name,
+        u.phone
+        FROM orders o inner join users u on o.clerk_id = u.clerk_id
+         WHERE DATE(o.created_at) BETWEEN ? AND ?
+      ORDER BY o.created_at desc; `,[start_Date, end_Date]
+    );
 
-    data.stats.order = order;
+    if (orderDataa.length === 0) {
+      data.stats.order = [];
+    }
+
+    const orders = await Promise.all(
+      orderDataa.map(async (order) => {
+    
+        const [order_detail] = await pool.promise().query(
+          `SELECT
+            f.food_id,
+            f.food_name,
+            f.image_url,
+            od.quantity,
+            od.unit_price
+            from order_detail od 
+            inner join food f 
+            on f.food_id = od.food_id 
+            where od.order_id = ?;`,
+          [order.order_id]
+        );
+
+        return {
+          user_name: order.user_name,
+          phone: order.phone,
+          order_id: order.order_id,
+          clerk_id: order.clerk_id,
+          order_type: order.order_type,
+          address: order.address,
+          table_number: order.table_number,
+          status: order.status,
+          total_price: order.total_price,
+          voucher_code: order.voucher_code,
+          payment_method: order.payment_method,
+          status_payment: order.status_payment,
+          created_at: order.created_at,
+          order_detail : order_detail
+        };
+      })
+    );
+
+    data.stats.order = orders;
 
     const query4 =
       `select f.food_name , f.sold,f.food_id from food f
@@ -374,18 +421,65 @@ export const getDashBoard = async (req, res) => {
 
     data.bestFoods = bestfood;
 
-    const query5 =
-      `select u.user_name , o.total_price, o.status, o.order_id
-        from users u
-        inner join orders o on o.clerk_id = u.clerk_id
+    const [orderData] = await pool.promise().query(
+      `SELECT 
+        o.order_id,
+        o.clerk_id,
+        o.order_type,
+        o.address,
+        o.table_number,
+        o.status,
+        o.total_price,
+        o.voucher_code,
+        o.payment_method,
+        o.status_payment,
+        o.created_at,
+        u.user_name,
+        u.phone
+        FROM orders o inner join users u on o.clerk_id = u.clerk_id
         order by o.created_at desc
-        limit 6 ; `
-    const nearorder = await new Promise((resolve, reject) => {
-      pool.query(query5, (err, results) => {
-        if (err) return reject(err);
-        resolve(results);
-      });
-    });
+        limit 6 `
+    );
+
+    if (orderData.length === 0) {
+      data.recentOrders = [];
+    }
+
+    const nearorder = await Promise.all(
+      orderData.map(async (order) => {
+    
+        const [order_detail] = await pool.promise().query(
+          `SELECT
+            f.food_id,
+            f.food_name,
+            f.image_url,
+            od.quantity,
+            od.unit_price
+            from order_detail od 
+            inner join food f 
+            on f.food_id = od.food_id 
+            where od.order_id = ?;`,
+          [order.order_id]
+        );
+
+        return {
+          user_name: order.user_name,
+          phone: order.phone,
+          order_id: order.order_id,
+          clerk_id: order.clerk_id,
+          order_type: order.order_type,
+          address: order.address,
+          table_number: order.table_number,
+          status: order.status,
+          total_price: order.total_price,
+          voucher_code: order.voucher_code,
+          payment_method: order.payment_method,
+          status_payment: order.status_payment,
+          created_at: order.created_at,
+          order_detail : order_detail
+        };
+      })
+    );
 
     data.recentOrders = nearorder;
 
@@ -398,3 +492,91 @@ export const getDashBoard = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 }
+
+export const getOrders = async (req, res) => {
+
+  try {
+   
+    const [orderData] = await pool.promise().query(
+      `SELECT 
+        o.order_id,
+        o.clerk_id,
+        o.order_type,
+        o.address,
+        o.table_number,
+        o.status,
+        o.total_price,
+        o.voucher_code,
+        o.payment_method,
+        o.status_payment,
+        o.created_at,
+        u.user_name,
+        u.phone
+        FROM orders o inner join users u on o.clerk_id = u.clerk_id`
+    );
+
+    if (orderData.length === 0) {
+      return res.json(orderData);
+    }
+
+    const ordersInfo = await Promise.all(
+      orderData.map(async (order) => {
+    
+        const [order_detail] = await pool.promise().query(
+          `SELECT
+            f.food_id,
+            f.food_name,
+            f.image_url,
+            od.quantity,
+            od.unit_price
+            from order_detail od 
+            inner join food f 
+            on f.food_id = od.food_id 
+            where od.order_id = ?;`,
+          [order.order_id]
+        );
+
+        return {
+          user_name: order.user_name,
+          phone: order.phone,
+          order_id: order.order_id,
+          clerk_id: order.clerk_id,
+          order_type: order.order_type,
+          address: order.address,
+          table_number: order.table_number,
+          status: order.status,
+          total_price: order.total_price,
+          voucher_code: order.voucher_code,
+          payment_method: order.payment_method,
+          status_payment: order.status_payment,
+          created_at: order.created_at,
+          order_detail : order_detail
+        };
+      })
+    );
+
+    return res.json({success :true,message:ordersInfo});
+  } catch (error) {
+    console.error('Error fetching order data:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+}
+
+export const updateStatus = async (req, res) => {
+  const { orderId,status } = req.body;
+
+  if (!orderId || !status) {
+    return res.status(400).json({ error: "Invalid data" });
+  }
+
+  try {
+
+    const step1 = await pool
+      .promise()
+      .query(`Update orders set status = ?, status_payment = 'yes' WHERE order_id = ?`, [status,orderId]);
+
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

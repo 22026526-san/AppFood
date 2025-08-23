@@ -91,7 +91,7 @@ const ProfileScreen = () => {
             </View>
             <Ionicons name="chevron-forward" size={16} color='rgba(0, 0, 0, 0.23)'></Ionicons>
           </TouchableOpacity>
-          <TouchableOpacity style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' ,marginTop: '16'}}>
+          <TouchableOpacity onPress={()=>router.push('/(adminScreens)/OrdersScreen')} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' ,marginTop: '16'}}>
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <Ionicons name="reader-outline" style={[{ color: '#0fceebbb' }, styles.icon]} size={20}></Ionicons>
               <Text style={{ fontSize: 16, color: 'rgba(0, 0, 0, 0.54)' }}>Orders</Text>

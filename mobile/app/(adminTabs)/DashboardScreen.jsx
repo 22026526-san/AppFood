@@ -40,6 +40,12 @@ const DashboardScreen = () => {
     setShowEndDatePicker(false);
   };
 
+  const TotalPrice = (products) => {
+    return products.reduce((total, product) => {
+      return total + (product.unit_price * product.quantity);
+    }, 0);
+  };
+
   const fetchData = async () => {
     try {
 
@@ -186,7 +192,10 @@ const DashboardScreen = () => {
           scrollEnabled={false}
           keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}
           renderItem={({ item }) => (
-            <View style={styles.orderItem} key={item.order_id}>
+            <TouchableOpacity style={styles.orderItem} key={item.order_id} onPress={() => router.push({
+              pathname: '/OrdersDetailScreen',
+              params: { data: JSON.stringify(item), discount: TotalPrice(item.order_detail) - item.total_price }
+            })}>
               <Text style={styles.orderUser}>{item.user_name}</Text>
               <Text style={styles.orderPrice}>{(item.total_price * 1).toLocaleString('VND')}</Text>
               <Text
@@ -201,7 +210,7 @@ const DashboardScreen = () => {
               >
                 {item.status}
               </Text>
-            </View>
+            </TouchableOpacity>
           )}
         />
       </ScrollView>
@@ -211,10 +220,13 @@ const DashboardScreen = () => {
           <Modal visible={modalVisible} animationType="slide" transparent>
             <View style={styles.modalWrapper}>
               <View style={styles.modalContainer}>
-                <ScrollView style={{ width: '88%' }}>
+                <ScrollView >
                   {dataOrder.length !== 0 ? dataOrder.map((item) => (
 
-                    <View style={styles.orderItem} key={item.order_id}>
+                    <TouchableOpacity style={styles.orderItem} key={item.order_id} onPress={() => {router.push({
+                      pathname: '/OrdersDetailScreen',
+                      params: { data: JSON.stringify(item), discount: TotalPrice(item.order_detail) - item.total_price }
+                    }); setModalVisible(false)}}>
                       <Text style={styles.orderUser}>{item.user_name}</Text>
                       <Text style={styles.orderPrice}>{(item.total_price * 1).toLocaleString('VND')}</Text>
                       <Text
@@ -229,7 +241,7 @@ const DashboardScreen = () => {
                       >
                         {item.status}
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   )) : <Text style={{ textAlign: 'center', marginTop: 20 }}>Không có đơn hàng nào trong khoảng thời gian này.</Text>}
                 </ScrollView>
                 <TouchableOpacity onPress={() => {

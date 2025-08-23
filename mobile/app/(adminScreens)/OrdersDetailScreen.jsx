@@ -7,19 +7,17 @@ import { useLocalSearchParams } from 'expo-router';
 import { API_URL } from '@env'
 import Logo from '../../assets/fast-food.png'
 import { useAuth } from '@clerk/clerk-expo';
-import { UserContext } from '../../services/UserContextAPI';
 import { useDispatch } from 'react-redux';
-import { re_orders } from '../../redux/cartAction';
+
 
 const OrderDetailScreen = () => {
     const router = useRouter();
     const dispatch = useDispatch()
     const { userId } = useAuth();
-    const { data, discount, action } = useLocalSearchParams();
+    const { data, discount } = useLocalSearchParams();
     const _data_ = JSON.parse(data);
     const [showHeader, setShowHeader] = useState(true);
     const lastScrollY = useRef(0);
-    const { phone, name } = useContext(UserContext);
 
     const handleScroll = (event) => {
         const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
@@ -40,27 +38,24 @@ const OrderDetailScreen = () => {
         }, 0);
     };
 
-    const handleSubmit = async (id, status) => {
+    const handleSubmit = async (status, selectedId) => {
 
-        if (status === 'on delivery') {
-            Alert.alert('Đơn hàng đang được giao. Không thể hủy');
-            return;
-        }
         try {
 
-            const res = await fetch(`${API_URL}/user/cancel_orders`, {
+            const res = await fetch(`${API_URL}/admin/update_status_orders`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    orderId: id,
+                    orderId: selectedId,
+                    status: status
                 }),
             });
             const json = await res.json();
 
             if (json.success) {
-                Alert.alert('Hủy đơn hàng thành công');
+                Alert.alert('Cập nhật thành công');
                 return;
             }
 
@@ -102,7 +97,7 @@ const OrderDetailScreen = () => {
 
                         <View>
                             <Text style={{ fontSize: 16, color: '#171717ff', fontWeight: 'bold', marginTop: 8 }}>{_data_.address}</Text>
-                            <Text style={{ fontSize: 14, color: '#828282ff', marginTop: 8 }}>{name} - {phone}</Text>
+                            <Text style={{ fontSize: 14, color: '#828282ff', marginTop: 8 }}>{_data_.user_name} - {_data_.phone}</Text>
                         </View>
                     </>
                 )}
@@ -126,7 +121,7 @@ const OrderDetailScreen = () => {
 
                         <Text style={{ fontSize: 16, color: '#171717ff', fontWeight: 'bold', marginTop: 8 }}>Bàn số {_data_.table_number}</Text>
 
-                        <Text style={{ fontSize: 14, color: '#828282ff', marginTop: 8 }}>{name} - {phone}</Text>
+                        <Text style={{ fontSize: 14, color: '#828282ff', marginTop: 8 }}>{_data_.user_name} - {_data_.phone}</Text>
                     </>
                 )}
 
@@ -209,21 +204,20 @@ const OrderDetailScreen = () => {
                 </View>
 
             </ScrollView>
-            {action === 'track_order' && (
+            {_data_.status !== 'canceled' && _data_.status !== 'completed' && (
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity activeOpacity={0.7} style={styles.buttonSubmit} onPress={() => { handleSubmit(_data_.order_id, _data_.status) }}>
-                        <Text style={{ color: '#fffffffb', fontWeight: 'bold' }}>Cancel</Text>
+                    <TouchableOpacity style={styles.doneBtn} onPress={() => handleSubmit('completed', _data_.order_id)}>
+                        <Text style={styles.doneText}>Done</Text>
                     </TouchableOpacity>
-                </View>
-            )}
 
-            {action === 're_order' && (
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity activeOpacity={0.7} style={styles.buttonSubmit} onPress={() => { { dispatch(re_orders(_data_.order_detail)), router.push('/CartScreen') } }}>
-                        <Text style={{ color: '#fffffffb', fontWeight: 'bold' }}>Re-Orders</Text>
+                    <TouchableOpacity style={styles.cancelBtn} onPress={() => handleSubmit('canceled', _data_.order_id)}>
+                        <Text style={styles.cancelText}>Cancel</Text>
                     </TouchableOpacity>
                 </View>
             )}
+            
+
+
         </SafeAreaView>
 
     )
@@ -346,24 +340,41 @@ const styles = StyleSheet.create({
         marginTop: 4
     },
     buttonContainer: {
-        minHeight: '10%',
+        minHeight: '9%',
         width: '100%',
         backgroundColor: '#ffffffff',
         display: 'flex',
         paddingVertical: 16,
         paddingHorizontal: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
-    buttonSubmit: {
-        backgroundColor: '#ff6a00d9',
-        borderRadius: 12,
-        marginTop: 16,
-        paddingVertical: 16,
-        paddingHorizontal: 20,
+    doneBtn: {
+        backgroundColor: '#FF7A00',
+        borderRadius: 8,
+        paddingVertical: 6,
+        paddingHorizontal: 6,
         alignItems: 'center',
-        borderColor: '#ffffffff',
-        borderWidth: 2,
-        width: '100%',
-        marginBottom: 10
+        width: '45%',
+        justifyContent: 'center'
+    },
+    doneText: {
+        color: '#fff',
+        fontWeight: 'bold',
+    },
+    cancelBtn: {
+        borderWidth: 1,
+        borderColor: '#FF7A00',
+        borderRadius: 8,
+        paddingVertical: 6,
+        paddingHorizontal: 6,
+        alignItems: 'center',
+        width: '45%',
+        justifyContent: 'center'
+    },
+    cancelText: {
+        color: '#FF7A00',
+        fontWeight: 'bold',
     },
 })
 
