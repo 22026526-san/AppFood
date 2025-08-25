@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, RefreshControl } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, RefreshControl, Platform } from 'react-native'
 import React, { useEffect, useContext, useRef, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,6 +6,8 @@ import { useRouter } from 'expo-router';
 import { useAuth } from '@clerk/clerk-expo';
 import { API_URL } from '@env'
 import RunCard from '../../components/RunCard';
+import UnRunCard from '../../components/UnRunCard';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const OrderScreen = () => {
 
@@ -22,7 +24,10 @@ const OrderScreen = () => {
   const lastScrollY = useRef(0);
   const [refreshing, setRefreshing] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [Date, setDate] = useState('');
+  const [text, setText] = useState('All');
+  const [date, setDate] = useState(new Date());
+  const [dateChange, setDateChange] = useState('');
+  const [dataAll, setDataAll] = useState([])
 
 
   const handleScroll = (event) => {
@@ -38,6 +43,16 @@ const OrderScreen = () => {
     lastScrollY.current = currentY;
   };
 
+  const onDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || startDate;
+    setShowDatePicker(Platform.OS === 'ios');
+    setDate(currentDate);
+    setText(currentDate.toLocaleDateString());
+    const formattedDate = currentDate.toISOString().split('T')[0];
+    setDateChange(formattedDate);
+    setShowDatePicker(false);
+  };
+
   const orders = async () => {
     try {
 
@@ -51,6 +66,7 @@ const OrderScreen = () => {
       const result = await res.json();
 
       if (result.success) {
+        setDataAll(result.message);
         setDataRun(result.message.filter(order =>
           order.status !== 'completed' && order.status !== 'canceled'
         ));
@@ -69,7 +85,13 @@ const OrderScreen = () => {
   const onRefresh = async () => {
     setRefreshing(true);
     await orders();
+    setText('All');
     setRefreshing(false);
+  };
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return null;
+    return new Date(dateStr).toISOString().split('T')[0];
   };
 
   useEffect(() => {
@@ -77,8 +99,35 @@ const OrderScreen = () => {
   }, []);
 
   useEffect(() => {
-    setData(dataRun);
-  }, [dataRun])
+
+    setDataRun(dataAll.filter(order =>
+      formatDate(order.created_at) === dateChange && order.status !== 'completed' && order.status !== 'canceled'
+    ));
+
+    setDataCom(dataAll.filter(order =>
+      formatDate(order.created_at) === dateChange && order.status === 'completed'));
+
+    setDataCan(dataAll.filter(order =>
+      formatDate(order.created_at) === dateChange && order.status === 'canceled'));
+  }, [dateChange]);
+
+  useEffect(() => {
+    if (isRunning && dataRun) {
+      setData(dataRun);
+    }
+  }, [dataRun, isRunning])
+
+  useEffect(() => {
+    if (isCanceled && dataCan) {
+      setData(dataCan);
+    }
+  }, [dataCan, isCanceled])
+
+  useEffect(() => {
+    if (isCompeleted && dataCom) {
+      setData(dataCom);
+    }
+  }, [dataCom, isCompeleted])
 
   if (data.length === 0) {
     return (
@@ -100,14 +149,37 @@ const OrderScreen = () => {
           <TouchableOpacity style={{ width: '33.3%', borderBottomColor: isCompeleted ? 'orange' : '#ccccccff', padding: 12, alignItems: 'center', borderBottomWidth: 1 }} onPress={() => { setIsRunning(false), setIsCanceled(false), setIsCompeleted(true), setData(dataCom) }}>
             <Text style={{ color: isCompeleted ? 'orange' : '#ccccccff', fontSize: 16 }}>Completed</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{ width: '33.3%', borderBottomColor: isCanceled ? 'orange' : '#ccccccff', padding: 12, alignItems: 'center', borderBottomWidth: 1 }} onPress={() => {setIsRunning(false), setIsCanceled(true), setIsCompeleted(false),setData(dataCan)  }}>
+          <TouchableOpacity style={{ width: '33.3%', borderBottomColor: isCanceled ? 'orange' : '#ccccccff', padding: 12, alignItems: 'center', borderBottomWidth: 1 }} onPress={() => { setIsRunning(false), setIsCanceled(true), setIsCompeleted(false), setData(dataCan) }}>
             <Text style={{ color: isCanceled ? 'orange' : '#ccccccff', fontSize: 16 }}>Canceled</Text>
           </TouchableOpacity>
+        </View>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingLeft: 20, paddingRight: 20 }}>
+          <TouchableOpacity
+            onPress={() => { setShowDatePicker(!showDatePicker) }}
+          >
+            <Ionicons name='calendar-outline' size={18} />
+          </TouchableOpacity>
+
+
+          <Text style={{ fontSize: 16 }}>
+            {text}
+          </Text>
         </View>
         <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
+
+          {showDatePicker && (
+          <DateTimePicker
+            testID="DatePicker"
+            value={date}
+            mode="date"
+            is24Hour={true}
+            display="inline"
+            onChange={onDateChange}
+          />
+        )}
 
           <View style={{ marginTop: 286, justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ fontSize: 18, color: '#ff5e00b0' }} >Bạn chưa có đơn hàng.</Text>
@@ -143,7 +215,7 @@ const OrderScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',paddingLeft: 20, paddingRight: 20 }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingLeft: 20, paddingRight: 20 }}>
         <TouchableOpacity
           onPress={() => { setShowDatePicker(!showDatePicker) }}
         >
@@ -152,9 +224,7 @@ const OrderScreen = () => {
 
 
         <Text style={{ fontSize: 16 }}>
-          {Date === '' ? 'All' :
-            `${Date.toLocaleDateString()}`
-          }
+          {text}
         </Text>
       </View>
 
@@ -163,15 +233,26 @@ const OrderScreen = () => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
 
+        {showDatePicker && (
+          <DateTimePicker
+            testID="DatePicker"
+            value={date}
+            mode="date"
+            is24Hour={true}
+            display="inline"
+            onChange={onDateChange}
+          />
+        )}
+
         {isCanceled && (
           <View>
-            {/* <HisCard data={data} /> */}
+            <UnRunCard data={data} />
           </View>
         )}
 
         {isCompeleted && (
           <View>
-            {/* <OnCard data={data} /> */}
+            <UnRunCard data={data} />
           </View>
         )}
 

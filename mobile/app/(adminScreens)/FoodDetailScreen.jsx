@@ -121,7 +121,11 @@ const FoodDetailScreen = () => {
             <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }} onScroll={handleScroll}>
 
                 <View style={styles.foodCard}>
-                    <Image source={Logo} style={styles.Img}></Image>
+                    <Image source={
+                        dataFood[0].image_url
+                            ? { uri: dataFood[0].image_url }
+                            : Logo
+                    } style={styles.Img}></Image>
                 </View>
 
                 <View>

@@ -197,7 +197,7 @@ const OrderDetailScreen = () => {
                         <Text style={styles.footer}>{_data_.payment_method === 'cod' ? 'Tiền mặt' : 'Online'}</Text>
                     </View>
 
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 22 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 22,marginBottom: 22 }}>
                         <Text style={styles.footer}>Trạng thái</Text>
                         <Text style={styles.footer}>{_data_.status_payment === 'no' ? 'Chưa thanh toán' : 'Đã thanh toán'}</Text>
                     </View>
