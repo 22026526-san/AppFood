@@ -1,16 +1,18 @@
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image,Alert } from 'react-native'
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, use } from 'react'
 import { useAuth } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
 import Logo from '../assets/orders.png'
 import {API_URL} from '@env'
+import { UserContext } from '../services/UserContextAPI';
 
 
 const OnCard = (props) => {
 
     const router = useRouter();
     const { userId } = useAuth();
+    const {name} = useContext(UserContext);
 
     const TotalPrice = (products) => {
         return products.reduce((total, product) => {
@@ -33,6 +35,7 @@ const OnCard = (props) => {
                 },
                 body: JSON.stringify({
                     orderId: id,
+                    name : name,
                 }),
             });
             const json = await res.json();
@@ -68,7 +71,7 @@ const OnCard = (props) => {
                         <View style={styles.info}>
                             <View style={styles.rowBetween}>
                                 <Text style={styles.foodName}>Fast Food</Text>
-                                <Text style={styles.orderId}>#{item.created_at.slice(0, 10).split("-").reverse()}</Text>
+                                <Text style={styles.orderId}>#{item.created_at.slice(11, 19).split(":").reverse()}</Text>
                             </View>
 
                             <View style={{ display: 'flex', flexDirection: 'row', gap: 8, alignItems: 'center' }}>

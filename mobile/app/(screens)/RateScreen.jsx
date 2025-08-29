@@ -7,6 +7,7 @@ import { useAuth } from '@clerk/clerk-expo';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { API_URL } from '@env'
+import { UserContext } from '../../services/UserContextAPI';
 
 const ProductReviewScreen = () => {
 
@@ -14,6 +15,7 @@ const ProductReviewScreen = () => {
     const [review, setReview] = useState('');
     const router = useRouter();
     const { userId } = useAuth();
+    const {name} = useContext(UserContext);
     const { data } = useLocalSearchParams();
     const _data_ = JSON.parse(data);
     const [showHeader, setShowHeader] = useState(true);
@@ -58,14 +60,14 @@ const ProductReviewScreen = () => {
                     clerkId: userId,
                     comment: review,
                     star:rating,
-                    item : _data_.order_detail
+                    item : _data_.order_detail,
+                    name : name
                 }),
             });
             const json = await res.json();
             
             if (json.success) {
                 Alert.alert(json.message);
-                props.onUpdate()
                 return;
             }
 
@@ -160,7 +162,7 @@ const ProductReviewScreen = () => {
 
                     <View style={styles.container}>
                         {suggestions.map((item, index) => (
-                            <TouchableOpacity key={index} onPress={() => setReview(item)} style={styles.tag}>
+                            <TouchableOpacity key={index} onPress={() => setReview(review+item)} style={styles.tag}>
                                 <Text style={styles.tagText}>
                                     {item}
                                 </Text>

@@ -40,7 +40,7 @@ const HisCard = (props) => {
             <View style={styles.info}>
               <View style={styles.rowBetween}>
                 <Text style={styles.foodName}>Fast Food</Text>
-                <Text style={styles.orderId}>#{item.created_at.slice(0, 10).split("-").reverse()}</Text>
+                <Text style={styles.orderId}>#{item.created_at.slice(11, 19).split(":").reverse()}</Text>
               </View>
 
               <View style={{ display: 'flex', flexDirection: 'row', gap: 8, alignItems: 'center' }}>

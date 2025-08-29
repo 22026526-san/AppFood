@@ -1,5 +1,8 @@
 import pool from '../configs/database.js';
 import { handleUpload } from '../middlewares/upload.js';
+import {Expo} from 'expo-server-sdk';
+
+const expo = new Expo();
 
 export const getFoodList = async (req, res) => {
     try {
@@ -73,7 +76,57 @@ export const InsertVouchers = async (req, res) => {
       .promise()
       .query('INSERT INTO vouchers (code, description, discount_percent, max_discount, start_date, end_date) values (?,?,?,?,?,?)', [code,description,discountPercent,maxDiscount,start_Date,end_Date]);
 
-    res.json({ success: true, message: cart });
+    const [users] = await pool
+      .promise()
+      .query(
+        `SELECT expo_token, clerk_id FROM users 
+         WHERE role = "customer" AND expo_token IS NOT NULL`
+      );
+
+    const title = "🔔Ưu đãi mới!";
+    const message = `FastFood vừa có 🎟️ mới dành riêng cho bạn với ữu đãi lên đến ${maxDiscount}. Đừng bỏ lỡ nhé!`;
+
+    // 3. Insert notifications vào DB (bulk insert)
+    if (users.length > 0) {
+      const values = users.map((u) => [u.clerk_id, title, message,'Voucher']);
+      await pool
+        .promise()
+        .query(
+          `INSERT INTO notifications (clerk_id, title, message,router) VALUES ?`,
+          [values]
+        );
+    }
+
+    // 4. Tạo danh sách message gửi qua Expo
+    let messages = [];
+    for (const user of users) {
+      if (!Expo.isExpoPushToken(user.expo_token)) continue; // check token hợp lệ
+
+      messages.push({
+        to: user.expo_token,
+        sound: "default",
+        title,
+        body: message
+      });
+    }
+
+    // 5. Chunk & send
+    const chunks = expo.chunkPushNotifications(messages);
+    const tickets = [];
+    for (const chunk of chunks) {
+      try {
+        let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+        tickets.push(...ticketChunk);
+      } catch (error) {
+        console.error("Expo push error:", error);
+      }
+    }
+
+    res.json({
+      success: true,
+      tickets,
+    });
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -219,11 +272,61 @@ export const InsertFoods = async (req, res) => {
 
   try {
 
-    const cart = await pool
+    const [cart] = await pool
       .promise()
       .query('INSERT INTO food (food_name, description, image_url, price, category_id) VALUES (?,?,?,?,?)', [name, description,img, price,categoryId])
+    const id = cart.insertId
+    const [users] = await pool
+      .promise()
+      .query(
+        `SELECT expo_token, clerk_id FROM users 
+         WHERE role = "customer" AND expo_token IS NOT NULL`
+      );
 
-    res.json({ success: true, message: cart });
+    const title = "🔔Món ăn mới đã được thêm!";
+    const message = `FastFood vừa thêm món mới: ${name}. Hãy đến và thử ngay nào! 🍔🍟`;
+
+    // 3. Insert notifications vào DB (bulk insert)
+    if (users.length > 0) {
+      const values = users.map((u) => [u.clerk_id, title, message,`${id}`]);
+      await pool
+        .promise()
+        .query(
+          `INSERT INTO notifications (clerk_id, title, message,router) VALUES ?`,
+          [values]
+        );
+    }
+
+    // 4. Tạo danh sách message gửi qua Expo
+    let messages = [];
+    for (const user of users) {
+      if (!Expo.isExpoPushToken(user.expo_token)) continue; // check token hợp lệ
+
+      messages.push({
+        to: user.expo_token,
+        sound: "default",
+        title,
+        body: message
+      });
+    }
+
+    // 5. Chunk & send
+    const chunks = expo.chunkPushNotifications(messages);
+    const tickets = [];
+    for (const chunk of chunks) {
+      try {
+        let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+        tickets.push(...ticketChunk);
+      } catch (error) {
+        console.error("Expo push error:", error);
+      }
+    }
+
+    res.json({
+      success: true,
+      tickets,
+    });
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -512,7 +615,8 @@ export const getOrders = async (req, res) => {
         o.created_at,
         u.user_name,
         u.phone
-        FROM orders o inner join users u on o.clerk_id = u.clerk_id`
+        FROM orders o inner join users u on o.clerk_id = u.clerk_id
+        order by o.created_at desc; `
     );
 
     if (orderData.length === 0) {
@@ -565,17 +669,95 @@ export const getOrders = async (req, res) => {
 export const updateStatus = async (req, res) => {
   const { orderId,status } = req.body;
 
-  if (!orderId || !status) {
+  if (!orderId || !status ) {
     return res.status(400).json({ error: "Invalid data" });
   }
 
   try {
 
-    const step1 = await pool
+    if (status === 'completed') {
+      const step1 = await pool
       .promise()
       .query(`Update orders set status = ?, status_payment = 'yes' WHERE order_id = ?`, [status,orderId]);
+    }
 
-    res.json({ success: true });
+    const step2 = await pool
+      .promise()
+      .query(`Update orders set status = ? WHERE order_id = ?`, [status,orderId]);
+
+    const [users] = await pool
+      .promise()
+      .query(
+        `SELECT u.expo_token,u.clerk_id FROM users u
+          inner join orders o on o.clerk_id = u.clerk_id 
+          WHERE o.order_id = ? AND u.expo_token IS NOT NULL`,[orderId]
+      );
+
+    const title = "🔔Đơn hàng đã được cập nhật!";
+    const message = status === 'completed' ? `Đơn hàng của bạn đã được giao thành công` : status === 'canceled' ? 'Đơn hàng đã bị hủy' : `Hãy chú ý đơn hàng của bạn, trạng thái đã được cập nhật thành ${status}. Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!`;
+
+    // 3. Insert notifications vào DB (bulk insert)
+    if (users.length > 0) {
+      const values = users.map((u) => [u.clerk_id, title, message,'Order']);
+      await pool
+        .promise()
+        .query(
+          `INSERT INTO notifications (clerk_id, title, message,router) VALUES ?`,
+          [values]
+        );
+    }
+
+    // 4. Tạo danh sách message gửi qua Expo
+    let messages = [];
+    for (const user of users) {
+      if (!Expo.isExpoPushToken(user.expo_token)) continue; // check token hợp lệ
+
+      messages.push({
+        to: user.expo_token,
+        sound: "default",
+        title,
+        body: message,
+      });
+    }
+
+    // 5. Chunk & send
+    const chunks = expo.chunkPushNotifications(messages);
+    const tickets = [];
+    for (const chunk of chunks) {
+      try {
+        let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+        tickets.push(...ticketChunk);
+      } catch (error) {
+        console.error("Expo push error:", error);
+      }
+    }
+
+    res.json({
+      success: true,
+      tickets,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const getNotice = async (req, res) => {
+  const { clerkId } = req.body;
+
+  if (!clerkId) {
+    return res.status(400).json({ error: "Invalid data" });
+  }
+
+  try {
+
+    const notices = await pool
+      .promise()
+      .query(`SELECT *
+              FROM notifications v
+              WHERE v.clerk_id = ? 
+              order by v.created_at desc;`, [clerkId]);
+
+    res.json({ success: true, message: notices });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

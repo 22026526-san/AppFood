@@ -30,6 +30,10 @@ export const getFoodInfo = async (req, res) => {
       });
     });
 
+    if (foodInfo.length === 0) {
+      return res.status(201).json({ success: false, message: "Food not found" });
+    }
+
     const query_review =
       `select r.review_id , r.star, r.comment, r.created_at, u.user_name, u.img
           from reviews r 

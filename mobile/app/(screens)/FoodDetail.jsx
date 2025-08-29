@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Modal, FlatList } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Modal, FlatList,Alert } from 'react-native'
 import React, { useEffect, useContext, useState, useRef } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -91,6 +91,9 @@ const FoodDetail = () => {
                     setDataFood(result.message.foodInfo);
                     setDataReview(result.message.review);
                     setDataFill(result.message.review);
+                } else {
+                    Alert.alert('Không tìm thấy món ăn. Có thể món ăn đã không còn được kinh doanh.');
+                    router.back();
                 }
 
             } catch (err) {
@@ -148,7 +151,11 @@ const FoodDetail = () => {
             <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingRight: 20 }} onScroll={handleScroll}>
 
                 <View style={styles.foodCard}>
-                    <Image source={Logo} style={styles.Img}></Image>
+                    <Image source={
+                        dataFood[0].image_url
+                            ? { uri: dataFood[0].image_url }
+                            : Logo
+                    } style={styles.Img}></Image>
                 </View>
 
                 <View>
@@ -257,7 +264,7 @@ const FoodDetail = () => {
                             </View>
                         </View>
                     </Modal>
-                    
+
                 </View>
             )}
         </SafeAreaView>

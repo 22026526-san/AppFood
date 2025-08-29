@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { use } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, FlatList, Alert } from 'react-native';
 import Logo from '../assets/orders.png'
 import { Ionicons } from '@expo/vector-icons';
@@ -43,7 +43,7 @@ const RunCard = (props) => {
         },
         body: JSON.stringify({
           orderId: selectedId,
-          status: status
+          status: status,
         }),
       });
       const json = await res.json();

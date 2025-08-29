@@ -8,6 +8,8 @@ import { API_URL } from '@env'
 import Logo from '../../assets/fast-food.png'
 import { useAuth } from '@clerk/clerk-expo';
 import { useSelector } from 'react-redux';
+import { UserContext } from '../../services/UserContextAPI';
+
 
 const OrderOptionsScreen = () => {
     const router = useRouter();
@@ -22,6 +24,7 @@ const OrderOptionsScreen = () => {
     const [atStore, setStore] = useState(false);
     const [onl, setOnl] = useState(false);
     const CartFood = useSelector((state) => state.cart.items)
+    const {name} = useContext(UserContext)
 
     const handleScroll = (event) => {
         const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
@@ -57,7 +60,8 @@ const OrderOptionsScreen = () => {
                     text : text,
                     discount : discount,
                     payment : payment,
-                    voucher : voucher
+                    voucher : voucher,
+                    name : name
                 }),
             });
             const json = await res.json();

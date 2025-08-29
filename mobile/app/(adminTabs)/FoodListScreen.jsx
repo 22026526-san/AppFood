@@ -157,7 +157,7 @@ const FoodListScreen = () => {
         )}
 
 
-        <FoodListCard data={dataFill} />
+        <FoodListCard data={dataFill} onUpdate={foodList}/>
 
         <View style={{ marginBottom: 36 }} />
       </ScrollView>

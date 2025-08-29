@@ -14,7 +14,6 @@ import { re_orders } from '../../redux/cartAction';
 const OrderDetailScreen = () => {
     const router = useRouter();
     const dispatch = useDispatch()
-    const { userId } = useAuth();
     const { data, discount, action } = useLocalSearchParams();
     const _data_ = JSON.parse(data);
     const [showHeader, setShowHeader] = useState(true);
@@ -55,6 +54,7 @@ const OrderDetailScreen = () => {
                 },
                 body: JSON.stringify({
                     orderId: id,
+                    name : name
                 }),
             });
             const json = await res.json();

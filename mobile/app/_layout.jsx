@@ -5,6 +5,17 @@ import { UserProvider } from '../services/UserContextAPI';
 import { EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY } from '@env'
 import { Provider } from 'react-redux';
 import { store } from '../redux/store';
+import PushNotificationManager from '../services/PushNotificationManager';
+import * as Notifications from 'expo-notifications';
+
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 
 const tokenCache = {
@@ -23,6 +34,7 @@ export default function RootLayout() {
             <Provider store={store}>
                 <UserProvider>
                     <SignedIn>
+                        <PushNotificationManager />
                         <Stack>
                             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                             <Stack.Screen name="(screens)" options={{ headerShown: false }} />
